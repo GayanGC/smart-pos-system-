@@ -1,0 +1,27 @@
+2026-06-18 11:10:58 [error]: Error: Cannot find module '@google/generative-ai'
+Require stack:
+- D:\projects\pos system 0.1\server\src\modules\ai-analytics\analytics.controller.js
+- D:\projects\pos system 0.1\server\src\modules\ai-analytics\analytics.routes.js
+- D:\projects\pos system 0.1\server\src\app.js
+- D:\projects\pos system 0.1\server\server.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1365:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1021:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1026:22)
+    at Function._load (node:internal/modules/cjs/loader:1175:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1445:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (D:\projects\pos system 0.1\server\src\modules\ai-analytics\analytics.controller.js:28:32)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+2026-06-18 11:11:00 [error]: ReferenceError: asyncHandler is not defined
+    at Object.<anonymous> (D:\projects\pos system 0.1\server\src\modules\ai-analytics\analytics.controller.js:37:24)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1445:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (D:\projects\pos system 0.1\server\src\modules\ai-analytics\analytics.routes.js:26:5)
