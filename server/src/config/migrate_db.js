@@ -40,6 +40,14 @@ async function migrate() {
         console.log(`Clearing target collection "${colName}"...`);
         await targetCol.deleteMany({});
 
+        // Drop stale indexes to prevent legacy unique constraint collisions
+        try {
+          console.log(`Dropping indexes on target collection "${colName}"...`);
+          await targetCol.dropIndexes();
+        } catch (idxErr) {
+          console.log(`No indexes to drop or drop skipped for "${colName}": ${idxErr.message}`);
+        }
+
         // Insert documents into target
         console.log(`Inserting ${docs.length} documents into target "${colName}"...`);
         await targetCol.insertMany(docs);
