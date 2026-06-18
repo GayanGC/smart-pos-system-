@@ -16,11 +16,12 @@
 'use strict';
 
 // ── Load .env BEFORE any other imports that might read process.env ──────────
-require('dotenv').config();
+// .env is in the root directory, so we look up one folder level
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 
-const app       = require('./src/app');
-const connectDB = require('./src/config/db');
-const logger    = require('./src/utils/logger');
+const app       = require('./app');
+const connectDB = require('./config/db');
+const logger    = require('./utils/logger');
 
 // ─── Boot sequence ─────────────────────────────────────────────────────────
 const startServer = async () => {
@@ -30,13 +31,13 @@ const startServer = async () => {
   // 2. Start the HTTP server
   const PORT   = process.env.PORT || 5000;
   const server = app.listen(PORT, () => {
-    logger.info(`🚀  Server running in [${process.env.NODE_ENV}] mode on port ${PORT}`);
+    logger.info(`🚀  Server running in [${process.env.NODE_ENV || 'development'}] mode on port ${PORT}`);
     logger.info(`📡  API base URL : http://localhost:${PORT}/api`);
     logger.info(`❤️   Health check : http://localhost:${PORT}/health`);
     
     // Start EOD report email scheduler
     try {
-      const { startReportScheduler } = require('./src/utils/emailReportService');
+      const { startReportScheduler } = require('./utils/emailReportService');
       startReportScheduler();
       logger.info('⏰  EOD Email Report Scheduler started.');
     } catch (err) {

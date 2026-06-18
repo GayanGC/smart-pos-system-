@@ -44,9 +44,25 @@ const app = express();
 app.use(helmet());
 
 // ─── CORS ──────────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://smart-pos-system-five.vercel.app',
+];
+
+if (process.env.CLIENT_ORIGIN) {
+  allowedOrigins.push(process.env.CLIENT_ORIGIN);
+}
+
 app.use(
   cors({
-    origin:      process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods:     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
