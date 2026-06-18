@@ -25,6 +25,12 @@ const connectDB = async () => {
     });
 
     logger.info(`✅  MongoDB connected: ${conn.connection.host}`);
+    const uri = process.env.MONGO_URI || '';
+    if (uri.includes('mongodb+srv') || uri.includes('cluster')) {
+      logger.info('🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)');
+    } else {
+      logger.info('💻 [DATABASE] Successfully connected to LOCAL MongoDB (localhost)');
+    }
   } catch (error) {
     logger.error(`❌  MongoDB connection error: ${error.message}`);
     // Exit the process so the orchestrator (PM2 / Docker) can restart it.
