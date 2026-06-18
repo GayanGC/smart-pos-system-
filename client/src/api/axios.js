@@ -8,8 +8,15 @@
 
 import axios from 'axios'
 
+let apiBase = import.meta.env.VITE_API_BASE_URL || '/api';
+
+// Self-healing: if the base URL is an absolute URL and does not end with /api, append it automatically
+if (apiBase.startsWith('http') && !apiBase.endsWith('/api') && !apiBase.endsWith('/api/')) {
+  apiBase = apiBase.endsWith('/') ? `${apiBase}api` : `${apiBase}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: apiBase,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 })
