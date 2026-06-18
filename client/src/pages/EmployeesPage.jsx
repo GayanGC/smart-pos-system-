@@ -453,6 +453,7 @@ function QrScannerPanel({ onScanSuccess }) {
     }).catch(err => {
       if (isMounted) {
         console.error("Scanner start error", err)
+        setScanError(`Camera Initialization Error: ${err.message || err || 'Check permissions and secure HTTPS context.'}`)
       }
     })
 

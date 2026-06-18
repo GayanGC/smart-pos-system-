@@ -106,7 +106,10 @@ const clockIn = asyncHandler(async (req, res) => {
     return sendError(res, { statusCode: 400, message: 'qrCodeToken is required.' });
   }
 
-  const employee = await Employee.findOne({ qrCodeToken, isActive: true });
+  const employee = await Employee.findOne({
+    $or: [{ qrCodeToken }, { employeeId: qrCodeToken }],
+    isActive: true
+  });
   if (!employee) {
     return sendError(res, { statusCode: 404, message: 'No active employee found for this QR code.' });
   }
@@ -154,7 +157,10 @@ const clockOut = asyncHandler(async (req, res) => {
     return sendError(res, { statusCode: 400, message: 'qrCodeToken is required.' });
   }
 
-  const employee = await Employee.findOne({ qrCodeToken, isActive: true });
+  const employee = await Employee.findOne({
+    $or: [{ qrCodeToken }, { employeeId: qrCodeToken }],
+    isActive: true
+  });
   if (!employee) {
     return sendError(res, { statusCode: 404, message: 'No active employee found for this QR code.' });
   }
