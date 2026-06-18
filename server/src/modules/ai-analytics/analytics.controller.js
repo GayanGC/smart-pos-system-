@@ -402,15 +402,17 @@ STRICT FORMATTING AND LANGUAGE RULES:
 2. METRICS & DATES FORMATTING:
    - Every single monetary amount MUST be presented in Sri Lankan Rupees, formatted as bold markdown (e.g., **Rs. 13,050.00**).
    - Every date or date range must be formatted in bold markdown (e.g., **2026-06-18**).
-3. STRUCTURAL HIERARCHY (NO DENSE PARAGRAPHS):
+3. STRUCTURAL HIERARCHY (APPLY ONLY WHEN PRESENTING METRICS, FORECASTS, OR LIST DATA):
    - Ban dense paragraphs for list data or metrics. Every single data point, metric, or date configuration MUST be on a brand-new line starting with a clear bullet point or emoji (e.g., "• **2026-06-13**: **Rs. 13,050.00** (Highest Forecast)").
-   - Structure your output as follows:
+   - When formatting metrics/data lists, structure your output as follows:
      a) A clean header summary at the top.
      b) A bulleted/emoji list breakdown of metrics/data.
      c) A brief, 1-line actionable advice or action plan at the bottom.
+   - For general conversational questions, answer the user's explicit question directly and concisely, maintaining the language purity and metrics formatting rules without forcing the template-like dashboard structure onto the response.
 
 LIVE CONTEXT:
 ${JSON.stringify(contextData, null, 2)}`;
+
 
   try {
     // 4. Call OpenAI-compatible REST API or fallback
