@@ -459,10 +459,52 @@ function QrScannerPanel({ onScanSuccess }) {
 
     return () => {
       isMounted = false
-      if (html5Qrcode.isScanning) {
-        html5Qrcode.stop()
-          .then(() => html5Qrcode.clear())
-          .catch(err => console.error("Scanner stop error", err))
+      
+      // Stop and clear the scanner instance
+      if (html5Qrcode) {
+        const stopScanner = async () => {
+          try {
+            if (html5Qrcode.isScanning) {
+              await html5Qrcode.stop();
+            }
+            await html5Qrcode.clear();
+          } catch (err) {
+            console.error("Scanner cleanup error:", err);
+          }
+        };
+        stopScanner();
+      }
+
+      // Stop any active camera tracks in the browser directly as a bulletproof safeguard
+      try {
+        const readerEl = document.getElementById("reader");
+        if (readerEl) {
+          const videos = readerEl.getElementsByTagName("video");
+          for (let video of videos) {
+            if (video.srcObject) {
+              const stream = video.srcObject;
+              if (stream && typeof stream.getTracks === 'function') {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => {
+                  track.stop();
+                  console.log(`[Camera Release] Successfully stopped track: ${track.label}`);
+                });
+              }
+              video.srcObject = null;
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error stopping tracks manually:", e);
+      }
+
+      // Force stop all video track streams from window.localStream as a safeguard
+      if (window.localStream) {
+        try {
+          window.localStream.getTracks().forEach(track => track.stop());
+        } catch (e) {
+          console.error("Error stopping window.localStream tracks:", e);
+        }
       }
     }
   }, [])
