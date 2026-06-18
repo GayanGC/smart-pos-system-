@@ -393,24 +393,22 @@ const processChat = asyncHandler(async (req, res) => {
     predictiveSalesForecast: Array.isArray(dailySalesTrend) ? dailySalesTrend : []
   };
 
-  const systemInstruction = `You are an elite AI Business Manager and Predictive Consultant for a retail store POS/ERP system. You have direct access to the live store data provided in the context. Answer the owner's questions accurately based on this data. Keep answers actionable, professional, and concise.
+  const systemInstruction = `You are a Smart ERP AI Business Consultant for a retail POS system. You have access to live store data in the DATA CONTEXT section below.
 
-STRICT FORMATTING AND LANGUAGE RULES:
-1. LANGUAGE PURITY: 
-   - NEVER mix English letters inside Sinhala words (e.g., absolutely NO "kiyන්න", "kiyනවා", "forecast කියනවා", "predict කරනවා").
-   - Respond in either PURE, clean Sinhala script OR PURE, natural Singlish (e.g., "Labana mase sales forecast eka mehemai"). Do NOT blend scripts or characters within the same word.
-2. METRICS & DATES FORMATTING:
-   - Every single monetary amount MUST be presented in Sri Lankan Rupees, formatted as bold markdown (e.g., **Rs. 13,050.00**).
-   - Every date or date range must be formatted in bold markdown (e.g., **2026-06-18**).
-3. STRUCTURAL HIERARCHY (APPLY ONLY WHEN PRESENTING METRICS, FORECASTS, OR LIST DATA):
-   - Ban dense paragraphs for list data or metrics. Every single data point, metric, or date configuration MUST be on a brand-new line starting with a clear bullet point or emoji (e.g., "• **2026-06-13**: **Rs. 13,050.00** (Highest Forecast)").
-   - When formatting metrics/data lists, structure your output as follows:
-     a) A clean header summary at the top.
-     b) A bulleted/emoji list breakdown of metrics/data.
-     c) A brief, 1-line actionable advice or action plan at the bottom.
-   - For general conversational questions, answer the user's explicit question directly and concisely, maintaining the language purity and metrics formatting rules without forcing the template-like dashboard structure onto the response.
+## PRIORITY RULE — READ FIRST:
+ALWAYS answer the user's explicit question directly and specifically. Do NOT default to a generic store summary or dashboard report unless the user explicitly asks for one. If the user asks about a specific person, product, topic, or concept — answer THAT specific question first, using the live data only if it is relevant.
 
-LIVE CONTEXT:
+## LANGUAGE RULES:
+- Respond in PURE Sinhala script OR natural Singlish. Never mix English letters inside a Sinhala word (e.g., do NOT write "kiyනවා" or "predictකරනවා").
+- All monetary amounts → bold LKR format: **Rs. X,XXX.XX**
+- All dates → bold format: **YYYY-MM-DD**
+
+## FORMATTING RULES (apply ONLY when presenting a report, list, or data breakdown):
+- Use bullet points or emojis for each data item — one per line.
+- Structure as: (a) short header, (b) bulleted data, (c) one-line action tip.
+- For conversational or factual questions, reply naturally in 1–3 sentences — no headers, no bullet lists.
+
+## DATA CONTEXT (live store snapshot — use as reference only):
 ${JSON.stringify(contextData, null, 2)}`;
 
 
@@ -473,25 +471,30 @@ ${JSON.stringify(contextData, null, 2)}`;
     } else {
       const maskedKey = apiKey.length > 5 ? `${apiKey.substring(0, 4)}... (Length: ${apiKey.length})` : apiKey;
       console.log(`[AI DIAGNOSTICS] Read AI_CHAT_API_KEY from env:`, maskedKey);
+      console.log(`[AI DIAGNOSTICS] User query: "${content.trim()}"`);
 
-      // Format history for OpenAI format (role: system/user/assistant)
+      // Format conversation history for OpenAI-compatible format (role: system/user/assistant)
+      // Exclude any system-role messages and the current user turn (already appended to session above)
       const formattedHistory = session.messages
         .filter(m => m.role !== 'system')
-        .slice(0, -1) // Exclude the user message we just pushed
+        .slice(0, -1) // Exclude the user message we just pushed — we add it explicitly below
         .map(m => ({
           role: m.role,
           content: m.content
         }));
 
+      // ── PAYLOAD: system instruction first, conversation history, then the live user query ──
+      // The user's question MUST be the final message in the array so the model answers IT.
       const payload = {
         model: process.env.AI_CHAT_MODEL,
         messages: [
-          { role: 'system', content: systemInstruction },
-          ...formattedHistory,
-          { role: 'user', content: content.trim() }
+          { role: 'system', content: systemInstruction }, // background rules + live context
+          ...formattedHistory,                            // previous turns (if any)
+          { role: 'user', content: content.trim() }       // <-- the actual user question
         ],
         temperature: 0.7
       };
+      console.log(`[AI DIAGNOSTICS] Sending ${payload.messages.length} messages to Groq (system + ${formattedHistory.length} history + 1 user).`);
 
       const endpoint = process.env.AI_CHAT_BASE_URL;
       
