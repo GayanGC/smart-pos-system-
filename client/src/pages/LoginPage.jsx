@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import api from '../api/axios'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -31,7 +32,9 @@ export default function LoginPage() {
         ?? (['super_admin', 'admin', 'manager'].includes(user.role) ? '/dashboard' : '/pos')
       navigate(dest, { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password.')
+      const status = err.response?.status ? `[HTTP ${err.response.status}]` : '[Network Error]';
+      const msg = err.response?.data?.message || err.message || 'Unknown error';
+      setError(`${status} ${msg} (API Base: ${api.defaults.baseURL})`);
     } finally {
       setLoading(false)
     }
