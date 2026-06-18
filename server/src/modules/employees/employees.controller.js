@@ -53,8 +53,8 @@ const getEmployees = asyncHandler(async (req, res) => {
 
 const createEmployee = asyncHandler(async (req, res) => {
   // Auto-generate a QR code value equal to the employee's unique ID
-  if (!req.body.qrCodeValue && req.body.employeeId) {
-    req.body.qrCodeValue = req.body.employeeId;
+  if (!req.body.qrCodeToken && req.body.employeeId) {
+    req.body.qrCodeToken = req.body.employeeId;
   }
   const employee = await Employee.create(req.body);
   return sendSuccess(res, { statusCode: 201, data: employee, message: 'Employee created successfully.' });
@@ -95,63 +95,95 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * @desc  Process a QR scan from the POS terminal.
- *        If no attendance record exists for today → CLOCK IN.
- *        If a record exists without a clockOut     → CLOCK OUT.
- * @route POST /api/employees/attendance/scan
- * @body  { qrCodeValue: string, terminal?: string }
+ * @desc  Process a QR scan to CLOCK IN
+ * @route POST /api/employees/attendance/clock-in
+ * @body  { qrCodeToken: string, terminal?: string }
  */
-const processQrScan = asyncHandler(async (req, res) => {
-  const { qrCodeValue, terminal } = req.body;
+const clockIn = asyncHandler(async (req, res) => {
+  const { qrCodeToken, terminal } = req.body;
 
-  if (!qrCodeValue) {
-    return sendError(res, { statusCode: 400, message: 'qrCodeValue is required.' });
+  if (!qrCodeToken) {
+    return sendError(res, { statusCode: 400, message: 'qrCodeToken is required.' });
   }
 
-  // ── Resolve employee from QR value ────────────────────────────────────────
-  const employee = await Employee.findOne({ qrCodeValue, isActive: true });
+  const employee = await Employee.findOne({ qrCodeToken, isActive: true });
   if (!employee) {
     return sendError(res, { statusCode: 404, message: 'No active employee found for this QR code.' });
   }
 
-  // ── Determine today's date (start of day, UTC) ────────────────────────────
   const now       = new Date();
   const startOfDay= new Date(now);
   startOfDay.setUTCHours(0, 0, 0, 0);
 
-  // ── Check for existing attendance record today ────────────────────────────
+  const existingRecord = await Attendance.findOne({
+    employeeId: employee._id,
+    date:       startOfDay,
+  });
+
+  if (existingRecord) {
+    return sendError(res, {
+      statusCode: 409,
+      message: `${employee.fullName} is already clocked in today.`,
+    });
+  }
+
+  const record = await Attendance.create({
+    employeeId: employee._id,
+    date:       startOfDay,
+    clockIn:    now,
+    terminal:   terminal || 'Terminal-01',
+    status:     ATTENDANCE_STATUS.PRESENT,
+  });
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    data: { action: 'clock_in', record, employee: { id: employee._id, name: employee.fullName } },
+    message: `✅ Clock-in recorded for ${employee.fullName} at ${now.toLocaleTimeString()}.`,
+  });
+});
+
+/**
+ * @desc  Process a QR scan to CLOCK OUT
+ * @route POST /api/employees/attendance/clock-out
+ * @body  { qrCodeToken: string }
+ */
+const clockOut = asyncHandler(async (req, res) => {
+  const { qrCodeToken } = req.body;
+
+  if (!qrCodeToken) {
+    return sendError(res, { statusCode: 400, message: 'qrCodeToken is required.' });
+  }
+
+  const employee = await Employee.findOne({ qrCodeToken, isActive: true });
+  if (!employee) {
+    return sendError(res, { statusCode: 404, message: 'No active employee found for this QR code.' });
+  }
+
+  const now       = new Date();
+  const startOfDay= new Date(now);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
   const existingRecord = await Attendance.findOne({
     employeeId: employee._id,
     date:       startOfDay,
   });
 
   if (!existingRecord) {
-    // ── CLOCK IN ────────────────────────────────────────────────────────────
-    const record = await Attendance.create({
-      employeeId: employee._id,
-      date:       startOfDay,
-      clockIn:    now,
-      terminal:   terminal || 'Terminal-01',
-      status:     ATTENDANCE_STATUS.PRESENT,
-    });
-    return sendSuccess(res, {
-      statusCode: 201,
-      data: { action: 'clock_in', record, employee: { id: employee._id, name: employee.fullName } },
-      message: `✅ Clock-in recorded for ${employee.fullName} at ${now.toLocaleTimeString()}.`,
+    return sendError(res, {
+      statusCode: 404,
+      message: `${employee.fullName} has not clocked in today.`,
     });
   }
 
   if (existingRecord.clockOut) {
-    // ── Already clocked out today ────────────────────────────────────────────
     return sendError(res, {
       statusCode: 409,
-      message: `${employee.fullName} has already clocked in and out today.`,
+      message: `${employee.fullName} has already clocked out today.`,
     });
   }
 
-  // ── CLOCK OUT ──────────────────────────────────────────────────────────────
   existingRecord.clockOut = now;
-  existingRecord.computeHours(); // compute totalHoursWorked, regular, overtime
+  existingRecord.computeHours();
   await existingRecord.save();
 
   return sendSuccess(res, {
@@ -223,11 +255,13 @@ const generatePayroll = asyncHandler(async (req, res) => {
   const overtimeHours    = attendanceRecords.reduce((sum, r) => sum + r.overtimeHours, 0);
 
   // ── Calculate pay ─────────────────────────────────────────────────────────
-  const baseSalary    = employee.baseSalary || 0;
-  const overtimeRate  = (baseSalary / 160) * 1.5; // 1.5x hourly rate for overtime
+  const hourlyRate    = employee.hourlyRate || 0;
+  const regularHours  = totalHoursWorked - overtimeHours;
+  const regularPay    = parseFloat((regularHours * hourlyRate).toFixed(2));
+  const overtimeRate  = hourlyRate * 1.5; // 1.5x hourly rate for overtime
   const overtimePay   = parseFloat((overtimeHours * overtimeRate).toFixed(2));
   const totalAllowances = allowances.reduce((s, a) => s + a.amount, 0);
-  const grossPay      = baseSalary + overtimePay + totalAllowances;
+  const grossPay      = regularPay + overtimePay + totalAllowances;
   const totalDeductions = deductions.reduce((s, d) => s + d.amount, 0);
   const netPay        = parseFloat((grossPay - totalDeductions).toFixed(2));
 
@@ -239,7 +273,7 @@ const generatePayroll = asyncHandler(async (req, res) => {
     totalDaysWorked,
     totalHoursWorked: parseFloat(totalHoursWorked.toFixed(2)),
     overtimeHours:    parseFloat(overtimeHours.toFixed(2)),
-    baseSalary,
+    baseSalary:       regularPay,
     overtimePay,
     allowances,
     grossPay:     parseFloat(grossPay.toFixed(2)),
@@ -295,6 +329,6 @@ const markPayrollAsPaid = asyncHandler(async (req, res) => {
 
 module.exports = {
   getEmployees, createEmployee, getEmployeeById, updateEmployee, deleteEmployee,
-  processQrScan, getAttendance,
+  clockIn, clockOut, getAttendance,
   generatePayroll, getPayroll, markPayrollAsPaid,
 };

@@ -59,7 +59,7 @@ function ProductCard({ product, onAdd }) {
         {/* Price + stock */}
         <div className="flex items-end justify-between mt-1">
           <p className="text-base font-bold text-violet-400">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.sellingPrice)}
+            {'Rs. ' + product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
           {isLowStock && (
             <span className="badge-amber text-[9px]">Low</span>

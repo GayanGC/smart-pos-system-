@@ -40,7 +40,7 @@ const METHODS = [
 ]
 
 const fmt = (n) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0)
+  'Rs. ' + (n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export default function CheckoutModal({
   isOpen,
@@ -171,7 +171,7 @@ export default function CheckoutModal({
           {method === 'cash' && (
             <div className="space-y-3 animate-fade-up">
               <div>
-                <label className="text-xs font-medium text-slate-400 block mb-1.5">Amount Paid ($)</label>
+                <label className="text-xs font-medium text-slate-400 block mb-1.5">Amount Paid (LKR)</label>
                 <input
                   ref={amountRef}
                   type="number"

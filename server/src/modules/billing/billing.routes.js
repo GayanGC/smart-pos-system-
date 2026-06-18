@@ -19,11 +19,19 @@ const router = require('express').Router();
 const {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
+  triggerDailyReportEmail,
 } = require('./billing.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
 // All billing routes require authentication
 router.use(protect);
+
+// ── Daily Report Dispatch ───────────────────────────────────────────────────
+router.post(
+  '/reports/daily',
+  authorize('super_admin', 'admin', 'manager'),
+  triggerDailyReportEmail
+);
 
 // ── Dashboard ─────────────────────────────────────────────────────────────
 router.get(

@@ -7,7 +7,7 @@
 import CartItem from './CartItem'
 
 const fmt = (n) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0)
+  'Rs. ' + (n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export default function CartPanel({
   items,
@@ -15,8 +15,11 @@ export default function CartPanel({
   totalDiscount,
   totalTax,
   grandTotal,
+  promoDiscount,
   onQtyChange,
   onDiscountChange,
+  onItemOverrideChange,
+  onPromoDiscountChange,
   onRemove,
   onClear,
   onCheckout,
@@ -60,11 +63,37 @@ export default function CartPanel({
               item={item}
               onQtyChange={onQtyChange}
               onDiscountChange={onDiscountChange}
+              onItemOverrideChange={onItemOverrideChange}
               onRemove={onRemove}
             />
           ))
         )}
       </div>
+
+      {/* ── Promo Discount Inputs ──────────────────────────────────── */}
+      {!isEmpty && (
+        <div className="px-5 py-3 border-t border-slate-800/80 flex-shrink-0 space-y-2 bg-slate-900/10">
+          <label className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">Apply Promo / Discount</label>
+          <div className="flex gap-2">
+            <select
+              value={promoDiscount?.type || 'percentage'}
+              onChange={(e) => onPromoDiscountChange(e.target.value, promoDiscount?.value || 0)}
+              className="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none cursor-pointer"
+            >
+              <option value="percentage">% Off</option>
+              <option value="flat">LKR Off</option>
+            </select>
+            <input
+              type="number"
+              min={0}
+              placeholder="0"
+              value={promoDiscount?.value || ''}
+              onChange={(e) => onPromoDiscountChange(promoDiscount?.type || 'percentage', e.target.value !== '' ? Number(e.target.value) : 0)}
+              className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-100 font-mono outline-none focus:border-violet-500/50"
+            />
+          </div>
+        </div>
+      )}
 
       {/* ── Order summary ─────────────────────────────────────────── */}
       {!isEmpty && (

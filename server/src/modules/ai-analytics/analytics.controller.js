@@ -22,6 +22,8 @@ const Prediction  = require('./prediction.model');
 const ChatbotLog  = require('./chatbotLog.model');
 const Invoice     = require('../billing/invoice.model');
 const Product     = require('../inventory/product.model');
+const Employee    = require('../employees/employee.model');
+const Payroll     = require('../employees/payroll.model');
 const asyncHandler       = require('../../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../../utils/responseFormatter');
 const { v4: uuidv4 }     = require('uuid');
@@ -277,7 +279,16 @@ const processChat = asyncHandler(async (req, res) => {
   const lowStockProducts = await Product.find({ 
     isActive: true,
     $expr: { $lte: ['$quantityInStock', '$lowStockThreshold'] } 
-  }).select('name quantityInStock lowStockThreshold');
+  }).select('name quantityInStock lowStockThreshold sku category');
+
+  // High Stock Items (abundance)
+  const highStockProducts = await Product.find({
+    isActive: true,
+    quantityInStock: { $gt: 0 }
+  })
+  .sort({ quantityInStock: -1 })
+  .limit(10)
+  .select('name quantityInStock lowStockThreshold sku category');
 
   // Voided Invoices
   const voidedCount = await Invoice.countDocuments({ 
@@ -285,15 +296,111 @@ const processChat = asyncHandler(async (req, res) => {
     isVoided: true 
   });
 
+  // Payroll Aggregation for current month
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+  const payrollRecords = await Payroll.find({
+    periodStart: { $gte: startOfMonth },
+    periodEnd: { $lte: endOfMonth }
+  }).populate('employeeId', 'firstName lastName employeeId');
+
+  const totalPayrollExpenses = payrollRecords.reduce((sum, p) => sum + (p.grossPay || 0), 0);
+
+  // Workforce Efficiency Profile / ROI
+  const employeeEfficiency = {};
+  for (const record of payrollRecords) {
+    if (record.employeeId) {
+      const empId = record.employeeId._id.toString();
+      const empName = `${record.employeeId.firstName} ${record.employeeId.lastName}`;
+      if (!employeeEfficiency[empId]) {
+        employeeEfficiency[empId] = {
+          name: empName,
+          employeeId: record.employeeId.employeeId,
+          totalHours: 0,
+          totalGrossPay: 0
+        };
+      }
+      employeeEfficiency[empId].totalHours += record.totalHoursWorked || 0;
+      employeeEfficiency[empId].totalGrossPay += record.grossPay || 0;
+    }
+  }
+
+  const workforceROI = Object.values(employeeEfficiency).map(e => ({
+    name: e.name,
+    employeeId: e.employeeId,
+    totalHoursWorked: e.totalHours,
+    totalPayrollSpent: e.totalGrossPay,
+    roiMetric: e.totalHours > 0 ? (e.totalGrossPay / e.totalHours).toFixed(2) : '0.00'
+  }));
+
+  // Product Sales Velocity (Last 30 days velocity)
+  const startOfVelocityPeriod = new Date();
+  startOfVelocityPeriod.setDate(startOfVelocityPeriod.getDate() - 30);
+
+  const salesVelocity = await Invoice.aggregate([
+    { $match: { isVoided: false, createdAt: { $gte: startOfVelocityPeriod } } },
+    { $unwind: '$lineItems' },
+    {
+      $group: {
+        _id: '$lineItems.productId',
+        name: { $first: '$lineItems.name' },
+        sku: { $first: '$lineItems.sku' },
+        totalQuantitySold: { $sum: '$lineItems.quantity' },
+        totalRevenue: { $sum: '$lineItems.lineTotal' }
+      }
+    },
+    { $sort: { totalQuantitySold: -1 } }
+  ]);
+
+  const fastestMoving = salesVelocity.slice(0, 5);
+  const slowestMoving = salesVelocity.slice(-5).reverse();
+
+  // Predictive Sales Forecast Trend (Daily sales for the last 30 days)
+  const dailySalesTrend = await Invoice.aggregate([
+    { $match: { isVoided: false, createdAt: { $gte: startOfVelocityPeriod } } },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+        totalSales: { $sum: '$grandTotal' },
+        invoiceCount: { $sum: 1 }
+      }
+    },
+    { $sort: { _id: 1 } }
+  ]);
+
   const contextData = {
     todaySales: salesSummary ? salesSummary.totalSales : 0,
     netProfitToday: salesSummary ? salesSummary.netProfit : 0,
     voidedInvoicesToday: voidedCount,
     lowStockItemsCount: lowStockProducts.length,
-    lowStockItemsDetails: lowStockProducts.map(p => `${p.name} (Qty: ${p.quantityInStock}, Threshold: ${p.lowStockThreshold})`)
+    lowStockItemsDetails: lowStockProducts.map(p => `${p.name} (Qty: ${p.quantityInStock}, Threshold: ${p.lowStockThreshold})`),
+    highStockItemsDetails: highStockProducts.map(p => `${p.name} (Qty: ${p.quantityInStock})`),
+    totalPayrollExpenses,
+    workforceROI,
+    productSalesVelocity: {
+      fastestMoving,
+      slowestMoving
+    },
+    predictiveSalesForecast: dailySalesTrend
   };
 
-  const systemInstruction = `You are an elite AI Business Manager and Consultant for a retail store POS/ERP system. You have direct access to the live store data provided in the context. Answer the owner's questions accurately based on this data. Keep answers actionable, professional, and concise. You must fully support English, professional Sinhala, and conversational Singlish based on how the user greets or queries you.
+  const systemInstruction = `You are an elite AI Business Manager and Predictive Consultant for a retail store POS/ERP system. You have direct access to the live store data provided in the context. Answer the owner's questions accurately based on this data. Keep answers actionable, professional, and concise.
+
+STRICT FORMATTING AND LANGUAGE RULES:
+1. LANGUAGE PURITY: 
+   - NEVER mix English letters inside Sinhala words (e.g., absolutely NO "kiyන්න", "kiyනවා", "forecast කියනවා", "predict කරනවා").
+   - Respond in either PURE, clean Sinhala script OR PURE, natural Singlish (e.g., "Labana mase sales forecast eka mehemai"). Do NOT blend scripts or characters within the same word.
+2. METRICS & DATES FORMATTING:
+   - Every single monetary amount MUST be presented in Sri Lankan Rupees, formatted as bold markdown (e.g., **Rs. 13,050.00**).
+   - Every date or date range must be formatted in bold markdown (e.g., **2026-06-18**).
+3. STRUCTURAL HIERARCHY (NO DENSE PARAGRAPHS):
+   - Ban dense paragraphs for list data or metrics. Every single data point, metric, or date configuration MUST be on a brand-new line starting with a clear bullet point or emoji (e.g., "• **2026-06-13**: **Rs. 13,050.00** (Highest Forecast)").
+   - Structure your output as follows:
+     a) A clean header summary at the top.
+     b) A bulleted/emoji list breakdown of metrics/data.
+     c) A brief, 1-line actionable advice or action plan at the bottom.
 
 LIVE CONTEXT:
 ${JSON.stringify(contextData, null, 2)}`;
@@ -306,12 +413,54 @@ ${JSON.stringify(contextData, null, 2)}`;
     if (!apiKey || apiKey === 'your_openai_or_openrouter_api_key_here') {
       console.log(`[AI DIAGNOSTICS] No valid AI_CHAT_API_KEY provided. Using local mock fallback.`);
       
-      // Generate a mock response based on the actual DB context
-      responseText = `(Mock AI Response) Here is your store summary:\n` +
-        `- Today's Sales: $${contextData.todaySales.toFixed(2)}\n` +
-        `- Net Profit: $${contextData.netProfitToday.toFixed(2)}\n` +
-        `- Low Stock Items: ${contextData.lowStockItemsCount}\n\n` +
-        `To enable real AI, please update AI_CHAT_API_KEY in your .env file.`;
+      const text = content.toLowerCase();
+      if (text.includes('predict') || text.includes('forecast') || text.includes('permana') || text.includes('issarahata') || text.includes('අනාගත') || text.includes('කලින් කිය')) {
+        const forecastTotal = contextData.predictiveSalesForecast.reduce((sum, d) => sum + d.totalSales, 0);
+        const avgDailySales = contextData.predictiveSalesForecast.length > 0 ? (forecastTotal / contextData.predictiveSalesForecast.length) : 0;
+        const predictedNextDay = avgDailySales * 1.05;
+        
+        responseText = `**Predictive Sales Forecast (විකුණුම් පුරෝකථනය)**:\n\n` +
+          `පසුගිය දිනවල විකුණුම් රටාව අනුව ඉදිරි දින සඳහා පුරෝකථනය මෙසේය:\n` +
+          `* **Predictive Sales Trend**: පසුගිය දින 30ක දෛනික සාමාන්‍ය විකුණුම් අගය **Rs. ${avgDailySales.toFixed(2)}** වේ.\n` +
+          `* **Demand Outlook**: ඉදිරි දින සඳහා පුරෝකථනය කර ඇති විකුණුම් ප්‍රමාණය (5% වර්ධනයක් සහිතව) **Rs. ${predictedNextDay.toFixed(2)}** පමණ වේ.\n` +
+          `* **Stock Alert**: ඔබේ වේගයෙන්ම අලෙවි වන භාණ්ඩවල තොග මට්ටම් ප්‍රමාණවත්දැයි පරීක්ෂා කර ගන්න.`;
+      } else if (text.includes('payroll') || text.includes('workforce') || text.includes('spend') || text.includes('employee') || text.includes('සේවක') || text.includes('වැටුප්') || text.includes('වියදම්')) {
+        const employeeProfilesText = contextData.workforceROI.map(emp => 
+          `* **${emp.name}** (${emp.employeeId}): වැඩකල පැය ගණන: **${emp.totalHoursWorked} hrs**, වැටුප් පිරිවැය: **Rs. ${emp.totalPayrollSpent.toFixed(2)}** (ROI: Rs. ${emp.roiMetric}/hr)`
+        ).join('\n');
+        
+        responseText = `**Workforce Spending & ROI Profile (සේවක වැටුප් සහ කාර්යක්ෂමතාව)**:\n\n` +
+          `මේ මාසයේ සේවක වැටුප් සහ සේවක කාර්යක්ෂමතාව පිළිබඳ වාර්තාව මෙන්න:\n` +
+          `* **Total Payroll Expenses**: මේ මාසයේ මුළු වැටුප් පිරිවැය **Rs. ${contextData.totalPayrollExpenses.toFixed(2)}** වේ.\n` +
+          `* **Employee Efficiency Breakdown**:\n${employeeProfilesText || '* කිසිදු සේවක වැටුප් වාර්තාවක් හමු නොවිණි.'}\n` +
+          `* **Workforce Insights**: සේවකයන්ගේ දායකත්වය ඔබේ ව්‍යාපාරයේ විකුණුම් හා සැසඳීමේදී ROI අගය ඉතා ඉහළ මට්ටමක පවතී.`;
+      } else if (text.includes('top') || text.includes('best') || text.includes('moving') || text.includes('fast') || text.includes('slow') || text.includes('විකුණන') || text.includes('වේගයෙන්') || text.includes('අඩුම')) {
+        const fastItemsText = contextData.productSalesVelocity.fastestMoving.map(item => 
+          `* **${item.name}** (SKU: ${item.sku}): අලෙවි වූ ප්‍රමාණය: **${item.totalQuantitySold} units**, උපයා ඇති ආදායම: **Rs. ${item.totalRevenue.toFixed(2)}**`
+        ).join('\n');
+        
+        const slowItemsText = contextData.productSalesVelocity.slowestMoving.map(item => 
+          `* **${item.name}** (SKU: ${item.sku}): අලෙවි වූ ප්‍රමාණය: **${item.totalQuantitySold} units**, උපයා ඇති ආදායම: **Rs. ${item.totalRevenue.toFixed(2)}**`
+        ).join('\n');
+        
+        responseText = `**Product Sales Velocity Breakdown (භාණ්ඩ අලෙවි වේගය)**:\n\n` +
+          `**Fastest Moving Items (වේගයෙන්ම අලෙවි වන භාණ්ඩ)**:\n` +
+          `${fastItemsText || '* දත්ත නොමැත.'}\n\n` +
+          `**Slowest Moving Items (අඩුවෙන්ම අලෙවි වන භාණ්ඩ)**:\n` +
+          `${slowItemsText || '* දත්ත නොමැත.'}\n\n` +
+          `* **Recommendation**: වේගයෙන්ම අලෙවි වන භාණ්ඩවල තොග අවසන් වීමට පෙර නැවත ඇණවුම් (Reorder) කරන්න. අඩුවෙන්ම අලෙවි වන භාණ්ඩ සඳහා විශේෂ වට්ටම් ලබා දීමට සලකා බලන්න.`;
+      } else {
+        responseText = `**Smart POS Analytics Consultant (Singlish/Sinhala Mock Session)**\n\n` +
+          `ආයුබෝවන්! මම ඔබේ predictive business consultant. අද දවසේ ව්‍යාපාරික තත්ත්වය මෙන්න:\n` +
+          `* **Today's Sales**: Rs. ${contextData.todaySales.toFixed(2)}\n` +
+          `* **Net Profit Today**: Rs. ${contextData.netProfitToday.toFixed(2)}\n` +
+          `* **Low Stock Items Alert**: භාණ්ඩ **${contextData.lowStockItemsCount}**ක් තොග මට්ටම අවම මට්ටමේ පවතී.\n\n` +
+          `ඔබට පහත දේවල් ගැන විමසිය හැක:\n` +
+          `1. **Predictive Sales Forecast** (ඉදිරි දින සඳහා විකුණුම් පුරෝකථනය)\n` +
+          `2. **Workforce Spending & ROI** (සේවක වැටුප් වියදම් සහ පැය ගණන)\n` +
+          `3. **Product Sales Velocity** (වේගයෙන්ම සහ අඩුවෙන්ම අලෙවි වන භාණ්ඩ)\n\n` +
+          `To enable real AI, please update AI_CHAT_API_KEY in your .env file.`;
+      }
     } else {
       const maskedKey = apiKey.length > 5 ? `${apiKey.substring(0, 4)}... (Length: ${apiKey.length})` : apiKey;
       console.log(`[AI DIAGNOSTICS] Read AI_CHAT_API_KEY from env:`, maskedKey);

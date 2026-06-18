@@ -141,12 +141,26 @@ const getProductByBarcode = asyncHandler(async (req, res) => {
  * @desc  Update a product
  */
 const updateProduct = asyncHandler(async (req, res) => {
-  // If price changes, push to priceHistory audit trail
   const existing = await Product.findById(req.params.id);
   if (!existing) {
     return sendError(res, { statusCode: 404, message: 'Product not found.' });
   }
 
+  // If a supplierId is provided, sync the supplier snapshot
+  if (req.body.supplier?.supplierId) {
+    const supplierDoc = await Supplier.findById(req.body.supplier.supplierId);
+    if (!supplierDoc) {
+      return sendError(res, { statusCode: 404, message: 'Supplier not found.' });
+    }
+    req.body.supplier = {
+      supplierId: supplierDoc._id,
+      name:       supplierDoc.name,
+      phone:      supplierDoc.phone,
+      email:      supplierDoc.email,
+    };
+  }
+
+  // If price changes, push to priceHistory audit trail
   if (req.body.sellingPrice && req.body.sellingPrice !== existing.sellingPrice) {
     req.body.$push = {
       priceHistory: {

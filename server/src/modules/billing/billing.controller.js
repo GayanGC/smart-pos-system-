@@ -41,10 +41,24 @@ const deductStock = async (lineItems, session) => {
 //  @access  Private (cashier / admin)
 // ═══════════════════════════════════════════════════════════════════════════
 const createInvoice = asyncHandler(async (req, res) => {
-  const { lineItems, paymentMethod, amountPaid, ...rest } = req.body;
+  const { lineItems, paymentMethod, amountPaid, promoDiscount, ...rest } = req.body;
 
   if (!lineItems || lineItems.length === 0) {
     return sendError(res, { statusCode: 400, message: 'At least one line item is required.' });
+  }
+
+  // ── Verify inventory stock levels to prevent negative stock ────────────────
+  for (const item of lineItems) {
+    const product = await Product.findById(item.productId);
+    if (!product || !product.isActive) {
+      return sendError(res, { statusCode: 404, message: `Product "${item.name}" not found or inactive.` });
+    }
+    if (product.quantityInStock < item.quantity) {
+      return sendError(res, {
+        statusCode: 400,
+        message: `Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`
+      });
+    }
   }
 
   // ── Generate invoice number ──────────────────────────────────────────────
@@ -52,18 +66,36 @@ const createInvoice = asyncHandler(async (req, res) => {
   const invoiceNumber = generateInvoiceNumber(count);
 
   // ── Compute totals from line items ────────────────────────────────────────
-  let subTotal = 0, totalTax = 0, totalDiscount = 0;
+  let subTotal = 0;
+  let totalItemDiscount = 0;
+  let totalTax = 0;
+
   const processedItems = lineItems.map((item) => {
-    const taxAmount  = (item.unitPrice * item.quantity) * ((item.taxRate || 0) / 100);
-    const discount   = item.discount || 0;
-    const lineTotal  = (item.unitPrice * item.quantity) + taxAmount - discount;
-    subTotal      += item.unitPrice * item.quantity;
-    totalTax      += taxAmount;
-    totalDiscount += discount;
-    return { ...item, taxAmount, lineTotal };
+    const itemSubtotal = item.unitPrice * item.quantity;
+    const discount = Number(item.discount) || 0;
+    const taxAmount = (itemSubtotal - discount) * ((item.taxRate || 0) / 100);
+    const lineTotal = itemSubtotal - discount + taxAmount;
+
+    subTotal += itemSubtotal;
+    totalItemDiscount += discount;
+    totalTax += taxAmount;
+
+    return { ...item, discount, taxAmount, lineTotal };
   });
 
-  const grandTotal = subTotal + totalTax - totalDiscount;
+  // Calculate cart-wide promo discount
+  let cartPromoDiscount = 0;
+  if (promoDiscount && promoDiscount.value > 0) {
+    if (promoDiscount.type === 'percentage') {
+      cartPromoDiscount = parseFloat((subTotal * (Number(promoDiscount.value) / 100)).toFixed(2));
+    } else if (promoDiscount.type === 'flat') {
+      cartPromoDiscount = Number(promoDiscount.value);
+    }
+  }
+
+  const totalDiscount = totalItemDiscount + cartPromoDiscount;
+  const grandTotal = Math.max(0, subTotal + totalTax - totalDiscount);
+  const finalTotal = grandTotal;
   const changeDue  = amountPaid > grandTotal ? amountPaid - grandTotal : 0;
 
   // ── Create invoice document ───────────────────────────────────────────────
@@ -76,6 +108,7 @@ const createInvoice = asyncHandler(async (req, res) => {
     totalTax,
     totalDiscount,
     grandTotal,
+    finalTotal,
     amountPaid,
     changeDue,
     paymentMethod,
@@ -299,18 +332,37 @@ const syncOfflineInvoices = asyncHandler(async (req, res) => {
       }
 
       // ── Compute totals ───────────────────────────────────────────────────
-      let subTotal = 0, totalTax = 0, totalDiscount = 0;
+      let subTotal = 0;
+      let totalItemDiscount = 0;
+      let totalTax = 0;
+
       const processedItems = (offlineInvoice.lineItems || []).map((item) => {
-        const taxAmount  = (item.unitPrice * item.quantity) * ((item.taxRate || 0) / 100);
-        const discount   = item.discount || 0;
-        const lineTotal  = (item.unitPrice * item.quantity) + taxAmount - discount;
-        subTotal      += item.unitPrice * item.quantity;
-        totalTax      += taxAmount;
-        totalDiscount += discount;
-        return { ...item, taxAmount, lineTotal };
+        const itemSubtotal = item.unitPrice * item.quantity;
+        const discount = Number(item.discount) || 0;
+        const taxAmount = (itemSubtotal - discount) * ((item.taxRate || 0) / 100);
+        const lineTotal = itemSubtotal - discount + taxAmount;
+
+        subTotal += itemSubtotal;
+        totalItemDiscount += discount;
+        totalTax += taxAmount;
+
+        return { ...item, discount, taxAmount, lineTotal };
       });
 
-      const grandTotal = subTotal + totalTax - totalDiscount;
+      // Calculate cart-wide promo discount
+      let cartPromoDiscount = 0;
+      const promoDiscount = offlineInvoice.promoDiscount;
+      if (promoDiscount && promoDiscount.value > 0) {
+        if (promoDiscount.type === 'percentage') {
+          cartPromoDiscount = parseFloat((subTotal * (Number(promoDiscount.value) / 100)).toFixed(2));
+        } else if (promoDiscount.type === 'flat') {
+          cartPromoDiscount = Number(promoDiscount.value);
+        }
+      }
+
+      const totalDiscount = totalItemDiscount + cartPromoDiscount;
+      const grandTotal = Math.max(0, subTotal + totalTax - totalDiscount);
+      const finalTotal = grandTotal;
 
       // ── Save to DB ───────────────────────────────────────────────────────
       // Destructure out any client-side fields that must not override server values
@@ -327,6 +379,7 @@ const syncOfflineInvoices = asyncHandler(async (req, res) => {
         totalTax,
         totalDiscount,
         grandTotal,
+        finalTotal,
         isOfflineCreated: true,
         offlineCreatedAt: offlineInvoice.createdAt
           ? new Date(offlineInvoice.createdAt)
@@ -553,7 +606,31 @@ const getDashboard = asyncHandler(async (req, res) => {
   });
 });
 
+const { generateDailyReportData, sendDailyReportEmail } = require('../../utils/emailReportService');
+
+/**
+ * @desc  Manually trigger daily EOD email report dispatch
+ * @route POST /api/billing/reports/daily
+ * @access Private (admin/manager)
+ */
+const triggerDailyReportEmail = asyncHandler(async (req, res) => {
+  try {
+    const reportData = await generateDailyReportData();
+    const result = await sendDailyReportEmail(reportData);
+    return sendSuccess(res, {
+      data: result,
+      message: 'Daily EOD report email dispatched successfully.'
+    });
+  } catch (err) {
+    return sendError(res, {
+      statusCode: 500,
+      message: `Failed to dispatch EOD report email: ${err.message}`
+    });
+  }
+});
+
 module.exports = {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
+  triggerDailyReportEmail,
 };

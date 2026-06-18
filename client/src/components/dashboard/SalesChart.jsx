@@ -15,7 +15,7 @@ import LoadingSpinner from '../common/LoadingSpinner'
 /* ── Custom Tooltip ─────────────────────────────────────────────────────── */
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
-  const fmt = (v) => `$${Number(v ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  const fmt = (v) => `Rs. ${Number(v ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   return (
     <div className="glass-card p-3 space-y-1 !rounded-xl text-sm shadow-2xl border-slate-700/60">
       <p className="text-slate-400 text-xs font-medium mb-2">{label}</p>
@@ -147,7 +147,7 @@ export default function SalesChart({ days = 7 }) {
             tick={{ fill: '#64748b', fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}`}
+            tickFormatter={(v) => `Rs. ${v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}`}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend

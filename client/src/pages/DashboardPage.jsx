@@ -48,7 +48,7 @@ const icons = {
 }
 
 const fmt = (n) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0)
+  'Rs. ' + (n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 /* ══════════════════════════════════════════════════════════════════════════
    Component

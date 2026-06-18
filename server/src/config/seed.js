@@ -99,21 +99,21 @@ const seedDB = async () => {
     expiryLater.setDate(today.getDate() + 180);
 
     const productsData = [
-      { name: 'Organic Bananas (Bunch)', sku: 'BAN-01', barcode: '1000000001', costPrice: 1.5, sellingPrice: 2.99, qty: 50, category: 'Produce', supp: supplier2 },
-      { name: 'Whole Milk 1 Gallon', sku: 'MLK-01', barcode: '1000000002', costPrice: 2.0, sellingPrice: 3.5, qty: 4, lowThreshold: 5, category: 'Dairy', supp: supplier2, expiry: expirySoon }, // Low stock & expiring soon
-      { name: 'Artisan Sourdough Bread', sku: 'BRD-01', barcode: '1000000003', costPrice: 2.5, sellingPrice: 5.0, qty: 2, lowThreshold: 10, category: 'Bakery', supp: supplier2, expiry: expirySoon }, // Low stock & expiring soon
-      { name: 'Premium Coffee Beans 1lb', sku: 'COF-01', barcode: '1000000004', costPrice: 8.0, sellingPrice: 14.99, qty: 30, category: 'Pantry', supp: supplier1 },
-      { name: 'Olive Oil Extra Virgin 500ml', sku: 'OIL-01', barcode: '1000000005', costPrice: 4.5, sellingPrice: 9.99, qty: 40, category: 'Pantry', supp: supplier1 },
-      { name: 'Sea Salt 1lb', sku: 'SLT-01', barcode: '1000000006', costPrice: 1.0, sellingPrice: 2.5, qty: 100, category: 'Pantry', supp: supplier1 },
-      { name: 'Dark Chocolate Bar 70%', sku: 'CHO-01', barcode: '1000000007', costPrice: 1.5, sellingPrice: 3.0, qty: 60, category: 'Snacks', supp: supplier1 },
-      { name: 'Mixed Nuts 16oz', sku: 'NUT-01', barcode: '1000000008', costPrice: 5.0, sellingPrice: 8.99, qty: 25, category: 'Snacks', supp: supplier1 },
-      { name: 'Sparkling Water 12-Pack', sku: 'WAT-01', barcode: '1000000009', costPrice: 3.0, sellingPrice: 5.99, qty: 50, category: 'Beverages', supp: supplier1 },
-      { name: 'Green Tea Bags 50ct', sku: 'TEA-01', barcode: '1000000010', costPrice: 2.5, sellingPrice: 4.5, qty: 40, category: 'Beverages', supp: supplier1 },
-      { name: 'Paper Towels 6-Roll', sku: 'PTW-01', barcode: '1000000011', costPrice: 4.0, sellingPrice: 7.99, qty: 15, category: 'Household', supp: supplier1 },
-      { name: 'Dish Soap 24oz', sku: 'DSP-01', barcode: '1000000012', costPrice: 1.8, sellingPrice: 3.49, qty: 35, category: 'Household', supp: supplier1 },
-      { name: 'Laundry Detergent 64oz', sku: 'DET-01', barcode: '1000000013', costPrice: 6.0, sellingPrice: 11.99, qty: 20, category: 'Household', supp: supplier1 },
-      { name: 'Avocados (Bag of 4)', sku: 'AVO-01', barcode: '1000000014', costPrice: 3.0, sellingPrice: 5.5, qty: 12, category: 'Produce', supp: supplier2 },
-      { name: 'Free-Range Eggs 1 Dozen', sku: 'EGG-01', barcode: '1000000015', costPrice: 2.5, sellingPrice: 4.99, qty: 30, category: 'Dairy', supp: supplier2, expiry: expiryLater },
+      { name: 'Organic Bananas (Bunch)', sku: 'BAN-01', barcode: '1000000001', costPrice: 150.0, sellingPrice: 300.0, qty: 50, category: 'Produce', supp: supplier2 },
+      { name: 'Whole Milk 1 Gallon', sku: 'MLK-01', barcode: '1000000002', costPrice: 200.0, sellingPrice: 350.0, qty: 4, lowThreshold: 5, category: 'Dairy', supp: supplier2, expiry: expirySoon }, // Low stock & expiring soon
+      { name: 'Artisan Sourdough Bread', sku: 'BRD-01', barcode: '1000000003', costPrice: 250.0, sellingPrice: 500.0, qty: 2, lowThreshold: 10, category: 'Bakery', supp: supplier2, expiry: expirySoon }, // Low stock & expiring soon
+      { name: 'Premium Coffee Beans 1lb', sku: 'COF-01', barcode: '1000000004', costPrice: 800.0, sellingPrice: 1500.0, qty: 30, category: 'Pantry', supp: supplier1 },
+      { name: 'Olive Oil Extra Virgin 500ml', sku: 'OIL-01', barcode: '1000000005', costPrice: 450.0, sellingPrice: 1000.0, qty: 40, category: 'Pantry', supp: supplier1 },
+      { name: 'Sea Salt 1lb', sku: 'SLT-01', barcode: '1000000006', costPrice: 100.0, sellingPrice: 250.0, qty: 100, category: 'Pantry', supp: supplier1 },
+      { name: 'Dark Chocolate Bar 70%', sku: 'CHO-01', barcode: '1000000007', costPrice: 150.0, sellingPrice: 300.0, qty: 60, category: 'Snacks', supp: supplier1 },
+      { name: 'Mixed Nuts 16oz', sku: 'NUT-01', barcode: '1000000008', costPrice: 500.0, sellingPrice: 900.0, qty: 25, category: 'Snacks', supp: supplier1 },
+      { name: 'Sparkling Water 12-Pack', sku: 'WAT-01', barcode: '1000000009', costPrice: 300.0, sellingPrice: 600.0, qty: 50, category: 'Beverages', supp: supplier1 },
+      { name: 'Green Tea Bags 50ct', sku: 'TEA-01', barcode: '1000000010', costPrice: 250.0, sellingPrice: 450.0, qty: 40, category: 'Beverages', supp: supplier1 },
+      { name: 'Paper Towels 6-Roll', sku: 'PTW-01', barcode: '1000000011', costPrice: 400.0, sellingPrice: 800.0, qty: 15, category: 'Household', supp: supplier1 },
+      { name: 'Dish Soap 24oz', sku: 'DSP-01', barcode: '1000000012', costPrice: 180.0, sellingPrice: 350.0, qty: 35, category: 'Household', supp: supplier1 },
+      { name: 'Laundry Detergent 64oz', sku: 'DET-01', barcode: '1000000013', costPrice: 600.0, sellingPrice: 1200.0, qty: 20, category: 'Household', supp: supplier1 },
+      { name: 'Avocados (Bag of 4)', sku: 'AVO-01', barcode: '1000000014', costPrice: 300.0, sellingPrice: 550.0, qty: 12, category: 'Produce', supp: supplier2 },
+      { name: 'Free-Range Eggs 1 Dozen', sku: 'EGG-01', barcode: '1000000015', costPrice: 250.0, sellingPrice: 500.0, qty: 30, category: 'Dairy', supp: supplier2, expiry: expiryLater },
     ];
 
     const products = [];

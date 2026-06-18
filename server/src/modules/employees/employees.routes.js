@@ -22,7 +22,7 @@
 const router = require('express').Router();
 const {
   getEmployees, createEmployee, getEmployeeById, updateEmployee, deleteEmployee,
-  processQrScan, getAttendance,
+  clockIn, clockOut, getAttendance,
   generatePayroll, getPayroll, markPayrollAsPaid,
 } = require('./employees.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
@@ -31,8 +31,9 @@ const { protect, authorize } = require('../../middleware/auth.middleware');
 router.use(protect);
 
 // ── Attendance (before /:id to avoid conflicts) ───────────────────────────
-// QR scan endpoint is accessible to any authenticated user (terminal kiosk)
-router.post('/attendance/scan', processQrScan);
+// QR clock-in/out endpoints accessible to any authenticated user (terminal kiosk)
+router.post('/attendance/clock-in', clockIn);
+router.post('/attendance/clock-out', clockOut);
 router.get(
   '/attendance',
   authorize('super_admin', 'admin', 'manager'),

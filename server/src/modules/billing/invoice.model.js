@@ -79,6 +79,7 @@ const InvoiceSchema = new mongoose.Schema(
     totalDiscount: { type: Number, default: 0,     min: 0 },
     totalTax:      { type: Number, default: 0,     min: 0 },
     grandTotal:    { type: Number, required: true, min: 0 }, // final payable amount
+    finalTotal:    { type: Number, required: true, min: 0 },
     amountPaid:    { type: Number, default: 0,     min: 0 },
     changeDue:     { type: Number, default: 0,     min: 0 }, // cash change returned
 

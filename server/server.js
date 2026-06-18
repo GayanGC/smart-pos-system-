@@ -33,6 +33,15 @@ const startServer = async () => {
     logger.info(`🚀  Server running in [${process.env.NODE_ENV}] mode on port ${PORT}`);
     logger.info(`📡  API base URL : http://localhost:${PORT}/api`);
     logger.info(`❤️   Health check : http://localhost:${PORT}/health`);
+    
+    // Start EOD report email scheduler
+    try {
+      const { startReportScheduler } = require('./src/utils/emailReportService');
+      startReportScheduler();
+      logger.info('⏰  EOD Email Report Scheduler started.');
+    } catch (err) {
+      logger.error('🔴  Failed to start EOD Email Report Scheduler:', err);
+    }
   });
 
   // ── Graceful HTTP server shutdown ────────────────────────────────────────

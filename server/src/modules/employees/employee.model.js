@@ -71,10 +71,10 @@ const EmployeeSchema = new mongoose.Schema(
     // ── QR Code for attendance clock-in / clock-out ──────────────────────────
     // The QR code value is the employee's unique `employeeId`.
     // Scanning it calls the attendance endpoint.
-    qrCodeValue:  { type: String, trim: true },
+    qrCodeToken:  { type: String, trim: true },
 
     // ── Payroll ───────────────────────────────────────────────────────────────
-    baseSalary: {
+    hourlyRate: {
       type:    Number,
       default: 0,
       min:     0,

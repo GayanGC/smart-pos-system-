@@ -26,24 +26,51 @@ import { useAuth } from '../context/AuthContext'
 ══════════════════════════════════════════════════════════════════════════ */
 
 /** Re-compute subTotal, totalDiscount, totalTax, grandTotal from current items */
-function computeTotals(items) {
+function computeTotals(items, promoDiscount = { type: 'percentage', value: 0 }) {
   let subTotal = 0, totalDiscount = 0, totalTax = 0
   const processed = items.map((item) => {
-    const lineBase   = item.unitPrice * item.quantity
-    const discAmt    = lineBase * (item.discount / 100)
-    const taxAmt     = (lineBase - discAmt) * ((item.taxRate || 0) / 100)
-    const lineTotal  = lineBase - discAmt + taxAmt
+    const priceToUse = item.customPrice !== undefined && item.customPrice !== null && item.customPrice !== ''
+      ? Number(item.customPrice)
+      : item.unitPrice
+      
+    const lineBase = priceToUse * item.quantity
+    
+    let discAmt = 0
+    if (item.flatDiscount !== undefined && item.flatDiscount !== null && item.flatDiscount !== '') {
+      discAmt = Number(item.flatDiscount)
+    } else {
+      discAmt = lineBase * (item.discount / 100)
+    }
+    
+    const taxAmt = Math.max(0, lineBase - discAmt) * ((item.taxRate || 0) / 100)
+    const lineTotal = Math.max(0, lineBase - discAmt + taxAmt)
+    
     subTotal      += lineBase
     totalDiscount += discAmt
     totalTax      += taxAmt
+    
     return { ...item, lineTotal }
   })
-  const grandTotal = subTotal - totalDiscount + totalTax
-  return { items: processed, subTotal, totalDiscount, totalTax, grandTotal }
+
+  // Calculate cart-wide discount
+  let cartPromoDiscount = 0
+  if (promoDiscount && promoDiscount.value > 0) {
+    if (promoDiscount.type === 'percentage') {
+      cartPromoDiscount = subTotal * (Number(promoDiscount.value) / 100)
+    } else if (promoDiscount.type === 'flat') {
+      cartPromoDiscount = Number(promoDiscount.value)
+    }
+  }
+
+  totalDiscount += cartPromoDiscount
+  const grandTotal = Math.max(0, subTotal - totalDiscount + totalTax)
+
+  return { items: processed, subTotal, totalDiscount, totalTax, grandTotal, promoDiscount }
 }
 
 const INITIAL_CART = {
   items: [], subTotal: 0, totalDiscount: 0, totalTax: 0, grandTotal: 0,
+  promoDiscount: { type: 'percentage', value: 0 }
 }
 
 function cartReducer(state, action) {
@@ -52,33 +79,65 @@ function cartReducer(state, action) {
       const existing = state.items.find((i) => i.productId === action.payload.productId)
       let items
       if (existing) {
+        const nextQty = existing.quantity + 1
+        if (nextQty > action.payload.quantityInStock) {
+          alert(`Cannot add more. Only ${action.payload.quantityInStock} unit(s) of "${action.payload.name}" are in stock.`)
+          return state
+        }
         items = state.items.map((i) =>
           i.productId === action.payload.productId
-            ? { ...i, quantity: i.quantity + 1 }
+            ? { ...i, quantity: nextQty }
             : i
         )
       } else {
+        if (action.payload.quantityInStock <= 0) {
+          alert(`"${action.payload.name}" is out of stock.`)
+          return state
+        }
         items = [...state.items, { ...action.payload, quantity: 1, discount: 0 }]
       }
-      return computeTotals(items)
+      return computeTotals(items, state.promoDiscount)
     }
     case 'REMOVE': {
       const items = state.items.filter((i) => i.productId !== action.productId)
-      return computeTotals(items)
+      return computeTotals(items, state.promoDiscount)
     }
     case 'SET_QTY': {
-      const qty = Math.max(1, action.qty)
+      const existing = state.items.find((i) => i.productId === action.productId)
+      const maxQty = existing ? existing.quantityInStock : 9999
+      const qty = Math.max(1, Math.min(maxQty, action.qty))
+      
+      if (existing && action.qty > maxQty) {
+        alert(`Cannot increase quantity. Only ${maxQty} unit(s) of "${existing.name}" are in stock.`)
+      }
+
       const items = state.items.map((i) =>
         i.productId === action.productId ? { ...i, quantity: qty } : i
       )
-      return computeTotals(items)
+      return computeTotals(items, state.promoDiscount)
     }
     case 'SET_DISCOUNT': {
       const discount = Math.min(100, Math.max(0, action.discount))
       const items = state.items.map((i) =>
         i.productId === action.productId ? { ...i, discount } : i
       )
-      return computeTotals(items)
+      return computeTotals(items, state.promoDiscount)
+    }
+    case 'SET_ITEM_OVERRIDE': {
+      const items = state.items.map((i) =>
+        i.productId === action.productId
+          ? { 
+              ...i, 
+              customPrice: action.customPrice !== '' ? Number(action.customPrice) : undefined, 
+              flatDiscount: action.flatDiscount !== '' ? Number(action.flatDiscount) : undefined 
+            }
+          : i
+      )
+      return computeTotals(items, state.promoDiscount)
+    }
+    case 'SET_PROMO_DISCOUNT': {
+      const promoDiscount = { type: action.promoType, value: action.promoValue }
+      return computeTotals(state.items, promoDiscount)
     }
     case 'CLEAR':
       return INITIAL_CART
@@ -118,6 +177,7 @@ export default function PosPage() {
         barcode:   product.barcode,
         unitPrice: product.sellingPrice,
         taxRate:   product.taxRate || 0,
+        quantityInStock: product.quantityInStock,
       },
     })
   }, [])
@@ -131,21 +191,35 @@ export default function PosPage() {
   const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber }) => {
     setCheckoutLoading(true)
     try {
-      const lineItems = cart.items.map((item) => ({
-        productId: item.productId,
-        name:      item.name,
-        sku:       item.sku,
-        quantity:  item.quantity,
-        unitPrice: item.unitPrice,
-        taxRate:   item.taxRate,
-        discount:  item.lineTotal - (item.unitPrice * item.quantity),
-      }))
+      const lineItems = cart.items.map((item) => {
+        const priceToUse = item.customPrice !== undefined && item.customPrice !== null && item.customPrice !== ''
+          ? Number(item.customPrice)
+          : item.unitPrice
+          
+        let discAmt = 0
+        if (item.flatDiscount !== undefined && item.flatDiscount !== null && item.flatDiscount !== '') {
+          discAmt = Number(item.flatDiscount)
+        } else {
+          discAmt = (priceToUse * item.quantity) * (item.discount / 100)
+        }
+
+        return {
+          productId: item.productId,
+          name:      item.name,
+          sku:       item.sku,
+          quantity:  item.quantity,
+          unitPrice: priceToUse,
+          taxRate:   item.taxRate,
+          discount:  parseFloat(discAmt.toFixed(2)),
+        }
+      })
 
       const invoicePayload = {
         lineItems,
         paymentMethod,
         amountPaid,
         referenceNumber,
+        promoDiscount: cart.promoDiscount,
         offlineRef: uuidv4(), // always generated; used by /sync if later needed
       }
 
@@ -209,8 +283,11 @@ export default function PosPage() {
           totalDiscount={cart.totalDiscount}
           totalTax={cart.totalTax}
           grandTotal={cart.grandTotal}
+          promoDiscount={cart.promoDiscount}
           onQtyChange={handleQtyChange}
           onDiscountChange={handleDiscountChange}
+          onItemOverrideChange={(pid, customPrice, flatDiscount) => dispatch({ type: 'SET_ITEM_OVERRIDE', productId: pid, customPrice, flatDiscount })}
+          onPromoDiscountChange={(promoType, promoValue) => dispatch({ type: 'SET_PROMO_DISCOUNT', promoType, promoValue })}
           onRemove={handleRemove}
           onClear={handleClear}
           onCheckout={() => setIsCheckoutOpen(true)}

@@ -53,8 +53,8 @@ const icons = {
 const adminNavItems = [
   { label: 'Dashboard', to: '/dashboard', icon: icons.dashboard },
   { label: 'POS Terminal', to: '/pos',       icon: icons.pos },
-  { label: 'Inventory',   to: '/inventory',  icon: icons.inventory,  comingSoon: true },
-  { label: 'Employees',   to: '/employees',  icon: icons.employees,  comingSoon: true },
+  { label: 'Inventory',   to: '/inventory',  icon: icons.inventory },
+  { label: 'Employees',   to: '/employees',  icon: icons.employees },
   { label: 'Analytics',   to: '/analytics',  icon: icons.analytics,  comingSoon: true },
 ]
 
