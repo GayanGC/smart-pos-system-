@@ -87,7 +87,7 @@ export default function CartPanel({
               type="number"
               min={0}
               placeholder="0"
-              value={promoDiscount?.value || ''}
+              value={promoDiscount?.value ?? ''}
               onChange={(e) => onPromoDiscountChange(promoDiscount?.type || 'percentage', e.target.value !== '' ? Number(e.target.value) : 0)}
               className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-100 font-mono outline-none focus:border-violet-500/50"
             />

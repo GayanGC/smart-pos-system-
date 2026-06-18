@@ -301,45 +301,49 @@ const processChat = asyncHandler(async (req, res) => {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
-  const payrollRecords = await Payroll.find({
+  const payrollRecords = (await Payroll.find({
     periodStart: { $gte: startOfMonth },
     periodEnd: { $lte: endOfMonth }
-  }).populate('employeeId', 'firstName lastName employeeId');
+  }).populate('employeeId', 'firstName lastName employeeId')) || [];
 
   const totalPayrollExpenses = payrollRecords.reduce((sum, p) => sum + (p.grossPay || 0), 0);
 
   // Workforce Efficiency Profile / ROI
   const employeeEfficiency = {};
   for (const record of payrollRecords) {
-    if (record.employeeId) {
+    if (record && record.employeeId && record.employeeId._id) {
       const empId = record.employeeId._id.toString();
-      const empName = `${record.employeeId.firstName} ${record.employeeId.lastName}`;
+      const empName = `${record.employeeId.firstName || ''} ${record.employeeId.lastName || ''}`.trim() || 'Unknown Employee';
       if (!employeeEfficiency[empId]) {
         employeeEfficiency[empId] = {
           name: empName,
-          employeeId: record.employeeId.employeeId,
+          employeeId: record.employeeId.employeeId || 'N/A',
           totalHours: 0,
           totalGrossPay: 0
         };
       }
-      employeeEfficiency[empId].totalHours += record.totalHoursWorked || 0;
-      employeeEfficiency[empId].totalGrossPay += record.grossPay || 0;
+      employeeEfficiency[empId].totalHours += Number(record.totalHoursWorked) || 0;
+      employeeEfficiency[empId].totalGrossPay += Number(record.grossPay) || 0;
     }
   }
 
-  const workforceROI = Object.values(employeeEfficiency).map(e => ({
-    name: e.name,
-    employeeId: e.employeeId,
-    totalHoursWorked: e.totalHours,
-    totalPayrollSpent: e.totalGrossPay,
-    roiMetric: e.totalHours > 0 ? (e.totalGrossPay / e.totalHours).toFixed(2) : '0.00'
-  }));
+  const workforceROI = Object.values(employeeEfficiency).map(e => {
+    const totalHours = Number(e.totalHours) || 0;
+    const totalGrossPay = Number(e.totalGrossPay) || 0;
+    return {
+      name: e.name,
+      employeeId: e.employeeId,
+      totalHoursWorked: totalHours,
+      totalPayrollSpent: totalGrossPay,
+      roiMetric: totalHours > 0 ? (totalGrossPay / totalHours).toFixed(2) : '0.00'
+    };
+  });
 
   // Product Sales Velocity (Last 30 days velocity)
   const startOfVelocityPeriod = new Date();
   startOfVelocityPeriod.setDate(startOfVelocityPeriod.getDate() - 30);
 
-  const salesVelocity = await Invoice.aggregate([
+  const salesVelocity = (await Invoice.aggregate([
     { $match: { isVoided: false, createdAt: { $gte: startOfVelocityPeriod } } },
     { $unwind: '$lineItems' },
     {
@@ -352,13 +356,13 @@ const processChat = asyncHandler(async (req, res) => {
       }
     },
     { $sort: { totalQuantitySold: -1 } }
-  ]);
+  ])) || [];
 
   const fastestMoving = salesVelocity.slice(0, 5);
   const slowestMoving = salesVelocity.slice(-5).reverse();
 
   // Predictive Sales Forecast Trend (Daily sales for the last 30 days)
-  const dailySalesTrend = await Invoice.aggregate([
+  const dailySalesTrend = (await Invoice.aggregate([
     { $match: { isVoided: false, createdAt: { $gte: startOfVelocityPeriod } } },
     {
       $group: {
@@ -368,22 +372,25 @@ const processChat = asyncHandler(async (req, res) => {
       }
     },
     { $sort: { _id: 1 } }
-  ]);
+  ])) || [];
+
+  const todaySalesVal = salesSummary && salesSummary.totalSales ? Number(salesSummary.totalSales) : 0;
+  const netProfitTodayVal = salesSummary && salesSummary.netProfit ? Number(salesSummary.netProfit) : 0;
 
   const contextData = {
-    todaySales: salesSummary ? salesSummary.totalSales : 0,
-    netProfitToday: salesSummary ? salesSummary.netProfit : 0,
-    voidedInvoicesToday: voidedCount,
+    todaySales: todaySalesVal,
+    netProfitToday: netProfitTodayVal,
+    voidedInvoicesToday: Number(voidedCount) || 0,
     lowStockItemsCount: lowStockProducts.length,
-    lowStockItemsDetails: lowStockProducts.map(p => `${p.name} (Qty: ${p.quantityInStock}, Threshold: ${p.lowStockThreshold})`),
-    highStockItemsDetails: highStockProducts.map(p => `${p.name} (Qty: ${p.quantityInStock})`),
-    totalPayrollExpenses,
+    lowStockItemsDetails: lowStockProducts.map(p => `${p.name || 'Unknown'} (Qty: ${p.quantityInStock ?? 0}, Threshold: ${p.lowStockThreshold ?? 0})`),
+    highStockItemsDetails: highStockProducts.map(p => `${p.name || 'Unknown'} (Qty: ${p.quantityInStock ?? 0})`),
+    totalPayrollExpenses: Number(totalPayrollExpenses) || 0,
     workforceROI,
     productSalesVelocity: {
-      fastestMoving,
-      slowestMoving
+      fastestMoving: Array.isArray(fastestMoving) ? fastestMoving : [],
+      slowestMoving: Array.isArray(slowestMoving) ? slowestMoving : []
     },
-    predictiveSalesForecast: dailySalesTrend
+    predictiveSalesForecast: Array.isArray(dailySalesTrend) ? dailySalesTrend : []
   };
 
   const systemInstruction = `You are an elite AI Business Manager and Predictive Consultant for a retail store POS/ERP system. You have direct access to the live store data provided in the context. Answer the owner's questions accurately based on this data. Keep answers actionable, professional, and concise.

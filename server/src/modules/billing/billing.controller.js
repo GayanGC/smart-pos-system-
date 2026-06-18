@@ -24,12 +24,14 @@ const { INVOICE_STATUS }         = require('../../config/constants');
  * @param {string} [session]   Optional Mongoose session for transactions
  */
 const deductStock = async (lineItems, session) => {
-  const ops = lineItems.map((item) => ({
-    updateOne: {
-      filter: { _id: item.productId },
-      update: { $inc: { quantityInStock: -item.quantity } },
-    },
-  }));
+  const ops = lineItems
+    .filter((item) => item.productId)
+    .map((item) => ({
+      updateOne: {
+        filter: { _id: item.productId },
+        update: { $inc: { quantityInStock: -item.quantity } },
+      },
+    }));
   if (ops.length > 0) {
     await Product.bulkWrite(ops, session ? { session } : {});
   }
@@ -49,14 +51,21 @@ const createInvoice = asyncHandler(async (req, res) => {
 
   // ── Verify inventory stock levels to prevent negative stock ────────────────
   for (const item of lineItems) {
-    const product = await Product.findById(item.productId);
-    if (!product || !product.isActive) {
-      return sendError(res, { statusCode: 404, message: `Product "${item.name}" not found or inactive.` });
-    }
-    if (product.quantityInStock < item.quantity) {
+    try {
+      const product = await Product.findById(item.productId);
+      if (!product || !product.isActive) {
+        return sendError(res, { statusCode: 404, message: `Product "${item.name || 'Unknown'}" not found or inactive.` });
+      }
+      if (product.quantityInStock < item.quantity) {
+        return sendError(res, {
+          statusCode: 400,
+          message: `Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`
+        });
+      }
+    } catch (err) {
       return sendError(res, {
         statusCode: 400,
-        message: `Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`
+        message: `Invalid product reference for "${item.name || 'Unknown'}": ${err.message}`
       });
     }
   }
@@ -71,32 +80,51 @@ const createInvoice = asyncHandler(async (req, res) => {
   let totalTax = 0;
 
   const processedItems = lineItems.map((item) => {
-    const itemSubtotal = item.unitPrice * item.quantity;
+    const unitPrice = Number(item.unitPrice) || 0;
+    const quantity = Number(item.quantity) || 0;
     const discount = Number(item.discount) || 0;
-    const taxAmount = (itemSubtotal - discount) * ((item.taxRate || 0) / 100);
-    const lineTotal = itemSubtotal - discount + taxAmount;
+    const taxRate = Number(item.taxRate) || 0;
+
+    const itemSubtotal = parseFloat((unitPrice * quantity).toFixed(2));
+    const taxAmount = parseFloat(((itemSubtotal - discount) * (taxRate / 100)).toFixed(2));
+    const lineTotal = parseFloat((itemSubtotal - discount + taxAmount).toFixed(2));
 
     subTotal += itemSubtotal;
     totalItemDiscount += discount;
     totalTax += taxAmount;
 
-    return { ...item, discount, taxAmount, lineTotal };
+    return { 
+      ...item, 
+      unitPrice, 
+      quantity, 
+      discount, 
+      taxRate, 
+      taxAmount, 
+      lineTotal 
+    };
   });
 
   // Calculate cart-wide promo discount
   let cartPromoDiscount = 0;
-  if (promoDiscount && promoDiscount.value > 0) {
+  if (promoDiscount && Number(promoDiscount.value) > 0) {
+    const val = Number(promoDiscount.value) || 0;
     if (promoDiscount.type === 'percentage') {
-      cartPromoDiscount = parseFloat((subTotal * (Number(promoDiscount.value) / 100)).toFixed(2));
+      cartPromoDiscount = parseFloat((subTotal * (val / 100)).toFixed(2));
     } else if (promoDiscount.type === 'flat') {
-      cartPromoDiscount = Number(promoDiscount.value);
+      cartPromoDiscount = val;
     }
   }
 
-  const totalDiscount = totalItemDiscount + cartPromoDiscount;
-  const grandTotal = Math.max(0, subTotal + totalTax - totalDiscount);
+  subTotal = parseFloat(subTotal.toFixed(2));
+  totalItemDiscount = parseFloat(totalItemDiscount.toFixed(2));
+  totalTax = parseFloat(totalTax.toFixed(2));
+  cartPromoDiscount = parseFloat(cartPromoDiscount.toFixed(2));
+
+  const totalDiscount = parseFloat((totalItemDiscount + cartPromoDiscount).toFixed(2));
+  const grandTotal = Math.max(0, parseFloat((subTotal + totalTax - totalDiscount).toFixed(2)));
   const finalTotal = grandTotal;
-  const changeDue  = amountPaid > grandTotal ? amountPaid - grandTotal : 0;
+  const amountPaidNum = Number(amountPaid) || 0;
+  const changeDue  = amountPaidNum > grandTotal ? parseFloat((amountPaidNum - grandTotal).toFixed(2)) : 0;
 
   // ── Create invoice document ───────────────────────────────────────────────
   const invoice = await Invoice.create({
@@ -337,31 +365,49 @@ const syncOfflineInvoices = asyncHandler(async (req, res) => {
       let totalTax = 0;
 
       const processedItems = (offlineInvoice.lineItems || []).map((item) => {
-        const itemSubtotal = item.unitPrice * item.quantity;
+        const unitPrice = Number(item.unitPrice) || 0;
+        const quantity = Number(item.quantity) || 0;
         const discount = Number(item.discount) || 0;
-        const taxAmount = (itemSubtotal - discount) * ((item.taxRate || 0) / 100);
-        const lineTotal = itemSubtotal - discount + taxAmount;
+        const taxRate = Number(item.taxRate) || 0;
+
+        const itemSubtotal = parseFloat((unitPrice * quantity).toFixed(2));
+        const taxAmount = parseFloat(((itemSubtotal - discount) * (taxRate / 100)).toFixed(2));
+        const lineTotal = parseFloat((itemSubtotal - discount + taxAmount).toFixed(2));
 
         subTotal += itemSubtotal;
         totalItemDiscount += discount;
         totalTax += taxAmount;
 
-        return { ...item, discount, taxAmount, lineTotal };
+        return { 
+          ...item, 
+          unitPrice, 
+          quantity, 
+          discount, 
+          taxRate, 
+          taxAmount, 
+          lineTotal 
+        };
       });
 
       // Calculate cart-wide promo discount
       let cartPromoDiscount = 0;
       const promoDiscount = offlineInvoice.promoDiscount;
-      if (promoDiscount && promoDiscount.value > 0) {
+      if (promoDiscount && Number(promoDiscount.value) > 0) {
+        const val = Number(promoDiscount.value) || 0;
         if (promoDiscount.type === 'percentage') {
-          cartPromoDiscount = parseFloat((subTotal * (Number(promoDiscount.value) / 100)).toFixed(2));
+          cartPromoDiscount = parseFloat((subTotal * (val / 100)).toFixed(2));
         } else if (promoDiscount.type === 'flat') {
-          cartPromoDiscount = Number(promoDiscount.value);
+          cartPromoDiscount = val;
         }
       }
 
-      const totalDiscount = totalItemDiscount + cartPromoDiscount;
-      const grandTotal = Math.max(0, subTotal + totalTax - totalDiscount);
+      subTotal = parseFloat(subTotal.toFixed(2));
+      totalItemDiscount = parseFloat(totalItemDiscount.toFixed(2));
+      totalTax = parseFloat(totalTax.toFixed(2));
+      cartPromoDiscount = parseFloat(cartPromoDiscount.toFixed(2));
+
+      const totalDiscount = parseFloat((totalItemDiscount + cartPromoDiscount).toFixed(2));
+      const grandTotal = Math.max(0, parseFloat((subTotal + totalTax - totalDiscount).toFixed(2)));
       const finalTotal = grandTotal;
 
       // ── Save to DB ───────────────────────────────────────────────────────

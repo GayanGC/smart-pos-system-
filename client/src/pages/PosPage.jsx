@@ -29,18 +29,34 @@ import { useAuth } from '../context/AuthContext'
 function computeTotals(items, promoDiscount = { type: 'percentage', value: 0 }) {
   let subTotal = 0, totalDiscount = 0, totalTax = 0
   const processed = items.map((item) => {
-    const priceToUse = item.customPrice !== undefined && item.customPrice !== null && item.customPrice !== ''
+    let priceToUse = item.customPrice !== undefined && item.customPrice !== null && item.customPrice !== ''
       ? Number(item.customPrice)
       : item.unitPrice
+      
+    if (isNaN(priceToUse) || priceToUse < 0) {
+      priceToUse = item.unitPrice
+    }
       
     const lineBase = priceToUse * item.quantity
     
     let discAmt = 0
     if (item.flatDiscount !== undefined && item.flatDiscount !== null && item.flatDiscount !== '') {
       discAmt = Number(item.flatDiscount)
+      if (isNaN(discAmt) || discAmt < 0) {
+        discAmt = 0
+      }
     } else {
-      discAmt = lineBase * (item.discount / 100)
+      let discPercent = Number(item.discount) || 0
+      if (isNaN(discPercent) || discPercent < 0) {
+        discPercent = 0
+      } else if (discPercent > 100) {
+        discPercent = 100
+      }
+      discAmt = lineBase * (discPercent / 100)
     }
+    
+    // Clamp line-level discount to line total
+    discAmt = Math.min(lineBase, discAmt)
     
     const taxAmt = Math.max(0, lineBase - discAmt) * ((item.taxRate || 0) / 100)
     const lineTotal = Math.max(0, lineBase - discAmt + taxAmt)
@@ -49,21 +65,34 @@ function computeTotals(items, promoDiscount = { type: 'percentage', value: 0 }) 
     totalDiscount += discAmt
     totalTax      += taxAmt
     
-    return { ...item, lineTotal }
+    return { ...item, lineTotal: parseFloat(lineTotal.toFixed(2)) }
   })
 
   // Calculate cart-wide discount
   let cartPromoDiscount = 0
   if (promoDiscount && promoDiscount.value > 0) {
+    let val = Number(promoDiscount.value) || 0
+    if (isNaN(val) || val < 0) {
+      val = 0
+    }
     if (promoDiscount.type === 'percentage') {
-      cartPromoDiscount = subTotal * (Number(promoDiscount.value) / 100)
+      if (val > 100) val = 100
+      cartPromoDiscount = subTotal * (val / 100)
     } else if (promoDiscount.type === 'flat') {
-      cartPromoDiscount = Number(promoDiscount.value)
+      cartPromoDiscount = val
     }
   }
 
+  // Clamp promo discount to remaining subTotal
+  const remainingSub = Math.max(0, subTotal - totalDiscount)
+  cartPromoDiscount = Math.min(remainingSub, cartPromoDiscount)
+
   totalDiscount += cartPromoDiscount
-  const grandTotal = Math.max(0, subTotal - totalDiscount + totalTax)
+
+  subTotal      = parseFloat(subTotal.toFixed(2))
+  totalDiscount = parseFloat(totalDiscount.toFixed(2))
+  totalTax      = parseFloat(totalTax.toFixed(2))
+  const grandTotal = Math.max(0, parseFloat((subTotal - totalDiscount + totalTax).toFixed(2)))
 
   return { items: processed, subTotal, totalDiscount, totalTax, grandTotal, promoDiscount }
 }
