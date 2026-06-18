@@ -95,6 +95,9 @@ app.get('/health', (req, res) => {
   const mongoose = require('mongoose');
   const rawUri = process.env.MONGO_URI || '';
   const obfuscatedUri = rawUri.replace(/:([^@]+)@/, ':******@');
+  const apiKey = process.env.AI_CHAT_API_KEY || '';
+  const isKeyConfigured = apiKey && apiKey !== 'your_openai_or_openrouter_api_key_here';
+  
   res.status(200).json({
     success: true,
     status:  'OK',
@@ -106,6 +109,12 @@ app.get('/health', (req, res) => {
       name: mongoose.connection.name,
       uri: obfuscatedUri,
       host: mongoose.connection.host
+    },
+    aiStatus: {
+      configured: !!isKeyConfigured,
+      model: process.env.AI_CHAT_MODEL || 'not set',
+      baseURL: process.env.AI_CHAT_BASE_URL || 'not set',
+      keyLength: apiKey.length
     }
   });
 });
