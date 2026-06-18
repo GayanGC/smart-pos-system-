@@ -92,12 +92,21 @@ app.use('/api', globalLimiter);
 
 // ─── Health check ─────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
+  const mongoose = require('mongoose');
+  const rawUri = process.env.MONGO_URI || '';
+  const obfuscatedUri = rawUri.replace(/:([^@]+)@/, ':******@');
   res.status(200).json({
     success: true,
     status:  'OK',
     env:     process.env.NODE_ENV,
     uptime:  process.uptime(),
     timestamp: new Date().toISOString(),
+    database: {
+      connected: mongoose.connection.readyState === 1,
+      name: mongoose.connection.name,
+      uri: obfuscatedUri,
+      host: mongoose.connection.host
+    }
   });
 });
 
