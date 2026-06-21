@@ -11,6 +11,10 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   
+  // OCR Upload State
+  const fileInputRef = useRef(null)
+  const [ocrUploading, setOcrUploading] = useState(false)
+  
   // Filtering & Search
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
@@ -105,6 +109,29 @@ export default function InventoryPage() {
     }
   }
 
+  // OCR Upload handler
+  const handleOCRUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setOcrUploading(true);
+    const formData = new FormData();
+    formData.append('invoice', file);
+
+    try {
+      const { data } = await api.post('/inventory/supplier-ocr', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert(`OCR Complete!\nMatched & Updated: ${data.data.matched.length}\nNot Found: ${data.data.notFound.length}`);
+      fetchProducts();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to process invoice OCR.');
+    } finally {
+      setOcrUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
   return (
     <div className="space-y-6 text-slate-200">
       {/* HEADER SECTION */}
@@ -113,12 +140,29 @@ export default function InventoryPage() {
           <h1 className="text-3xl font-extrabold tracking-tight text-white">Inventory Directory</h1>
           <p className="text-slate-400 text-sm">Monitor stock counts, manage alert thresholds, and process product details.</p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl text-sm px-5 py-3 transition-all duration-200 shadow-lg shadow-violet-600/10 flex items-center gap-2 hover:scale-[1.02]"
-        >
-          <span>➕</span> Add Product
-        </button>
+        <div className="flex items-center gap-3">
+          <input 
+            type="file" 
+            accept="image/*" 
+            ref={fileInputRef} 
+            onChange={handleOCRUpload} 
+            className="hidden" 
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={ocrUploading}
+            className="bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white font-semibold rounded-xl text-sm px-5 py-3 transition-all duration-200 border border-slate-700 flex items-center gap-2"
+          >
+            {ocrUploading ? '⏳ Analyzing...' : '🧾 AI OCR Upload'}
+          </button>
+          
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl text-sm px-5 py-3 transition-all duration-200 shadow-lg shadow-violet-600/10 flex items-center gap-2 hover:scale-[1.02]"
+          >
+            <span>➕</span> Add Product
+          </button>
+        </div>
       </div>
 
       {/* SUMMARY CARDS */}

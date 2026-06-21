@@ -83,9 +83,68 @@ export default function ChatDrawer({ isOpen, onClose }) {
   const bottomRef  = useRef(null)
   const inputRef   = useRef(null)
 
+  // ── Voice & Speech API States ────────────────────────────────────────
+  const [isListening, setIsListening] = useState(false)
+  const [voiceMuted, setVoiceMuted] = useState(false)
+  const recognitionRef = useRef(null)
+
+  // ── Initialize Speech Recognition ────────────────────────────────────
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition()
+      recognition.continuous = false
+      recognition.interimResults = false
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript
+        setInput((prev) => prev + (prev ? ' ' : '') + transcript)
+        setIsListening(false)
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+      }
+      
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+      
+      recognitionRef.current = recognition
+    }
+  }, [])
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert("Speech recognition is not supported in your browser.")
+      return
+    }
+    if (isListening) {
+      recognitionRef.current.stop()
+      setIsListening(false)
+    } else {
+      try {
+        recognitionRef.current.start()
+        setIsListening(true)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+
+  const speakText = (text) => {
+    if (voiceMuted || !window.speechSynthesis) return
+    // Strip markdown bold, italics, bullets, and backticks for clear pronunciation
+    const cleanedText = text.replace(/(\*\*|\*|#|-|`)/g, '').trim()
+    const utterance = new SpeechSynthesisUtterance(cleanedText)
+    window.speechSynthesis.speak(utterance)
+  }
+
   // ── Start session when drawer opens ──────────────────────────────────
   useEffect(() => {
     if (!isOpen || sessionId) return
+    let isMounted = true;
 
     const startSession = async () => {
       try {
@@ -93,18 +152,24 @@ export default function ChatDrawer({ isOpen, onClose }) {
           systemPrompt:
             'You are the Smart ERP AI assistant. Help the business owner understand their sales data, inventory, and employee metrics. Be concise and insightful.',
         })
-        setSessionId(data.data.sessionId)
-        setMessages([{
-          role: 'assistant',
-          content: "👋 Hello! I'm your Smart ERP AI assistant. Ask me anything about your sales, inventory, or employee data.",
-          timestamp: new Date().toISOString(),
-        }])
+        if (isMounted) {
+          setSessionId(data.data.sessionId)
+          setMessages([{
+            role: 'assistant',
+            content: "👋 Hello! I'm your Smart ERP AI assistant. Ask me anything about your sales, inventory, or employee data.",
+            timestamp: new Date().toISOString(),
+          }])
+        }
       } catch {
-        setSessionErr('Could not start AI session. Please try again.')
+        if (isMounted) setSessionErr('Could not start AI session. Please try again.')
       }
     }
     startSession()
-  }, [isOpen])
+
+    return () => {
+      isMounted = false;
+    }
+  }, [isOpen, sessionId])
 
   // ── Auto-scroll to bottom on new messages ────────────────────────────
   useEffect(() => {
@@ -134,11 +199,15 @@ export default function ChatDrawer({ isOpen, onClose }) {
         content,
       })
 
+      const reply = data.data.content
       setMessages((prev) => [...prev, {
         role: 'assistant',
-        content: data.data.content,
+        content: reply,
         timestamp: new Date().toISOString(),
       }])
+      
+      // Auto-speak the AI response
+      speakText(reply)
     } catch (err) {
       const serverMsg = err.response?.data?.message || '⚠️ I had trouble fetching that data. Please check your connection and try again.'
       setMessages((prev) => [
@@ -188,6 +257,16 @@ export default function ChatDrawer({ isOpen, onClose }) {
               <span className="text-[10px] text-slate-500">Smart ERP Analytics</span>
             </div>
           </div>
+          
+          {/* Mute Toggle */}
+          <button 
+            onClick={() => setVoiceMuted(!voiceMuted)} 
+            className="p-1.5 text-slate-400 hover:text-slate-200 transition-colors"
+            title={voiceMuted ? "Unmute Voice" : "Mute Voice"}
+          >
+            {voiceMuted ? '🔇' : '🔊'}
+          </button>
+
           <button onClick={onClose} className="btn-icon flex-shrink-0">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -238,6 +317,19 @@ export default function ChatDrawer({ isOpen, onClose }) {
               id="chat-input"
               disabled={thinking || !!sessionErr}
             />
+            {/* Microphone Button */}
+            <button
+              onClick={toggleListening}
+              disabled={thinking || !!sessionErr}
+              className={`flex-shrink-0 w-10 h-10 p-0 flex items-center justify-center rounded-xl transition-colors border ${
+                isListening 
+                  ? 'bg-rose-500/20 border-rose-500/50 text-rose-400 animate-pulse' 
+                  : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'
+              }`}
+              title="Voice Input"
+            >
+              🎤
+            </button>
             <button
               onClick={() => sendMessage()}
               disabled={!input.trim() || thinking || !!sessionErr}

@@ -114,17 +114,41 @@ export default function ProductGrid({ onAddToCart }) {
     setLoading(true)
     setError(null)
     try {
-      const params = { limit: 60 }
-      if (q)        params.search   = q
-      if (category && category !== 'All') params.category = category
-      const { data } = await api.get('/inventory/products', { params })
-      const items = data.data || []
+      let items = []
+      if (!navigator.onLine) {
+        const { db } = await import('../../utils/db')
+        let collection = db.products
+        
+        if (category && category !== 'All') {
+          collection = collection.where('category').equals(category)
+        } else {
+          collection = collection.toCollection()
+        }
+        
+        let allItems = await collection.toArray()
+        if (q) {
+          const lowerQ = q.toLowerCase()
+          allItems = allItems.filter(p => 
+            p.name.toLowerCase().includes(lowerQ) || 
+            (p.sku && p.sku.toLowerCase().includes(lowerQ)) ||
+            (p.barcode && p.barcode.includes(q))
+          )
+        }
+        items = allItems.slice(0, 60)
+      } else {
+        const params = { limit: 60 }
+        if (q)        params.search   = q
+        if (category && category !== 'All') params.category = category
+        const { data } = await api.get('/inventory/products', { params })
+        items = data.data || []
+      }
+
       setProducts(items)
       // Extract unique categories
       const cats = ['All', ...new Set(items.map((p) => p.category).filter(Boolean))]
       setCategories(cats)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load products.')
+      setError(err.response?.data?.message || err.message || 'Failed to load products.')
     } finally {
       setLoading(false)
     }
@@ -137,6 +161,24 @@ export default function ProductGrid({ onAddToCart }) {
     if (e.key !== 'Enter') return
     const query = search.trim()
     if (!query) return
+
+    if (!navigator.onLine) {
+      const { db } = await import('../../utils/db')
+      // Try exact barcode
+      let match = await db.products.where('barcode').equals(query).first()
+      if (match) {
+        onAddToCart(match)
+        setSearch('')
+        return
+      }
+      // Try exact SKU
+      match = await db.products.where('sku').equals(query.toUpperCase()).first()
+      if (match) {
+        onAddToCart(match)
+        setSearch('')
+      }
+      return
+    }
 
     // Try exact barcode lookup first
     try {

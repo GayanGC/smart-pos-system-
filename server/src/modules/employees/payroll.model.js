@@ -81,6 +81,7 @@ const PayrollSchema = new mongoose.Schema(
 );
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
+PayrollSchema.index({ employeeId: 1, periodStart: 1, periodEnd: 1 }, { unique: true });
 PayrollSchema.index({ employeeId: 1, periodStart: -1 });
 PayrollSchema.index({ isPaid: 1, period: 1 });
 

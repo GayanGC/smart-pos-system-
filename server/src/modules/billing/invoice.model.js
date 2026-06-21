@@ -180,6 +180,7 @@ InvoiceSchema.index({ cashierId: 1, createdAt: -1 });
 InvoiceSchema.index({ status:          1 });
 InvoiceSchema.index({ isOfflineCreated: 1 });
 InvoiceSchema.index({ isVoided:         1 });
+InvoiceSchema.index({ isVoided: 1, createdAt: -1 }); // optimized for analytics dashboard
 InvoiceSchema.index({ createdAt:        -1 }); // for date-range reports
 InvoiceSchema.index({ offlineRef:       1 }, { unique: true, sparse: true }); // idempotency
 

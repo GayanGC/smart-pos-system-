@@ -52,7 +52,7 @@ router.route('/invoices')
   .post(authorize('super_admin', 'admin', 'cashier'), createInvoice)
   .get(authorize('super_admin', 'admin', 'manager'), getInvoices);
 
-router.get('/invoices/:id', getInvoiceById);
+router.get('/invoices/:id', authorize('super_admin', 'admin', 'manager', 'cashier'), getInvoiceById);
 
 router.patch(
   '/invoices/:id/void',

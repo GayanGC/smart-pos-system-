@@ -22,8 +22,9 @@
 const router = require('express').Router();
 const {
   getEmployees, createEmployee, getEmployeeById, updateEmployee, deleteEmployee,
-  clockIn, clockOut, getAttendance,
+  clockIn, clockOut, getAttendance, syncOfflineAttendance,
   generatePayroll, getPayroll, markPayrollAsPaid,
+  getTasks, completeTask,
 } = require('./employees.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
@@ -34,6 +35,7 @@ router.use(protect);
 // QR clock-in/out endpoints accessible to any authenticated user (terminal kiosk)
 router.post('/attendance/clock-in', clockIn);
 router.post('/attendance/clock-out', clockOut);
+router.post('/attendance/sync', syncOfflineAttendance);
 router.get(
   '/attendance',
   authorize('super_admin', 'admin', 'manager'),
@@ -56,6 +58,10 @@ router.patch(
   authorize('super_admin', 'admin'),
   markPayrollAsPaid
 );
+
+// ── Tasks ─────────────────────────────────────────────────────────────────
+router.get('/tasks', getTasks);
+router.patch('/tasks/:id/complete', completeTask);
 
 // ── Employee CRUD ─────────────────────────────────────────────────────────
 router.route('/')

@@ -25,9 +25,11 @@ const { protect, authorize }   = require('../../middleware/auth.middleware');
 const { authLimiter }          = require('../../middleware/rateLimiter.middleware');
 
 // ── Public routes (rate-limited) ────────────────────────────────────────────
-router.post('/register', authLimiter, register);
 router.post('/login',    authLimiter, login);
 router.post('/qr/login', authLimiter, loginWithQr);
+
+// ── Admin routes ────────────────────────────────────────────────────────────
+router.post('/register', protect, authorize('super_admin', 'admin'), authLimiter, register);
 
 // ── QR generation (admin/manager only) ──────────────────────────────────────
 router.post(

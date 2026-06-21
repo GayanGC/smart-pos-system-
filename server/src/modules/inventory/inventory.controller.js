@@ -30,6 +30,7 @@ const Product   = require('./product.model');
 const Supplier  = require('./supplier.model');
 const asyncHandler      = require('../../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../../utils/responseFormatter');
+const { GoogleGenAI } = require('@google/genai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  PRODUCTS
@@ -85,6 +86,22 @@ const getProducts = asyncHandler(async (req, res) => {
  * @desc  Create a new product
  */
 const createProduct = asyncHandler(async (req, res) => {
+  const safeData = {
+    name: req.body.name,
+    description: req.body.description,
+    sku: req.body.sku,
+    barcode: req.body.barcode,
+    category: req.body.category,
+    brand: req.body.brand,
+    costPrice: req.body.costPrice,
+    sellingPrice: req.body.sellingPrice,
+    taxRate: req.body.taxRate,
+    quantityInStock: req.body.quantityInStock,
+    lowStockThreshold: req.body.lowStockThreshold,
+    expiryDate: req.body.expiryDate,
+    imageUrl: req.body.imageUrl,
+  };
+
   // If a supplierId is provided, sync the supplier snapshot
   if (req.body.supplier?.supplierId) {
     const supplierDoc = await Supplier.findById(req.body.supplier.supplierId);
@@ -92,7 +109,7 @@ const createProduct = asyncHandler(async (req, res) => {
       return sendError(res, { statusCode: 404, message: 'Supplier not found.' });
     }
     // Always sync the snapshot from the canonical document
-    req.body.supplier = {
+    safeData.supplier = {
       supplierId: supplierDoc._id,
       name:       supplierDoc.name,
       phone:      supplierDoc.phone,
@@ -100,7 +117,7 @@ const createProduct = asyncHandler(async (req, res) => {
     };
   }
 
-  const product = await Product.create(req.body);
+  const product = await Product.create(safeData);
   return sendSuccess(res, { statusCode: 201, data: product, message: 'Product created successfully.' });
 });
 
@@ -146,13 +163,19 @@ const updateProduct = asyncHandler(async (req, res) => {
     return sendError(res, { statusCode: 404, message: 'Product not found.' });
   }
 
+  const safeData = {};
+  const allowedFields = ['name', 'description', 'sku', 'barcode', 'category', 'brand', 'costPrice', 'sellingPrice', 'taxRate', 'quantityInStock', 'lowStockThreshold', 'expiryDate', 'imageUrl'];
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) safeData[field] = req.body[field];
+  }
+
   // If a supplierId is provided, sync the supplier snapshot
   if (req.body.supplier?.supplierId) {
     const supplierDoc = await Supplier.findById(req.body.supplier.supplierId);
     if (!supplierDoc) {
       return sendError(res, { statusCode: 404, message: 'Supplier not found.' });
     }
-    req.body.supplier = {
+    safeData.supplier = {
       supplierId: supplierDoc._id,
       name:       supplierDoc.name,
       phone:      supplierDoc.phone,
@@ -160,9 +183,11 @@ const updateProduct = asyncHandler(async (req, res) => {
     };
   }
 
+  const updateOp = { $set: safeData };
+
   // If price changes, push to priceHistory audit trail
   if (req.body.sellingPrice && req.body.sellingPrice !== existing.sellingPrice) {
-    req.body.$push = {
+    updateOp.$push = {
       priceHistory: {
         price:     existing.sellingPrice,
         changedAt: new Date(),
@@ -171,7 +196,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     };
   }
 
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  const product = await Product.findByIdAndUpdate(req.params.id, updateOp, {
     new:            true,
     runValidators:  true,
   });
@@ -279,6 +304,116 @@ const deleteSupplier = asyncHandler(async (req, res) => {
   return sendSuccess(res, { message: 'Supplier deactivated successfully.' });
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  AI SUPPLIER BILL OCR
+// ═══════════════════════════════════════════════════════════════════════════
+
+const processSupplierInvoiceOCR = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return sendError(res, { statusCode: 400, message: 'No invoice image uploaded.' });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return sendError(res, { statusCode: 500, message: 'GEMINI_API_KEY is not configured on the server.' });
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  const base64Image = req.file.buffer.toString('base64');
+  const mimeType = req.file.mimetype;
+
+  const prompt = `You are an inventory management assistant.
+Analyze this supplier invoice/bill image. It may contain English or handwritten/printed Sinhala text.
+Extract all raw material line items (e.g., Rice, Sugar, Chicken, Vegetables).
+Return a JSON array containing only these extracted items.
+Each object in the array MUST exactly match this schema:
+{
+  "name": "string (the translated english name of the item)",
+  "quantityToAdd": "number (the quantity found on the invoice)",
+  "unit": "string (the unit of measurement, e.g. kg, g, l, pcs)"
+}`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: prompt },
+            {
+              inlineData: {
+                data: base64Image,
+                mimeType,
+              },
+            },
+          ],
+        },
+      ],
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+
+    const responseText = response.text;
+    let items = [];
+    try {
+      items = JSON.parse(responseText);
+    } catch (e) {
+      const cleaned = responseText.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
+      items = JSON.parse(cleaned);
+    }
+
+    if (!Array.isArray(items)) {
+      throw new Error('Gemini did not return a valid array.');
+    }
+
+    const results = { matched: [], notFound: [] };
+    const mongoose = require('mongoose');
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      for (const item of items) {
+        const safeName = escapeRegex(item.name || '');
+        const product = await Product.findOne({
+          name: { $regex: new RegExp(safeName, 'i') },
+          isActive: true
+        }).session(session);
+
+        if (product) {
+          product.quantityInStock += Number(item.quantityToAdd) || 0;
+          await product.save({ session });
+          results.matched.push({
+            name: product.name,
+            added: item.quantityToAdd,
+            newStock: product.quantityInStock
+          });
+        } else {
+          results.notFound.push(item);
+        }
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return sendSuccess(res, {
+        data: results,
+        message: 'Supplier bill processed and inventory updated successfully.'
+      });
+    } catch (dbErr) {
+      await session.abortTransaction();
+      session.endSession();
+      throw dbErr;
+    }
+  } catch (error) {
+    console.error('Gemini OCR Error:', error);
+    return sendError(res, { statusCode: 500, message: 'Failed to process invoice via Gemini: ' + error.message });
+  }
+});
+
 module.exports = {
   // Products
   getProducts, createProduct, getProductById,
@@ -289,4 +424,6 @@ module.exports = {
   // Suppliers
   getSuppliers, createSupplier, getSupplierById,
   updateSupplier, deleteSupplier,
+  // OCR
+  processSupplierInvoiceOCR
 };

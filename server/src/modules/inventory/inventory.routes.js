@@ -24,13 +24,16 @@
  */
 
 const router = require('express').Router();
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 const {
   getProducts, createProduct, getProductById,
   getProductBySku, getProductByBarcode,
   updateProduct, deleteProduct,
   getLowStockAlerts, getExpiringProducts,
   getSuppliers, createSupplier, getSupplierById,
-  updateSupplier, deleteSupplier,
+  updateSupplier, deleteSupplier, processSupplierInvoiceOCR,
 } = require('./inventory.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
@@ -40,6 +43,9 @@ router.use(protect);
 // ── Stock alerts (before /:id to avoid route conflicts) ────────────────────
 router.get('/alerts/low-stock', getLowStockAlerts);
 router.get('/alerts/expiring',  getExpiringProducts);
+
+// ── Supplier OCR ────────────────────────────────────────────────────────────
+router.post('/supplier-ocr', authorize('super_admin', 'admin', 'manager'), upload.single('invoice'), processSupplierInvoiceOCR);
 
 // ── Product lookup by SKU / barcode ─────────────────────────────────────────
 router.get('/products/sku/:sku',          getProductBySku);

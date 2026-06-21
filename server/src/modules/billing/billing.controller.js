@@ -24,16 +24,38 @@ const { INVOICE_STATUS }         = require('../../config/constants');
  * @param {string} [session]   Optional Mongoose session for transactions
  */
 const deductStock = async (lineItems, session) => {
-  const ops = lineItems
-    .filter((item) => item.productId)
-    .map((item) => ({
-      updateOne: {
-        filter: { _id: item.productId },
-        update: { $inc: { quantityInStock: -item.quantity } },
-      },
-    }));
+  const ops = [];
+
+  for (const item of lineItems) {
+    if (!item.productId) continue;
+    const product = await Product.findById(item.productId).session(session);
+    if (!product) continue;
+
+    if (product.recipeIngredients && product.recipeIngredients.length > 0) {
+      for (const ingredient of product.recipeIngredients) {
+        const qtyToDeduct = ingredient.quantityRequired * item.quantity;
+        ops.push({
+          updateOne: {
+            filter: { _id: ingredient.productId, quantityInStock: { $gte: qtyToDeduct } },
+            update: { $inc: { quantityInStock: -qtyToDeduct } },
+          },
+        });
+      }
+    } else {
+      ops.push({
+        updateOne: {
+          filter: { _id: item.productId, quantityInStock: { $gte: item.quantity } },
+          update: { $inc: { quantityInStock: -item.quantity } },
+        },
+      });
+    }
+  }
+
   if (ops.length > 0) {
-    await Product.bulkWrite(ops, session ? { session } : {});
+    const result = await Product.bulkWrite(ops, session ? { session } : {});
+    if (result.modifiedCount !== ops.length) {
+      throw new Error('Insufficient stock during deduction. Check inventory/ingredient levels.');
+    }
   }
 };
 
@@ -43,123 +65,145 @@ const deductStock = async (lineItems, session) => {
 //  @access  Private (cashier / admin)
 // ═══════════════════════════════════════════════════════════════════════════
 const createInvoice = asyncHandler(async (req, res) => {
-  const { lineItems, paymentMethod, amountPaid, promoDiscount, ...rest } = req.body;
+  const { lineItems, paymentMethod, amountPaid, promoDiscount, customer, notes } = req.body;
 
   if (!lineItems || lineItems.length === 0) {
     return sendError(res, { statusCode: 400, message: 'At least one line item is required.' });
   }
 
-  // ── Verify inventory stock levels to prevent negative stock ────────────────
-  for (const item of lineItems) {
-    try {
-      const product = await Product.findById(item.productId);
+  const mongoose = require('mongoose');
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // ── Verify inventory stock levels to prevent negative stock ────────────────
+    for (const item of lineItems) {
+      const product = await Product.findById(item.productId).session(session);
       if (!product || !product.isActive) {
-        return sendError(res, { statusCode: 404, message: `Product "${item.name || 'Unknown'}" not found or inactive.` });
+        throw new Error(`Product "${item.name || 'Unknown'}" not found or inactive.`);
       }
-      if (product.quantityInStock < item.quantity) {
-        return sendError(res, {
-          statusCode: 400,
-          message: `Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`
-        });
+
+      if (product.recipeIngredients && product.recipeIngredients.length > 0) {
+        for (const ingredient of product.recipeIngredients) {
+          const ingProduct = await Product.findById(ingredient.productId).session(session);
+          const requiredQty = ingredient.quantityRequired * item.quantity;
+          if (!ingProduct) {
+            throw new Error(`Ingredient reference missing or deleted in the database (ID: ${ingredient.productId}). Please update the recipe for "${product.name}".`);
+          }
+          if (ingProduct.quantityInStock < requiredQty) {
+            throw new Error(`Insufficient stock for ingredient "${ingProduct.name}". Available: ${ingProduct.quantityInStock}, Requested: ${requiredQty}.`);
+          }
+        }
+      } else {
+        if (product.quantityInStock < item.quantity) {
+          throw new Error(`Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`);
+        }
       }
-    } catch (err) {
-      return sendError(res, {
-        statusCode: 400,
-        message: `Invalid product reference for "${item.name || 'Unknown'}": ${err.message}`
-      });
     }
-  }
 
-  // ── Generate invoice number ──────────────────────────────────────────────
-  const count = await Invoice.countDocuments();
-  const invoiceNumber = generateInvoiceNumber(count);
+    // ── Generate invoice number ──────────────────────────────────────────────
+    const crypto = require('crypto');
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm   = String(now.getMonth() + 1).padStart(2, '0');
+    const dd   = String(now.getDate()).padStart(2, '0');
+    const randomSuffix = crypto.randomBytes(4).toString('hex');
+    const invoiceNumber = `INV-${yyyy}${mm}${dd}-${randomSuffix}`;
 
-  // ── Compute totals from line items ────────────────────────────────────────
-  let subTotal = 0;
-  let totalItemDiscount = 0;
-  let totalTax = 0;
+    // ── Compute totals from line items ────────────────────────────────────────
+    let subTotal = 0;
+    let totalItemDiscount = 0;
+    let totalTax = 0;
 
-  const processedItems = lineItems.map((item) => {
-    const unitPrice = Number(item.unitPrice) || 0;
-    const quantity = Number(item.quantity) || 0;
-    const discount = Number(item.discount) || 0;
-    const taxRate = Number(item.taxRate) || 0;
+    const processedItems = lineItems.map((item) => {
+      const unitPrice = Number(item.unitPrice) || 0;
+      const quantity = Number(item.quantity) || 0;
+      const discount = Number(item.discount) || 0;
+      const taxRate = Number(item.taxRate) || 0;
 
-    const itemSubtotal = parseFloat((unitPrice * quantity).toFixed(2));
-    const taxAmount = parseFloat(((itemSubtotal - discount) * (taxRate / 100)).toFixed(2));
-    const lineTotal = parseFloat((itemSubtotal - discount + taxAmount).toFixed(2));
+      const itemSubtotal = parseFloat((unitPrice * quantity).toFixed(2));
+      const taxAmount = parseFloat(((itemSubtotal - discount) * (taxRate / 100)).toFixed(2));
+      const lineTotal = parseFloat((itemSubtotal - discount + taxAmount).toFixed(2));
 
-    subTotal += itemSubtotal;
-    totalItemDiscount += discount;
-    totalTax += taxAmount;
+      subTotal += itemSubtotal;
+      totalItemDiscount += discount;
+      totalTax += taxAmount;
 
-    return { 
-      ...item, 
-      unitPrice, 
-      quantity, 
-      discount, 
-      taxRate, 
-      taxAmount, 
-      lineTotal 
-    };
-  });
+      return { 
+        ...item, 
+        unitPrice, 
+        quantity, 
+        discount, 
+        taxRate, 
+        taxAmount, 
+        lineTotal 
+      };
+    });
 
-  // Calculate cart-wide promo discount
-  let cartPromoDiscount = 0;
-  if (promoDiscount && Number(promoDiscount.value) > 0) {
-    const val = Number(promoDiscount.value) || 0;
-    if (promoDiscount.type === 'percentage') {
-      cartPromoDiscount = parseFloat((subTotal * (val / 100)).toFixed(2));
-    } else if (promoDiscount.type === 'flat') {
-      cartPromoDiscount = val;
+    // Calculate cart-wide promo discount
+    let cartPromoDiscount = 0;
+    if (promoDiscount && Number(promoDiscount.value) > 0) {
+      const val = Number(promoDiscount.value) || 0;
+      if (promoDiscount.type === 'percentage') {
+        cartPromoDiscount = parseFloat((subTotal * (val / 100)).toFixed(2));
+      } else if (promoDiscount.type === 'flat') {
+        cartPromoDiscount = val;
+      }
     }
+
+    subTotal = parseFloat(subTotal.toFixed(2));
+    totalItemDiscount = parseFloat(totalItemDiscount.toFixed(2));
+    totalTax = parseFloat(totalTax.toFixed(2));
+    cartPromoDiscount = parseFloat(cartPromoDiscount.toFixed(2));
+
+    const totalDiscount = parseFloat((totalItemDiscount + cartPromoDiscount).toFixed(2));
+    const grandTotal = Math.max(0, parseFloat((subTotal + totalTax - totalDiscount).toFixed(2)));
+    const finalTotal = grandTotal;
+    const amountPaidNum = Number(amountPaid) || 0;
+    const changeDue  = amountPaidNum > grandTotal ? parseFloat((amountPaidNum - grandTotal).toFixed(2)) : 0;
+
+    // ── Create invoice document ───────────────────────────────────────────────
+    const [invoice] = await Invoice.create([{
+      customer, notes, promoDiscount,
+      invoiceNumber,
+      cashierId: req.user._id,
+      lineItems: processedItems,
+      subTotal,
+      totalTax,
+      totalDiscount,
+      grandTotal,
+      finalTotal,
+      amountPaid,
+      changeDue,
+      paymentMethod,
+      status:           amountPaidNum >= grandTotal ? INVOICE_STATUS.PAID : INVOICE_STATUS.PARTIALLY_PAID,
+      isOfflineCreated: false,
+    }], { session });
+
+    // ── Create payment record ─────────────────────────────────────────────────
+    const [payment] = await Payment.create([{
+      invoiceId:     invoice._id,
+      amount:        amountPaidNum,
+      paymentMethod,
+      processedBy:   req.user._id,
+    }], { session });
+
+    // ── Link payment to invoice ───────────────────────────────────────────────
+    invoice.payments.push(payment._id);
+    await invoice.save({ session });
+
+    // ── Deduct inventory stock ────────────────────────────────────────────────
+    await deductStock(processedItems, session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return sendSuccess(res, { statusCode: 201, data: invoice, message: 'Invoice created successfully.' });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    return sendError(res, { statusCode: 400, message: error.message });
   }
-
-  subTotal = parseFloat(subTotal.toFixed(2));
-  totalItemDiscount = parseFloat(totalItemDiscount.toFixed(2));
-  totalTax = parseFloat(totalTax.toFixed(2));
-  cartPromoDiscount = parseFloat(cartPromoDiscount.toFixed(2));
-
-  const totalDiscount = parseFloat((totalItemDiscount + cartPromoDiscount).toFixed(2));
-  const grandTotal = Math.max(0, parseFloat((subTotal + totalTax - totalDiscount).toFixed(2)));
-  const finalTotal = grandTotal;
-  const amountPaidNum = Number(amountPaid) || 0;
-  const changeDue  = amountPaidNum > grandTotal ? parseFloat((amountPaidNum - grandTotal).toFixed(2)) : 0;
-
-  // ── Create invoice document ───────────────────────────────────────────────
-  const invoice = await Invoice.create({
-    ...rest,
-    invoiceNumber,
-    cashierId: req.user._id,
-    lineItems: processedItems,
-    subTotal,
-    totalTax,
-    totalDiscount,
-    grandTotal,
-    finalTotal,
-    amountPaid,
-    changeDue,
-    paymentMethod,
-    status:           amountPaid >= grandTotal ? INVOICE_STATUS.PAID : INVOICE_STATUS.PARTIALLY_PAID,
-    isOfflineCreated: false,
-  });
-
-  // ── Create payment record ─────────────────────────────────────────────────
-  const payment = await Payment.create({
-    invoiceId:     invoice._id,
-    amount:        amountPaid,
-    paymentMethod,
-    processedBy:   req.user._id,
-  });
-
-  // ── Link payment to invoice ───────────────────────────────────────────────
-  invoice.payments.push(payment._id);
-  await invoice.save();
-
-  // ── Deduct inventory stock ────────────────────────────────────────────────
-  await deductStock(processedItems);
-
-  return sendSuccess(res, { statusCode: 201, data: invoice, message: 'Invoice created successfully.' });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -219,6 +263,11 @@ const getInvoiceById = asyncHandler(async (req, res) => {
 
   if (!invoice) {
     return sendError(res, { statusCode: 404, message: 'Invoice not found.' });
+  }
+
+  // Ensure cashiers can only view their own invoices
+  if (req.user.role === 'cashier' && invoice.cashierId._id.toString() !== req.user._id.toString()) {
+    return sendError(res, { statusCode: 403, message: 'Not authorized to access this invoice.' });
   }
   return sendSuccess(res, { data: invoice, message: 'Invoice retrieved successfully.' });
 });
@@ -434,6 +483,25 @@ const syncOfflineInvoices = asyncHandler(async (req, res) => {
       });
 
       // ── Deduct stock ─────────────────────────────────────────────────────
+      for (const item of processedItems) {
+        if (!item.productId) continue;
+        const product = await Product.findById(item.productId);
+        if (!product) continue;
+        
+        if (product.recipeIngredients && product.recipeIngredients.length > 0) {
+          for (const ingredient of product.recipeIngredients) {
+            const ingProduct = await Product.findById(ingredient.productId);
+            const requiredQty = ingredient.quantityRequired * item.quantity;
+            if (ingProduct && ingProduct.quantityInStock < requiredQty) {
+              throw new Error(`Insufficient stock for ingredient "${ingProduct.name}". Available: ${ingProduct.quantityInStock}, Requested: ${requiredQty}`);
+            }
+          }
+        } else {
+          if (product.quantityInStock < item.quantity) {
+            throw new Error(`Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}`);
+          }
+        }
+      }
       await deductStock(processedItems);
 
       results.synced.push({

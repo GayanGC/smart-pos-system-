@@ -26,6 +26,7 @@
 const Employee   = require('./employee.model');
 const Attendance = require('./attendance.model');
 const Payroll    = require('./payroll.model');
+const Task       = require('./task.model');
 const asyncHandler       = require('../../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../../utils/responseFormatter');
 const { ATTENDANCE_STATUS } = require('../../config/constants');
@@ -52,11 +53,16 @@ const getEmployees = asyncHandler(async (req, res) => {
 });
 
 const createEmployee = asyncHandler(async (req, res) => {
-  // Auto-generate a QR code value equal to the employee's unique ID
-  if (!req.body.qrCodeToken && req.body.employeeId) {
-    req.body.qrCodeToken = req.body.employeeId;
+  const allowedFields = ['userId', 'employeeId', 'firstName', 'lastName', 'dateOfBirth', 'gender', 'nationalId', 'photo', 'email', 'phone', 'address', 'department', 'designation', 'dateJoined', 'hourlyRate', 'bankAccount'];
+  const safeData = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) safeData[field] = req.body[field];
   }
-  const employee = await Employee.create(req.body);
+
+  // Auto-generate a cryptographically secure QR code token
+  safeData.qrCodeToken = require('crypto').randomBytes(16).toString('hex');
+
+  const employee = await Employee.create(safeData);
   return sendSuccess(res, { statusCode: 201, data: employee, message: 'Employee created successfully.' });
 });
 
@@ -69,7 +75,13 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 });
 
 const updateEmployee = asyncHandler(async (req, res) => {
-  const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, {
+  const allowedFields = ['userId', 'employeeId', 'firstName', 'lastName', 'dateOfBirth', 'gender', 'nationalId', 'photo', 'email', 'phone', 'address', 'department', 'designation', 'dateJoined', 'hourlyRate', 'bankAccount'];
+  const safeData = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) safeData[field] = req.body[field];
+  }
+
+  const employee = await Employee.findByIdAndUpdate(req.params.id, safeData, {
     new: true, runValidators: true,
   });
   if (!employee) {
@@ -107,7 +119,7 @@ const clockIn = asyncHandler(async (req, res) => {
   }
 
   const employee = await Employee.findOne({
-    $or: [{ qrCodeToken }, { employeeId: qrCodeToken }],
+    qrCodeToken,
     isActive: true
   });
   if (!employee) {
@@ -138,9 +150,15 @@ const clockIn = asyncHandler(async (req, res) => {
     status:     ATTENDANCE_STATUS.PRESENT,
   });
 
+  const tasks = await Task.find({
+    assignedTo: employee._id,
+    status: 'pending',
+    date: { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) }
+  });
+
   return sendSuccess(res, {
     statusCode: 201,
-    data: { action: 'clock_in', record, employee: { id: employee._id, name: employee.fullName } },
+    data: { action: 'clock_in', record, employee: { id: employee._id, name: employee.fullName }, tasks },
     message: `✅ Clock-in recorded for ${employee.fullName} at ${now.toLocaleTimeString()}.`,
   });
 });
@@ -158,7 +176,7 @@ const clockOut = asyncHandler(async (req, res) => {
   }
 
   const employee = await Employee.findOne({
-    $or: [{ qrCodeToken }, { employeeId: qrCodeToken }],
+    qrCodeToken,
     isActive: true
   });
   if (!employee) {
@@ -230,6 +248,70 @@ const getAttendance = asyncHandler(async (req, res) => {
     meta: { total, page: parseInt(page, 10), totalPages: Math.ceil(total / parseInt(limit, 10)) },
     message: 'Attendance records retrieved successfully.',
   });
+});
+
+/**
+ * @desc  Sync offline attendance scans
+ * @route POST /api/employees/attendance/sync
+ * @body  { attendanceLogs: Array<{ id, qrToken, timestamp }> }
+ */
+const syncOfflineAttendance = asyncHandler(async (req, res) => {
+  const { attendanceLogs } = req.body;
+  if (!Array.isArray(attendanceLogs)) {
+    return sendError(res, { statusCode: 400, message: 'attendanceLogs must be an array' });
+  }
+
+  // Enforce chronological sorting to prevent clock-out before clock-in sync errors
+  attendanceLogs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  const results = { synced: [], failed: [] };
+
+  for (const log of attendanceLogs) {
+    try {
+      const employee = await Employee.findOne({ qrCodeToken: log.qrToken, isActive: true });
+      if (!employee) {
+        results.failed.push({ id: log.id, error: 'Employee not found or inactive' });
+        continue;
+      }
+
+      const scanTime = new Date(log.timestamp);
+      const startOfDay = new Date(scanTime);
+      startOfDay.setUTCHours(0, 0, 0, 0);
+
+      const existingRecord = await Attendance.findOne({
+        employeeId: employee._id,
+        date: startOfDay,
+      });
+
+      if (!existingRecord) {
+        await Attendance.create({
+          employeeId: employee._id,
+          date: startOfDay,
+          clockIn: scanTime,
+          terminal: 'Offline-Scanner',
+          status: ATTENDANCE_STATUS.PRESENT,
+        });
+      } else if (!existingRecord.clockOut) {
+        if (scanTime > existingRecord.clockIn) {
+          existingRecord.clockOut = scanTime;
+          existingRecord.computeHours();
+          await existingRecord.save();
+        } else {
+          results.failed.push({ id: log.id, error: 'Invalid clock-out time before clock-in' });
+          continue;
+        }
+      } else {
+        results.failed.push({ id: log.id, error: 'Already clocked out for the day' });
+        continue;
+      }
+
+      results.synced.push({ id: log.id });
+    } catch (err) {
+      results.failed.push({ id: log.id, error: err.message });
+    }
+  }
+
+  return sendSuccess(res, { data: results, message: `Attendance sync complete. Synced: ${results.synced.length}` });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -333,8 +415,57 @@ const markPayrollAsPaid = asyncHandler(async (req, res) => {
   return sendSuccess(res, { data: payroll, message: 'Payroll marked as paid successfully.' });
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  TASKS
+// ═══════════════════════════════════════════════════════════════════════════
+
+const getTasks = asyncHandler(async (req, res) => {
+  const { employeeId, date, status } = req.query;
+  const filter = {};
+  if (employeeId) filter.assignedTo = employeeId;
+  if (status) filter.status = status;
+  if (date) {
+    const startOfDay = new Date(date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    filter.date = { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) };
+  }
+
+  const tasks = await Task.find(filter).sort({ date: -1 });
+  return sendSuccess(res, { data: tasks, message: 'Tasks retrieved successfully.' });
+});
+
+const completeTask = asyncHandler(async (req, res) => {
+  const { qrCodeToken } = req.body;
+
+  const task = await Task.findById(req.params.id);
+  if (!task) {
+    return sendError(res, { statusCode: 404, message: 'Task not found.' });
+  }
+
+  // If not admin/manager, require employee token verification
+  if (!['super_admin', 'admin', 'manager'].includes(req.user.role)) {
+    if (!qrCodeToken) {
+      return sendError(res, { statusCode: 401, message: 'Authentication required. Please provide your QR token.' });
+    }
+    const employee = await Employee.findOne({ qrCodeToken, isActive: true });
+    if (!employee || employee._id.toString() !== task.assignedTo.toString()) {
+      return sendError(res, { statusCode: 403, message: 'Unauthorised: You can only complete tasks assigned to you.' });
+    }
+  }
+
+  task.status = 'completed';
+  await task.save();
+
+  return sendSuccess(res, { data: task, message: 'Task marked as completed.' });
+});
+
 module.exports = {
+  // Employees
   getEmployees, createEmployee, getEmployeeById, updateEmployee, deleteEmployee,
-  clockIn, clockOut, getAttendance,
+  // Attendance
+  clockIn, clockOut, getAttendance, syncOfflineAttendance,
+  // Payroll
   generatePayroll, getPayroll, markPayrollAsPaid,
+  // Tasks
+  getTasks, completeTask,
 };

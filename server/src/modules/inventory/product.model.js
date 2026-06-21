@@ -132,6 +132,14 @@ const ProductSchema = new mongoose.Schema(
       required: [true, 'Supplier information is required.'],
     },
 
+    // ── Recipes (for composite products) ──────────────────────────────────────
+    recipeIngredients: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        quantityRequired: { type: Number, min: [0, 'Required quantity cannot be negative.'] },
+      }
+    ],
+
     // ── Flags ─────────────────────────────────────────────────────────────────
     isActive: {
       type:    Boolean,

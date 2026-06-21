@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import api from '../api/axios'
 import { QRCodeCanvas } from 'qrcode.react'
 import { Html5Qrcode } from 'html5-qrcode'
+import { saveAttendanceOffline } from '../utils/offlineSync'
 
 const TABS = [
   { id: 'directory', label: 'Employee Directory' },
@@ -80,6 +81,46 @@ export default function EmployeesPage() {
                 <div className="h-4 bg-slate-800 rounded w-5/6"></div>
               </div>
             </div>
+            
+            {/* TASKS CHECKLIST UI */}
+            {tasks.length > 0 && (
+              <div className="mt-4 p-4 rounded-xl border border-violet-500/30 bg-violet-500/10 animate-fade-up">
+                <h3 className="text-violet-300 font-bold mb-3 flex items-center gap-2">
+                  <span>📋</span> Today's Checklist
+                </h3>
+                <div className="space-y-2">
+                  {tasks.map(task => (
+                    <div 
+                      key={task._id} 
+                      className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                        task.status === 'completed' 
+                          ? 'bg-emerald-500/10 border-emerald-500/30 opacity-70' 
+                          : 'bg-slate-900 border-slate-700 hover:border-violet-400/50'
+                      }`}
+                    >
+                      <button
+                        onClick={() => { if(task.status !== 'completed') handleCompleteTask(task._id) }}
+                        disabled={task.status === 'completed'}
+                        className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                          task.status === 'completed'
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-slate-800 border-2 border-slate-600 hover:border-violet-400 cursor-pointer'
+                        }`}
+                      >
+                        {task.status === 'completed' && (
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                      <span className={`text-sm font-medium ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
+                        {task.title}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <>
@@ -362,6 +403,8 @@ function QrScannerPanel({ onScanSuccess }) {
   const [scanError, setScanError] = useState(null)
   const [lastScanned, setLastScanned] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [tasks, setTasks] = useState([])
+  const [currentScanToken, setCurrentScanToken] = useState(null)
   const onScanSuccessRef = useRef(onScanSuccess)
 
   // Keep callback ref fresh
@@ -402,9 +445,25 @@ function QrScannerPanel({ onScanSuccess }) {
         try {
           setScanError(null)
           setLastScanned(null)
+          setTasks([])
+          setCurrentScanToken(null)
           setIsProcessing(true)
 
           playBeep()
+
+          if (!navigator.onLine) {
+            await saveAttendanceOffline(decodedText)
+            if (isMounted) {
+              setLastScanned({
+                action: 'Offline Scan',
+                name: 'Pending Sync',
+                message: 'Saved offline. Will sync when online.'
+              })
+            }
+            onScanSuccessRef.current()
+            setTimeout(() => { isScanning = false }, 3000)
+            return
+          }
 
           let endpoint = '/employees/attendance/clock-in'
           let actionResponse = null
@@ -421,11 +480,15 @@ function QrScannerPanel({ onScanSuccess }) {
           }
 
           if (isMounted) {
+            setCurrentScanToken(decodedText)
             setLastScanned({
               action: actionResponse.data.data.action,
               name: actionResponse.data.data.employee.name,
               message: actionResponse.data.message
             })
+            if (actionResponse.data.data.tasks) {
+              setTasks(actionResponse.data.data.tasks)
+            }
           }
           
           onScanSuccessRef.current()
@@ -507,11 +570,20 @@ function QrScannerPanel({ onScanSuccess }) {
         }
       }
     }
-  }, [])
+  }, [onScanSuccessRef])
+
+  const handleCompleteTask = async (taskId) => {
+    try {
+      await api.patch(`/employees/tasks/${taskId}/complete`, { qrCodeToken: currentScanToken })
+      setTasks(prev => prev.map(t => t._id === taskId ? { ...t, status: 'completed' } : t))
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to complete task.')
+    }
+  }
 
   return (
-    <div className="bg-slate-950 border border-slate-800/80 rounded-2xl shadow-xl shadow-black/20 p-6 flex flex-col h-full min-h-[500px]">
-      <h2 className="text-xl font-bold text-slate-200 mb-4">Live QR Terminal</h2>
+    <div className="bg-slate-950 border border-slate-800/80 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full relative">
+      <h2 className="text-xl font-bold text-slate-200 mb-4 px-6 pt-6">Live QR Terminal</h2>
       
       <style>{`
         #reader { border: none !important; border-radius: 0.75rem; overflow: hidden; background: #0f172a; }
@@ -544,6 +616,47 @@ function QrScannerPanel({ onScanSuccess }) {
              <p>{lastScanned.message}</p>
           </div>
         )}
+        
+        {/* TASKS CHECKLIST UI */}
+        {tasks.length > 0 && (
+          <div className="mt-4 p-4 rounded-xl border border-violet-500/30 bg-violet-500/10 animate-fade-up">
+            <h3 className="text-violet-300 font-bold mb-3 flex items-center gap-2">
+              <span>📋</span> Today's Checklist
+            </h3>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {tasks.map(task => (
+                <div 
+                  key={task._id} 
+                  className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                    task.status === 'completed' 
+                      ? 'bg-emerald-500/10 border-emerald-500/30 opacity-70' 
+                      : 'bg-slate-900 border-slate-700 hover:border-violet-400/50'
+                  }`}
+                >
+                  <button
+                    onClick={() => { if(task.status !== 'completed') handleCompleteTask(task._id) }}
+                    disabled={task.status === 'completed'}
+                    className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                      task.status === 'completed'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-slate-800 border-2 border-slate-600 hover:border-violet-400 cursor-pointer'
+                    }`}
+                  >
+                    {task.status === 'completed' && (
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                  <span className={`text-sm font-medium ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
+                    {task.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {!scanError && !lastScanned && (
            <div className="text-slate-500 text-sm text-center py-6 bg-slate-900/50 rounded-xl border border-slate-800/50">
              Position QR code squarely within the frame.<br/> It will scan automatically.
