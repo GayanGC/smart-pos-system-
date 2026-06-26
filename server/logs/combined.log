@@ -2668,3 +2668,1407 @@ Require stack:
 2026-06-18 15:21:47 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 41.622 ms - -[0m
 2026-06-18 15:22:17 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 19.521 ms - -[0m
 2026-06-18 15:22:17 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 29.861 ms - -[0m
+2026-06-18 15:22:44 [info]: ✅  MongoDB connected: localhost
+2026-06-18 15:22:44 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 15:22:44 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 15:22:44 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 15:22:44 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 15:22:47 [info]: [0mGET /api/billing/dashboard [36m304[0m 50.725 ms - -[0m
+2026-06-18 15:22:47 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 62.067 ms - -[0m
+2026-06-18 15:22:47 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 96.788 ms - -[0m
+2026-06-18 15:22:47 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 133.851 ms - -[0m
+2026-06-18 15:22:47 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 105.703 ms - -[0m
+2026-06-18 15:23:17 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 28.950 ms - -[0m
+2026-06-18 15:23:17 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 11.215 ms - -[0m
+2026-06-18 15:23:47 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 49.410 ms - -[0m
+2026-06-18 15:23:47 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 65.075 ms - -[0m
+2026-06-18 15:23:47 [info]: [0mGET /api/billing/dashboard [36m304[0m 50.112 ms - -[0m
+2026-06-18 15:23:47 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 28.059 ms - -[0m
+2026-06-18 15:23:47 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 37.281 ms - -[0m
+2026-06-18 15:24:17 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 25.840 ms - -[0m
+2026-06-18 15:24:17 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 15.772 ms - -[0m
+2026-06-18 15:24:47 [info]: [0mGET /api/billing/dashboard [36m304[0m 19.201 ms - -[0m
+2026-06-18 15:24:47 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 17.670 ms - -[0m
+2026-06-18 15:24:47 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 24.470 ms - -[0m
+2026-06-18 15:25:17 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 14.692 ms - -[0m
+2026-06-18 15:25:17 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 24.215 ms - -[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/auth/me [32m200[0m 12.432 ms - 342[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/auth/me [36m304[0m 9.501 ms - -[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 43.974 ms - -[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 41.586 ms - -[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 55.974 ms - -[0m
+2026-06-18 15:25:41 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 48.754 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 70.023 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 70.447 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [32m200[0m 60.809 ms - 310[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 63.450 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 82.608 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 62.345 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 131.696 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 61.410 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 114.604 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 47.929 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 61.185 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 46.611 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 41.835 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 40.019 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 51.271 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 46.327 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 41.654 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 62.225 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 71.972 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 53.697 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/auth/me [36m304[0m 11.755 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/auth/me [36m304[0m 9.658 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 34.277 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 47.775 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 45.395 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 44.057 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 59.537 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 59.238 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 43.430 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 48.576 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 68.200 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 47.657 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 96.270 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 57.123 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 44.612 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 53.722 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 111.318 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 46.696 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 49.054 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 31.384 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 27.645 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 47.612 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 41.671 ms - -[0m
+2026-06-18 15:25:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 52.566 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 71.226 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 75.207 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/auth/me [36m304[0m 13.966 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/auth/me [36m304[0m 7.297 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 39.567 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 54.582 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 50.179 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 51.838 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 57.059 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 58.346 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 36.296 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 53.386 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 73.048 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 60.871 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 103.969 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 68.070 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 117.297 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 45.805 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 56.366 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 37.672 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 47.983 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 38.651 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 38.459 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 53.312 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 40.463 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 52.486 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 53.176 ms - -[0m
+2026-06-18 15:25:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 52.605 ms - -[0m
+2026-06-18 15:25:45 [info]: [0mPOST /api/analytics/chatbot/sessions [32m201[0m 79.276 ms - 610[0m
+2026-06-18 15:25:59 [info]: [0mPOST /api/analytics/chat [32m200[0m 1469.231 ms - 502[0m
+2026-06-18 15:26:13 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 27.125 ms - -[0m
+2026-06-18 15:26:13 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 38.353 ms - -[0m
+2026-06-18 15:26:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 23.139 ms - -[0m
+2026-06-18 15:26:43 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 11.857 ms - -[0m
+2026-06-18 15:26:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 12.001 ms - -[0m
+2026-06-18 15:26:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 9.828 ms - -[0m
+2026-06-18 15:26:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 18.644 ms - -[0m
+2026-06-18 15:27:13 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 17.409 ms - -[0m
+2026-06-18 15:27:13 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 26.698 ms - -[0m
+2026-06-18 15:27:44 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 19.998 ms - -[0m
+2026-06-18 15:27:45 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 55.195 ms - -[0m
+2026-06-18 15:27:48 [info]: [0mGET /api/billing/dashboard [36m304[0m 9.842 ms - -[0m
+2026-06-18 15:27:48 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 21.015 ms - -[0m
+2026-06-18 15:27:48 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 28.615 ms - -[0m
+2026-06-18 15:27:59 [info]: ✅  MongoDB connected: localhost
+2026-06-18 15:27:59 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 15:27:59 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 15:27:59 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 15:27:59 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 15:28:03 [info]: ✅  MongoDB connected: localhost
+2026-06-18 15:28:03 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 15:28:03 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 15:28:03 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 15:28:03 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 15:30:54 [info]: [0mGET /api/billing/dashboard [36m304[0m 107.371 ms - -[0m
+2026-06-18 15:30:54 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 114.705 ms - -[0m
+2026-06-18 15:30:54 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 183.176 ms - -[0m
+2026-06-18 15:30:54 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 248.702 ms - -[0m
+2026-06-18 15:30:54 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 182.844 ms - -[0m
+2026-06-18 15:31:21 [info]: ✅  MongoDB connected: localhost
+2026-06-18 15:31:21 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 15:31:21 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 15:31:21 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 15:31:21 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 15:31:36 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 63.052 ms - -[0m
+2026-06-18 15:31:36 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 155.927 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/auth/me [36m304[0m 10.764 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/auth/me [36m304[0m 10.953 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 70.380 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 67.506 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 71.249 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 83.645 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 95.708 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 99.016 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 61.763 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/billing/dashboard [36m304[0m 76.114 ms - -[0m
+2026-06-18 15:31:39 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [32m200[0m 121.667 ms - 124[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 106.430 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [32m200[0m 147.949 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 61.833 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 158.066 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 46.382 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 47.531 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 45.107 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 70.362 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 53.243 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 49.317 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/dashboard [36m304[0m 47.195 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 51.457 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 82.930 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 68.437 ms - -[0m
+2026-06-18 15:31:40 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 67.835 ms - -[0m
+2026-06-18 15:31:50 [info]: [0mPOST /api/analytics/chatbot/sessions [32m201[0m 95.255 ms - 610[0m
+2026-06-18 15:31:56 [info]: [0mPOST /api/analytics/chat [32m200[0m 2532.692 ms - 679[0m
+2026-06-18 15:32:09 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 29.303 ms - -[0m
+2026-06-18 15:32:09 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 42.609 ms - -[0m
+2026-06-18 16:09:30 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 81.317 ms - -[0m
+2026-06-18 16:09:30 [info]: [0mGET /api/billing/dashboard [36m304[0m 93.768 ms - -[0m
+2026-06-18 16:09:30 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 167.438 ms - -[0m
+2026-06-18 16:09:30 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 137.572 ms - -[0m
+2026-06-18 16:09:30 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 162.763 ms - -[0m
+2026-06-18 17:22:20 [warn]: ⚠️   MongoDB disconnected.
+2026-06-18 17:22:30 [info]: 🔄  MongoDB reconnected.
+2026-06-18 17:45:45 [info]: ✅  MongoDB connected: localhost
+2026-06-18 17:45:45 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 17:45:45 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 17:45:45 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 17:45:45 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 17:45:47 [info]: ✅  MongoDB connected: localhost
+2026-06-18 17:45:47 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 17:45:47 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 17:45:47 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 17:45:47 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 17:46:24 [info]: ✅  MongoDB connected: localhost
+2026-06-18 17:46:24 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 17:46:24 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 17:46:24 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 17:46:24 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:22:03 [info]: ✅  MongoDB connected: localhost
+2026-06-18 18:22:03 [info]: 💻 [DATABASE] Successfully connected to LOCAL MongoDB (localhost)
+2026-06-18 18:22:03 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:22:03 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:22:03 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:22:03 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:34:55 [info]: ✅  MongoDB connected: localhost
+2026-06-18 18:34:55 [info]: 💻 [DATABASE] Successfully connected to LOCAL MongoDB (localhost)
+2026-06-18 18:34:55 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:34:55 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:34:55 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:34:55 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:35:42 [info]: ✅  MongoDB connected: localhost
+2026-06-18 18:35:42 [info]: 💻 [DATABASE] Successfully connected to LOCAL MongoDB (localhost)
+2026-06-18 18:35:42 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:35:42 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:35:42 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:35:42 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:40:51 [info]: ✅  MongoDB connected: localhost
+2026-06-18 18:40:51 [info]: 💻 [DATABASE] Successfully connected to LOCAL MongoDB (localhost)
+2026-06-18 18:40:51 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:40:51 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:40:51 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:40:51 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:41:24 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-18 18:41:24 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 18:41:24 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:41:24 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:41:24 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:41:24 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:56:42 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-06-18 18:56:42 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 18:56:42 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:56:42 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:56:42 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:56:42 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 18:56:56 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-18 18:56:56 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 18:56:56 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 18:56:56 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 18:56:56 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 18:56:56 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:00:08 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-06-18 19:00:08 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:00:08 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:00:08 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:00:08 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:00:08 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:08:21 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-06-18 19:08:21 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:08:21 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:08:21 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:08:21 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:08:21 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:09:11 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-06-18 19:09:11 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:09:11 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:09:11 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:09:11 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:09:11 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:16:22 [info]: [0mPOST /api/auth/login [33m401[0m 838.913 ms - 56[0m
+2026-06-18 19:16:29 [info]: [0mPOST /api/auth/login [33m401[0m 758.390 ms - 56[0m
+2026-06-18 19:16:32 [info]: [0mPOST /api/auth/login [33m401[0m 665.874 ms - 56[0m
+2026-06-18 19:19:00 [info]: [0mPOST /api/auth/login [32m200[0m 739.580 ms - 486[0m
+2026-06-18 19:19:21 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-18 19:19:21 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:19:21 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:19:21 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:19:21 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:19:21 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:19:24 [info]: [0mPOST /api/auth/login [32m200[0m 3008.690 ms - 486[0m
+2026-06-18 19:19:41 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-06-18 19:19:41 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:19:41 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:19:41 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:19:41 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:19:41 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:19:46 [info]: [0mPOST /api/auth/login [32m200[0m 800.582 ms - 486[0m
+2026-06-18 19:21:00 [info]: [0mPOST /api/auth/login [32m200[0m 801.500 ms - 486[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 294.191 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 284.027 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard [32m200[0m 274.844 ms - 310[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 268.691 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [32m200[0m 410.400 ms - 124[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 226.273 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 229.387 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 227.609 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [32m200[0m 232.411 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [32m200[0m 535.580 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 308.012 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 262.552 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 249.897 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard [36m304[0m 262.911 ms - -[0m
+2026-06-18 19:21:01 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 291.043 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 270.220 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 296.663 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 285.160 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 295.767 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 425.622 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [32m200[0m 607.001 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 258.299 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 451.726 ms - -[0m
+2026-06-18 19:21:02 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 484.550 ms - -[0m
+2026-06-18 19:21:26 [info]: [0mPOST /api/auth/logout [32m200[0m 107.904 ms - 84[0m
+2026-06-18 19:21:41 [info]: [0mPOST /api/auth/login [32m200[0m 837.512 ms - 486[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 277.511 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 264.155 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 266.734 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 288.523 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 270.207 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 267.957 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 229.165 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 217.758 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 225.779 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 359.975 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 484.088 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 242.744 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 233.936 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 229.897 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 551.442 ms - -[0m
+2026-06-18 19:21:42 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 231.327 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 268.359 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 258.988 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 254.911 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 236.331 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 312.867 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 345.185 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 491.792 ms - -[0m
+2026-06-18 19:21:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 502.577 ms - -[0m
+2026-06-18 19:22:12 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 362.001 ms - -[0m
+2026-06-18 19:22:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 465.766 ms - -[0m
+2026-06-18 19:22:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.635 ms - -[0m
+2026-06-18 19:22:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 225.353 ms - -[0m
+2026-06-18 19:22:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 366.301 ms - -[0m
+2026-06-18 19:22:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.690 ms - -[0m
+2026-06-18 19:22:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 453.407 ms - -[0m
+2026-06-18 19:23:12 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 354.281 ms - -[0m
+2026-06-18 19:23:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 470.749 ms - -[0m
+2026-06-18 19:23:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 205.678 ms - -[0m
+2026-06-18 19:23:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 298.291 ms - -[0m
+2026-06-18 19:23:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 208.090 ms - -[0m
+2026-06-18 19:23:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.967 ms - -[0m
+2026-06-18 19:23:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 402.308 ms - -[0m
+2026-06-18 19:24:12 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 344.601 ms - -[0m
+2026-06-18 19:24:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 412.197 ms - -[0m
+2026-06-18 19:24:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.722 ms - -[0m
+2026-06-18 19:24:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 250.237 ms - -[0m
+2026-06-18 19:24:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 350.452 ms - -[0m
+2026-06-18 19:24:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 499.792 ms - -[0m
+2026-06-18 19:24:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 480.200 ms - -[0m
+2026-06-18 19:25:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 248.236 ms - -[0m
+2026-06-18 19:25:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.659 ms - -[0m
+2026-06-18 19:25:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 497.649 ms - -[0m
+2026-06-18 19:26:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 414.477 ms - -[0m
+2026-06-18 19:26:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 514.453 ms - -[0m
+2026-06-18 19:26:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 230.012 ms - -[0m
+2026-06-18 19:26:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 233.292 ms - -[0m
+2026-06-18 19:26:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 457.256 ms - -[0m
+2026-06-18 19:27:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 418.058 ms - -[0m
+2026-06-18 19:27:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 546.208 ms - -[0m
+2026-06-18 19:27:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 205.801 ms - -[0m
+2026-06-18 19:27:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.788 ms - -[0m
+2026-06-18 19:27:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 432.994 ms - -[0m
+2026-06-18 19:28:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 355.034 ms - -[0m
+2026-06-18 19:28:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 446.594 ms - -[0m
+2026-06-18 19:28:42 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 210.737 ms - -[0m
+2026-06-18 19:28:42 [info]: [0mGET /api/billing/dashboard [36m304[0m 221.522 ms - -[0m
+2026-06-18 19:28:42 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 311.898 ms - -[0m
+2026-06-18 19:28:42 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 470.368 ms - -[0m
+2026-06-18 19:28:42 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 433.221 ms - -[0m
+2026-06-18 19:29:12 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.506 ms - -[0m
+2026-06-18 19:29:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 437.596 ms - -[0m
+2026-06-18 19:30:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 253.446 ms - -[0m
+2026-06-18 19:30:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.282 ms - -[0m
+2026-06-18 19:30:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 298.230 ms - -[0m
+2026-06-18 19:30:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 414.717 ms - -[0m
+2026-06-18 19:30:11 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 446.689 ms - -[0m
+2026-06-18 19:31:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.092 ms - -[0m
+2026-06-18 19:31:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 198.182 ms - -[0m
+2026-06-18 19:31:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 292.599 ms - -[0m
+2026-06-18 19:31:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 401.174 ms - -[0m
+2026-06-18 19:31:11 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 395.222 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 199.014 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 207.575 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 205.228 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 203.102 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 204.250 ms - -[0m
+2026-06-18 19:31:52 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 207.723 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 197.581 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 206.684 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.668 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.964 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/auth/me [32m200[0m 196.208 ms - 338[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 411.851 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.893 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 205.741 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 204.825 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 199.991 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 205.049 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 199.941 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 202.020 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 200.368 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 207.494 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.332 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.955 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 400.802 ms - -[0m
+2026-06-18 19:31:53 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.014 ms - -[0m
+2026-06-18 19:32:23 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 396.673 ms - -[0m
+2026-06-18 19:32:24 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 313.247 ms - -[0m
+2026-06-18 19:32:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.090 ms - -[0m
+2026-06-18 19:32:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 200.508 ms - -[0m
+2026-06-18 19:32:54 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.065 ms - -[0m
+2026-06-18 19:32:54 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 411.128 ms - -[0m
+2026-06-18 19:32:54 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 393.638 ms - -[0m
+2026-06-18 19:33:26 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.931 ms - -[0m
+2026-06-18 19:33:26 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 410.050 ms - -[0m
+2026-06-18 19:33:53 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.350 ms - -[0m
+2026-06-18 19:33:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 204.288 ms - -[0m
+2026-06-18 19:33:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 202.568 ms - -[0m
+2026-06-18 19:33:53 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 432.606 ms - -[0m
+2026-06-18 19:33:54 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.089 ms - -[0m
+2026-06-18 19:34:23 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.777 ms - -[0m
+2026-06-18 19:34:23 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 401.970 ms - -[0m
+2026-06-18 19:34:37 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-18 19:34:37 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-18 19:34:37 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-18 19:34:37 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-18 19:34:37 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-18 19:34:37 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-18 19:34:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 219.187 ms - -[0m
+2026-06-18 19:34:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 284.806 ms - -[0m
+2026-06-18 19:34:53 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 501.218 ms - -[0m
+2026-06-18 19:35:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 367.231 ms - -[0m
+2026-06-18 19:35:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 489.120 ms - -[0m
+2026-06-18 19:35:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 246.532 ms - -[0m
+2026-06-18 19:35:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 266.448 ms - -[0m
+2026-06-18 19:35:54 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 484.540 ms - -[0m
+2026-06-18 19:36:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 365.979 ms - -[0m
+2026-06-18 19:36:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.767 ms - -[0m
+2026-06-18 19:36:53 [info]: [0mGET /api/billing/dashboard [36m304[0m 197.529 ms - -[0m
+2026-06-18 19:36:53 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 255.518 ms - -[0m
+2026-06-18 19:36:53 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 480.423 ms - -[0m
+2026-06-18 19:37:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 360.120 ms - -[0m
+2026-06-18 19:37:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 479.316 ms - -[0m
+2026-06-18 19:38:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.367 ms - -[0m
+2026-06-18 19:38:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 212.560 ms - -[0m
+2026-06-18 19:38:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 361.280 ms - -[0m
+2026-06-18 19:38:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 481.125 ms - -[0m
+2026-06-18 19:38:11 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 424.249 ms - -[0m
+2026-06-18 19:39:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 376.355 ms - -[0m
+2026-06-18 19:39:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 374.159 ms - -[0m
+2026-06-18 19:39:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 488.889 ms - -[0m
+2026-06-18 19:39:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 583.734 ms - -[0m
+2026-06-18 19:39:12 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 593.523 ms - -[0m
+2026-06-18 19:39:39 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 384.421 ms - -[0m
+2026-06-18 19:39:39 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 486.950 ms - -[0m
+2026-06-18 19:39:54 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 1023.318 ms - -[0m
+2026-06-18 19:39:54 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 1142.205 ms - -[0m
+2026-06-18 19:39:54 [info]: [0mGET /api/billing/dashboard [36m304[0m 1214.616 ms - -[0m
+2026-06-18 19:39:54 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 1283.431 ms - -[0m
+2026-06-18 19:39:55 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 1327.300 ms - -[0m
+2026-06-18 19:40:23 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 360.069 ms - -[0m
+2026-06-18 19:40:23 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 533.043 ms - -[0m
+2026-06-18 19:41:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 230.097 ms - -[0m
+2026-06-18 19:41:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 299.756 ms - -[0m
+2026-06-18 19:41:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.182 ms - -[0m
+2026-06-18 19:41:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 530.187 ms - -[0m
+2026-06-18 19:41:11 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 434.080 ms - -[0m
+2026-06-18 19:42:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 223.299 ms - -[0m
+2026-06-18 19:42:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 267.321 ms - -[0m
+2026-06-18 19:42:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 401.438 ms - -[0m
+2026-06-18 19:42:11 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 455.619 ms - -[0m
+2026-06-18 19:42:11 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 431.578 ms - -[0m
+2026-06-18 19:43:11 [info]: [0mGET /api/billing/dashboard [36m304[0m 248.492 ms - -[0m
+2026-06-18 19:43:11 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.716 ms - -[0m
+2026-06-18 19:43:11 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 328.037 ms - -[0m
+2026-06-18 19:43:12 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 435.667 ms - -[0m
+2026-06-18 19:43:12 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 495.739 ms - -[0m
+2026-06-18 19:45:06 [info]: 🔄  MongoDB reconnected.
+2026-06-18 20:20:27 [error]: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+    at Topology.selectServer (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\sdam\topology.js:327:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at process.processTimers (node:internal/timers:523:7)
+    at async tryOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:148:18)
+    at async executeOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:78:16)
+    at async FindCursor._initialize (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\find_cursor.js:62:26)
+    at async FindCursor.cursorInit (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:632:27)
+    at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
+    at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
+2026-06-18 20:20:27 [error]: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+    at Topology.selectServer (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\sdam\topology.js:327:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at process.processTimers (node:internal/timers:523:7)
+    at async tryOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:148:18)
+    at async executeOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:78:16)
+    at async FindCursor._initialize (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\find_cursor.js:62:26)
+    at async FindCursor.cursorInit (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:632:27)
+    at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
+    at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
+2026-06-18 20:20:27 [error]: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+    at Topology.selectServer (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\sdam\topology.js:327:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at process.processTimers (node:internal/timers:523:7)
+    at async tryOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:148:18)
+    at async executeOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:78:16)
+    at async FindCursor._initialize (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\find_cursor.js:62:26)
+    at async FindCursor.cursorInit (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:632:27)
+    at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
+    at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
+2026-06-18 20:20:28 [error]: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+    at Topology.selectServer (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\sdam\topology.js:327:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at process.processTimers (node:internal/timers:523:7)
+    at async tryOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:148:18)
+    at async executeOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:78:16)
+    at async FindCursor._initialize (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\find_cursor.js:62:26)
+    at async FindCursor.cursorInit (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:632:27)
+    at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
+    at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
+2026-06-18 20:20:28 [error]: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+    at Topology.selectServer (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\sdam\topology.js:327:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:520:9)
+    at async tryOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:148:18)
+    at async executeOperation (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\operations\execute_operation.js:78:16)
+    at async FindCursor._initialize (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\find_cursor.js:62:26)
+    at async FindCursor.cursorInit (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:632:27)
+    at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
+    at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
+    at async Collection.findOne (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\collection.js:313:24)
+2026-06-18 20:20:28 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [31m500[0m 2119313.006 ms - -[0m
+2026-06-18 20:20:28 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [31m500[0m 2119183.833 ms - -[0m
+2026-06-18 20:20:28 [info]: [0mGET /api/billing/dashboard [31m500[0m 2119232.881 ms - -[0m
+2026-06-18 20:20:28 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [31m500[0m 2119183.784 ms - -[0m
+2026-06-18 20:20:28 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [31m500[0m 2119567.324 ms - -[0m
+2026-06-18 23:30:54 [info]: [Scheduler] Generating daily report...
+2026-06-18 23:31:10 [warn]: ⚠️   MongoDB disconnected.
+2026-06-18 23:31:11 [info]: 🔄  MongoDB reconnected.
+2026-06-18 23:31:12 [info]: 📬 No SMTP credentials configured. Setting up Ethereal Email test account...
+2026-06-18 23:31:17 [info]: ✉️ Test Email sent successfully! Preview URL: https://ethereal.email/message/ajQyaqtu2Pi7DJ.jajQybYtyfEwQRWyqAAAAAQ6HPyRpZHS7CvjWl4SSN1g
+2026-06-18 23:31:17 [info]: [Scheduler] Daily report sent successfully.
+2026-06-18 23:31:34 [info]: [0mGET /api/auth/me [36m304[0m 203.822 ms - -[0m
+2026-06-18 23:31:35 [info]: [0mGET /api/auth/me [36m304[0m 286.183 ms - -[0m
+2026-06-18 23:31:36 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 812.036 ms - -[0m
+2026-06-18 23:31:36 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 871.081 ms - -[0m
+2026-06-18 23:31:36 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 942.215 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard [32m200[0m 994.463 ms - 310[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 1084.491 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 1146.597 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [32m200[0m 1131.083 ms - 124[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/auth/me [36m304[0m 270.380 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/auth/me [36m304[0m 214.035 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [32m200[0m 297.309 ms - 311[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 1672.427 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 1698.174 ms - -[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [32m200[0m 290.293 ms - 312[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [32m200[0m 311.477 ms - 315[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [32m200[0m 361.028 ms - 311[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [32m200[0m 240.292 ms - 310[0m
+2026-06-18 23:31:37 [info]: [0mGET /api/billing/dashboard [32m200[0m 199.257 ms - 310[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [32m200[0m 317.276 ms - 124[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [32m200[0m 208.188 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [32m200[0m 430.053 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-11T18:30:00.000Z&endDate=2026-06-12T18:29:59.999Z [36m304[0m 216.728 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-15T18:30:00.000Z&endDate=2026-06-16T18:29:59.999Z [36m304[0m 201.463 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-14T18:30:00.000Z&endDate=2026-06-15T18:29:59.999Z [36m304[0m 201.223 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [32m200[0m 396.530 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [32m200[0m 1095.241 ms - 312[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-16T18:30:00.000Z&endDate=2026-06-17T18:29:59.999Z [36m304[0m 218.816 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-17T18:30:00.000Z&endDate=2026-06-18T18:29:59.999Z [36m304[0m 203.168 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.683 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [32m200[0m 1219.761 ms - 314[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 201.018 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 298.356 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-12T18:30:00.000Z&endDate=2026-06-13T18:29:59.999Z [36m304[0m 201.601 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/dashboard?startDate=2026-06-13T18:30:00.000Z&endDate=2026-06-14T18:29:59.999Z [36m304[0m 252.392 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 434.479 ms - -[0m
+2026-06-18 23:31:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 399.826 ms - -[0m
+2026-06-18 23:32:07 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.302 ms - -[0m
+2026-06-18 23:32:08 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 404.229 ms - -[0m
+2026-06-18 23:32:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 201.434 ms - -[0m
+2026-06-18 23:32:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 243.424 ms - -[0m
+2026-06-18 23:32:37 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 328.559 ms - -[0m
+2026-06-18 23:32:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 405.311 ms - -[0m
+2026-06-18 23:32:38 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 430.857 ms - -[0m
+2026-06-18 23:33:07 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 295.267 ms - -[0m
+2026-06-18 23:33:07 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.099 ms - -[0m
+2026-06-18 23:33:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 246.135 ms - -[0m
+2026-06-18 23:33:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 251.597 ms - -[0m
+2026-06-18 23:33:37 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 302.116 ms - -[0m
+2026-06-18 23:33:37 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 409.746 ms - -[0m
+2026-06-18 23:33:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 423.749 ms - -[0m
+2026-06-18 23:34:07 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 304.208 ms - -[0m
+2026-06-18 23:34:07 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 406.716 ms - -[0m
+2026-06-18 23:34:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 196.399 ms - -[0m
+2026-06-18 23:34:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.942 ms - -[0m
+2026-06-18 23:34:37 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.657 ms - -[0m
+2026-06-18 23:34:37 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 405.523 ms - -[0m
+2026-06-18 23:34:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 422.126 ms - -[0m
+2026-06-18 23:35:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 199.669 ms - -[0m
+2026-06-18 23:35:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 214.107 ms - -[0m
+2026-06-18 23:35:37 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.423 ms - -[0m
+2026-06-18 23:36:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 315.431 ms - -[0m
+2026-06-18 23:36:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 415.434 ms - -[0m
+2026-06-18 23:36:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.988 ms - -[0m
+2026-06-18 23:36:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 216.968 ms - -[0m
+2026-06-18 23:36:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 412.320 ms - -[0m
+2026-06-18 23:37:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.707 ms - -[0m
+2026-06-18 23:37:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 414.974 ms - -[0m
+2026-06-18 23:37:37 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.706 ms - -[0m
+2026-06-18 23:37:37 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 215.352 ms - -[0m
+2026-06-18 23:37:38 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.842 ms - -[0m
+2026-06-18 23:38:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 325.794 ms - -[0m
+2026-06-18 23:38:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 400.487 ms - -[0m
+2026-06-18 23:39:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 202.210 ms - -[0m
+2026-06-18 23:39:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.378 ms - -[0m
+2026-06-18 23:39:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.744 ms - -[0m
+2026-06-18 23:39:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 403.377 ms - -[0m
+2026-06-18 23:39:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 397.672 ms - -[0m
+2026-06-18 23:40:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 214.956 ms - -[0m
+2026-06-18 23:40:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.073 ms - -[0m
+2026-06-18 23:40:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.601 ms - -[0m
+2026-06-18 23:40:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 406.279 ms - -[0m
+2026-06-18 23:40:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 405.897 ms - -[0m
+2026-06-18 23:41:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.722 ms - -[0m
+2026-06-18 23:41:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.913 ms - -[0m
+2026-06-18 23:41:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 326.367 ms - -[0m
+2026-06-18 23:41:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 414.248 ms - -[0m
+2026-06-18 23:41:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 466.307 ms - -[0m
+2026-06-18 23:42:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 203.131 ms - -[0m
+2026-06-18 23:42:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.065 ms - -[0m
+2026-06-18 23:42:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 311.360 ms - -[0m
+2026-06-18 23:42:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.455 ms - -[0m
+2026-06-18 23:42:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 432.738 ms - -[0m
+2026-06-18 23:43:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 203.321 ms - -[0m
+2026-06-18 23:43:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.959 ms - -[0m
+2026-06-18 23:43:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.098 ms - -[0m
+2026-06-18 23:43:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 437.370 ms - -[0m
+2026-06-18 23:43:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 433.333 ms - -[0m
+2026-06-18 23:44:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.778 ms - -[0m
+2026-06-18 23:44:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.726 ms - -[0m
+2026-06-18 23:44:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.510 ms - -[0m
+2026-06-18 23:44:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 394.726 ms - -[0m
+2026-06-18 23:44:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 395.978 ms - -[0m
+2026-06-18 23:45:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 212.143 ms - -[0m
+2026-06-18 23:45:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.494 ms - -[0m
+2026-06-18 23:45:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 292.864 ms - -[0m
+2026-06-18 23:45:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 399.333 ms - -[0m
+2026-06-18 23:45:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.428 ms - -[0m
+2026-06-18 23:46:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 212.946 ms - -[0m
+2026-06-18 23:46:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.938 ms - -[0m
+2026-06-18 23:46:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 327.259 ms - -[0m
+2026-06-18 23:46:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 430.135 ms - -[0m
+2026-06-18 23:46:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 431.990 ms - -[0m
+2026-06-18 23:47:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.480 ms - -[0m
+2026-06-18 23:47:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.617 ms - -[0m
+2026-06-18 23:47:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.332 ms - -[0m
+2026-06-18 23:47:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.554 ms - -[0m
+2026-06-18 23:47:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 434.773 ms - -[0m
+2026-06-18 23:48:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.642 ms - -[0m
+2026-06-18 23:48:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.243 ms - -[0m
+2026-06-18 23:48:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.886 ms - -[0m
+2026-06-18 23:48:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 403.833 ms - -[0m
+2026-06-18 23:48:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 431.847 ms - -[0m
+2026-06-18 23:49:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 197.452 ms - -[0m
+2026-06-18 23:49:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.595 ms - -[0m
+2026-06-18 23:49:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 293.585 ms - -[0m
+2026-06-18 23:49:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.885 ms - -[0m
+2026-06-18 23:49:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 430.295 ms - -[0m
+2026-06-18 23:50:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.092 ms - -[0m
+2026-06-18 23:50:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 263.129 ms - -[0m
+2026-06-18 23:50:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.375 ms - -[0m
+2026-06-18 23:50:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.210 ms - -[0m
+2026-06-18 23:50:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 432.420 ms - -[0m
+2026-06-18 23:51:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.222 ms - -[0m
+2026-06-18 23:51:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.576 ms - -[0m
+2026-06-18 23:51:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 293.425 ms - -[0m
+2026-06-18 23:51:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 429.252 ms - -[0m
+2026-06-18 23:51:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.898 ms - -[0m
+2026-06-18 23:52:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.575 ms - -[0m
+2026-06-18 23:52:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.383 ms - -[0m
+2026-06-18 23:52:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 318.136 ms - -[0m
+2026-06-18 23:52:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 398.392 ms - -[0m
+2026-06-18 23:52:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 399.082 ms - -[0m
+2026-06-18 23:53:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 249.479 ms - -[0m
+2026-06-18 23:53:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 258.489 ms - -[0m
+2026-06-18 23:53:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.476 ms - -[0m
+2026-06-18 23:53:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 403.193 ms - -[0m
+2026-06-18 23:53:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 412.852 ms - -[0m
+2026-06-18 23:54:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 204.493 ms - -[0m
+2026-06-18 23:54:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 237.702 ms - -[0m
+2026-06-18 23:54:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 309.657 ms - -[0m
+2026-06-18 23:54:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 411.640 ms - -[0m
+2026-06-18 23:54:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 420.689 ms - -[0m
+2026-06-18 23:55:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.020 ms - -[0m
+2026-06-18 23:55:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.844 ms - -[0m
+2026-06-18 23:55:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 434.123 ms - -[0m
+2026-06-18 23:55:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.710 ms - -[0m
+2026-06-18 23:55:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 399.156 ms - -[0m
+2026-06-18 23:56:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 413.233 ms - -[0m
+2026-06-18 23:56:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.828 ms - -[0m
+2026-06-18 23:56:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 355.589 ms - -[0m
+2026-06-18 23:56:07 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.769 ms - -[0m
+2026-06-18 23:56:07 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 427.998 ms - -[0m
+2026-06-18 23:57:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.350 ms - -[0m
+2026-06-18 23:57:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 200.408 ms - -[0m
+2026-06-18 23:57:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 388.822 ms - -[0m
+2026-06-18 23:57:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 449.851 ms - -[0m
+2026-06-18 23:57:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 435.173 ms - -[0m
+2026-06-18 23:58:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 210.562 ms - -[0m
+2026-06-18 23:58:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 239.298 ms - -[0m
+2026-06-18 23:58:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.965 ms - -[0m
+2026-06-18 23:58:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 409.571 ms - -[0m
+2026-06-18 23:58:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 412.975 ms - -[0m
+2026-06-18 23:59:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 221.883 ms - -[0m
+2026-06-18 23:59:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.597 ms - -[0m
+2026-06-18 23:59:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.177 ms - -[0m
+2026-06-18 23:59:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 400.354 ms - -[0m
+2026-06-18 23:59:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 407.126 ms - -[0m
+2026-06-19 00:00:05 [info]: [0mGET /api/billing/dashboard [32m200[0m 198.163 ms - 290[0m
+2026-06-19 00:00:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 236.067 ms - -[0m
+2026-06-19 00:00:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 295.984 ms - -[0m
+2026-06-19 00:00:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 404.763 ms - -[0m
+2026-06-19 00:00:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 423.634 ms - -[0m
+2026-06-19 00:01:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.087 ms - -[0m
+2026-06-19 00:01:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.903 ms - -[0m
+2026-06-19 00:01:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.080 ms - -[0m
+2026-06-19 00:01:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 448.186 ms - -[0m
+2026-06-19 00:01:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 399.138 ms - -[0m
+2026-06-19 00:02:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.445 ms - -[0m
+2026-06-19 00:02:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 318.107 ms - -[0m
+2026-06-19 00:02:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.918 ms - -[0m
+2026-06-19 00:02:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 403.585 ms - -[0m
+2026-06-19 00:02:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.053 ms - -[0m
+2026-06-19 00:03:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.446 ms - -[0m
+2026-06-19 00:03:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 239.303 ms - -[0m
+2026-06-19 00:03:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.320 ms - -[0m
+2026-06-19 00:03:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 398.532 ms - -[0m
+2026-06-19 00:03:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 392.964 ms - -[0m
+2026-06-19 00:04:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.063 ms - -[0m
+2026-06-19 00:04:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 237.334 ms - -[0m
+2026-06-19 00:04:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 293.609 ms - -[0m
+2026-06-19 00:04:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 399.199 ms - -[0m
+2026-06-19 00:04:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 422.121 ms - -[0m
+2026-06-19 00:05:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.238 ms - -[0m
+2026-06-19 00:05:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.696 ms - -[0m
+2026-06-19 00:05:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.470 ms - -[0m
+2026-06-19 00:05:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.080 ms - -[0m
+2026-06-19 00:05:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 429.672 ms - -[0m
+2026-06-19 00:06:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.535 ms - -[0m
+2026-06-19 00:06:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.755 ms - -[0m
+2026-06-19 00:06:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 305.591 ms - -[0m
+2026-06-19 00:06:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 430.070 ms - -[0m
+2026-06-19 00:06:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 393.705 ms - -[0m
+2026-06-19 00:07:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 203.304 ms - -[0m
+2026-06-19 00:07:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 237.281 ms - -[0m
+2026-06-19 00:07:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 317.689 ms - -[0m
+2026-06-19 00:07:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.442 ms - -[0m
+2026-06-19 00:07:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 392.731 ms - -[0m
+2026-06-19 00:08:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 218.592 ms - -[0m
+2026-06-19 00:08:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.364 ms - -[0m
+2026-06-19 00:08:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 237.186 ms - -[0m
+2026-06-19 00:08:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 399.803 ms - -[0m
+2026-06-19 00:08:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 408.168 ms - -[0m
+2026-06-19 00:09:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 200.069 ms - -[0m
+2026-06-19 00:09:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 240.096 ms - -[0m
+2026-06-19 00:09:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.081 ms - -[0m
+2026-06-19 00:09:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 413.579 ms - -[0m
+2026-06-19 00:09:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 423.430 ms - -[0m
+2026-06-19 00:10:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.465 ms - -[0m
+2026-06-19 00:10:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.332 ms - -[0m
+2026-06-19 00:10:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 303.382 ms - -[0m
+2026-06-19 00:10:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 402.929 ms - -[0m
+2026-06-19 00:10:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 443.155 ms - -[0m
+2026-06-19 00:11:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.495 ms - -[0m
+2026-06-19 00:11:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.498 ms - -[0m
+2026-06-19 00:11:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.531 ms - -[0m
+2026-06-19 00:11:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.598 ms - -[0m
+2026-06-19 00:11:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 433.179 ms - -[0m
+2026-06-19 00:12:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.248 ms - -[0m
+2026-06-19 00:12:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.496 ms - -[0m
+2026-06-19 00:12:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.734 ms - -[0m
+2026-06-19 00:12:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 428.874 ms - -[0m
+2026-06-19 00:12:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 409.793 ms - -[0m
+2026-06-19 00:13:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.524 ms - -[0m
+2026-06-19 00:13:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 253.448 ms - -[0m
+2026-06-19 00:13:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 320.994 ms - -[0m
+2026-06-19 00:13:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 418.337 ms - -[0m
+2026-06-19 00:13:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.658 ms - -[0m
+2026-06-19 00:14:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.809 ms - -[0m
+2026-06-19 00:14:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.659 ms - -[0m
+2026-06-19 00:14:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.619 ms - -[0m
+2026-06-19 00:14:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 398.283 ms - -[0m
+2026-06-19 00:14:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.193 ms - -[0m
+2026-06-19 00:15:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 205.995 ms - -[0m
+2026-06-19 00:15:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.451 ms - -[0m
+2026-06-19 00:15:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.490 ms - -[0m
+2026-06-19 00:15:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 406.380 ms - -[0m
+2026-06-19 00:15:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 427.707 ms - -[0m
+2026-06-19 00:16:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.314 ms - -[0m
+2026-06-19 00:16:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 241.892 ms - -[0m
+2026-06-19 00:16:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.006 ms - -[0m
+2026-06-19 00:16:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 425.644 ms - -[0m
+2026-06-19 00:16:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.091 ms - -[0m
+2026-06-19 00:17:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 211.686 ms - -[0m
+2026-06-19 00:17:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.952 ms - -[0m
+2026-06-19 00:17:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.696 ms - -[0m
+2026-06-19 00:17:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 411.010 ms - -[0m
+2026-06-19 00:17:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 406.808 ms - -[0m
+2026-06-19 00:18:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 240.916 ms - -[0m
+2026-06-19 00:18:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 216.058 ms - -[0m
+2026-06-19 00:18:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 323.190 ms - -[0m
+2026-06-19 00:18:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.680 ms - -[0m
+2026-06-19 00:18:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.160 ms - -[0m
+2026-06-19 00:19:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.253 ms - -[0m
+2026-06-19 00:19:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 215.580 ms - -[0m
+2026-06-19 00:19:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 311.404 ms - -[0m
+2026-06-19 00:19:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 412.637 ms - -[0m
+2026-06-19 00:19:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 474.316 ms - -[0m
+2026-06-19 00:20:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.014 ms - -[0m
+2026-06-19 00:20:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.284 ms - -[0m
+2026-06-19 00:20:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.923 ms - -[0m
+2026-06-19 00:20:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.075 ms - -[0m
+2026-06-19 00:20:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 480.138 ms - -[0m
+2026-06-19 00:21:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.190 ms - -[0m
+2026-06-19 00:21:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 215.354 ms - -[0m
+2026-06-19 00:21:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.901 ms - -[0m
+2026-06-19 00:21:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 397.870 ms - -[0m
+2026-06-19 00:21:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 479.952 ms - -[0m
+2026-06-19 00:22:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 202.119 ms - -[0m
+2026-06-19 00:22:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 221.288 ms - -[0m
+2026-06-19 00:22:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.873 ms - -[0m
+2026-06-19 00:22:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 397.514 ms - -[0m
+2026-06-19 00:22:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 482.760 ms - -[0m
+2026-06-19 00:23:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.253 ms - -[0m
+2026-06-19 00:23:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 215.911 ms - -[0m
+2026-06-19 00:23:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 295.266 ms - -[0m
+2026-06-19 00:23:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.439 ms - -[0m
+2026-06-19 00:23:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 484.073 ms - -[0m
+2026-06-19 00:24:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.287 ms - -[0m
+2026-06-19 00:24:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.123 ms - -[0m
+2026-06-19 00:24:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.194 ms - -[0m
+2026-06-19 00:24:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 395.739 ms - -[0m
+2026-06-19 00:24:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 475.789 ms - -[0m
+2026-06-19 00:25:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 204.588 ms - -[0m
+2026-06-19 00:25:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.378 ms - -[0m
+2026-06-19 00:25:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 311.643 ms - -[0m
+2026-06-19 00:25:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 395.889 ms - -[0m
+2026-06-19 00:25:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 482.798 ms - -[0m
+2026-06-19 00:26:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.714 ms - -[0m
+2026-06-19 00:26:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 220.126 ms - -[0m
+2026-06-19 00:26:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.181 ms - -[0m
+2026-06-19 00:26:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 406.878 ms - -[0m
+2026-06-19 00:26:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 482.778 ms - -[0m
+2026-06-19 00:27:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 207.960 ms - -[0m
+2026-06-19 00:27:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 216.475 ms - -[0m
+2026-06-19 00:27:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.651 ms - -[0m
+2026-06-19 00:27:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 410.368 ms - -[0m
+2026-06-19 00:27:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 485.163 ms - -[0m
+2026-06-19 00:28:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 204.860 ms - -[0m
+2026-06-19 00:28:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 217.513 ms - -[0m
+2026-06-19 00:28:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 309.196 ms - -[0m
+2026-06-19 00:28:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.353 ms - -[0m
+2026-06-19 00:28:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 489.202 ms - -[0m
+2026-06-19 00:29:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.420 ms - -[0m
+2026-06-19 00:29:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 211.493 ms - -[0m
+2026-06-19 00:29:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.483 ms - -[0m
+2026-06-19 00:29:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.019 ms - -[0m
+2026-06-19 00:29:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 485.229 ms - -[0m
+2026-06-19 00:30:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 202.045 ms - -[0m
+2026-06-19 00:30:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 211.475 ms - -[0m
+2026-06-19 00:30:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 338.137 ms - -[0m
+2026-06-19 00:30:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 428.883 ms - -[0m
+2026-06-19 00:30:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 481.893 ms - -[0m
+2026-06-19 00:31:08 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 488.562 ms - -[0m
+2026-06-19 00:31:08 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.559 ms - -[0m
+2026-06-19 00:31:08 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.379 ms - -[0m
+2026-06-19 00:31:08 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.934 ms - -[0m
+2026-06-19 00:31:08 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.204 ms - -[0m
+2026-06-19 00:32:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.539 ms - -[0m
+2026-06-19 00:32:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 231.256 ms - -[0m
+2026-06-19 00:32:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.180 ms - -[0m
+2026-06-19 00:32:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 412.659 ms - -[0m
+2026-06-19 00:32:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 484.192 ms - -[0m
+2026-06-19 00:33:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 221.520 ms - -[0m
+2026-06-19 00:33:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 226.033 ms - -[0m
+2026-06-19 00:33:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 319.070 ms - -[0m
+2026-06-19 00:33:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 413.102 ms - -[0m
+2026-06-19 00:33:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 519.490 ms - -[0m
+2026-06-19 00:34:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 304.825 ms - -[0m
+2026-06-19 00:34:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 493.021 ms - -[0m
+2026-06-19 00:34:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.803 ms - -[0m
+2026-06-19 00:34:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 203.814 ms - -[0m
+2026-06-19 00:34:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 483.758 ms - -[0m
+2026-06-19 00:35:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.359 ms - -[0m
+2026-06-19 00:35:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 213.080 ms - -[0m
+2026-06-19 00:35:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 303.961 ms - -[0m
+2026-06-19 00:35:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 420.546 ms - -[0m
+2026-06-19 00:35:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 512.513 ms - -[0m
+2026-06-19 00:36:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.551 ms - -[0m
+2026-06-19 00:36:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 217.934 ms - -[0m
+2026-06-19 00:36:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.136 ms - -[0m
+2026-06-19 00:36:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 403.963 ms - -[0m
+2026-06-19 00:36:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 492.739 ms - -[0m
+2026-06-19 00:37:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 203.256 ms - -[0m
+2026-06-19 00:37:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 216.425 ms - -[0m
+2026-06-19 00:37:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.693 ms - -[0m
+2026-06-19 00:37:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.605 ms - -[0m
+2026-06-19 00:37:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 484.197 ms - -[0m
+2026-06-19 00:38:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 213.232 ms - -[0m
+2026-06-19 00:38:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.335 ms - -[0m
+2026-06-19 00:38:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.211 ms - -[0m
+2026-06-19 00:38:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 485.895 ms - -[0m
+2026-06-19 00:38:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 404.950 ms - -[0m
+2026-06-19 00:39:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 205.582 ms - -[0m
+2026-06-19 00:39:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 215.428 ms - -[0m
+2026-06-19 00:39:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 362.810 ms - -[0m
+2026-06-19 00:39:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 414.387 ms - -[0m
+2026-06-19 00:39:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.747 ms - -[0m
+2026-06-19 00:40:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 218.499 ms - -[0m
+2026-06-19 00:40:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 241.930 ms - -[0m
+2026-06-19 00:40:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 327.519 ms - -[0m
+2026-06-19 00:40:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 401.032 ms - -[0m
+2026-06-19 00:40:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 408.311 ms - -[0m
+2026-06-19 00:41:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 218.945 ms - -[0m
+2026-06-19 00:41:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.769 ms - -[0m
+2026-06-19 00:41:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 337.967 ms - -[0m
+2026-06-19 00:41:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 460.794 ms - -[0m
+2026-06-19 00:41:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 430.810 ms - -[0m
+2026-06-19 00:42:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.972 ms - -[0m
+2026-06-19 00:42:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.952 ms - -[0m
+2026-06-19 00:42:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.591 ms - -[0m
+2026-06-19 00:42:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 431.444 ms - -[0m
+2026-06-19 00:42:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 402.954 ms - -[0m
+2026-06-19 00:43:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 216.225 ms - -[0m
+2026-06-19 00:43:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.343 ms - -[0m
+2026-06-19 00:43:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.774 ms - -[0m
+2026-06-19 00:43:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 415.781 ms - -[0m
+2026-06-19 00:43:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 403.929 ms - -[0m
+2026-06-19 00:44:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 213.662 ms - -[0m
+2026-06-19 00:44:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 240.745 ms - -[0m
+2026-06-19 00:44:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 312.340 ms - -[0m
+2026-06-19 00:44:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 406.883 ms - -[0m
+2026-06-19 00:44:05 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 391.518 ms - -[0m
+2026-06-19 00:45:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.724 ms - -[0m
+2026-06-19 00:45:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.836 ms - -[0m
+2026-06-19 00:45:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 295.854 ms - -[0m
+2026-06-19 00:45:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.340 ms - -[0m
+2026-06-19 00:45:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 418.016 ms - -[0m
+2026-06-19 00:46:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.142 ms - -[0m
+2026-06-19 00:46:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.170 ms - -[0m
+2026-06-19 00:46:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 301.411 ms - -[0m
+2026-06-19 00:46:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 438.167 ms - -[0m
+2026-06-19 00:46:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.009 ms - -[0m
+2026-06-19 00:47:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 222.516 ms - -[0m
+2026-06-19 00:47:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 261.583 ms - -[0m
+2026-06-19 00:47:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 351.799 ms - -[0m
+2026-06-19 00:47:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 424.990 ms - -[0m
+2026-06-19 00:47:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.282 ms - -[0m
+2026-06-19 00:48:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 213.829 ms - -[0m
+2026-06-19 00:48:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 240.430 ms - -[0m
+2026-06-19 00:48:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 303.424 ms - -[0m
+2026-06-19 00:48:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 409.635 ms - -[0m
+2026-06-19 00:48:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 405.593 ms - -[0m
+2026-06-19 00:49:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.760 ms - -[0m
+2026-06-19 00:49:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.482 ms - -[0m
+2026-06-19 00:49:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 300.865 ms - -[0m
+2026-06-19 00:49:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 412.859 ms - -[0m
+2026-06-19 00:49:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 418.446 ms - -[0m
+2026-06-19 00:50:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 197.511 ms - -[0m
+2026-06-19 00:50:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 249.736 ms - -[0m
+2026-06-19 00:50:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 298.418 ms - -[0m
+2026-06-19 00:50:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 422.361 ms - -[0m
+2026-06-19 00:50:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 402.830 ms - -[0m
+2026-06-19 00:51:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.293 ms - -[0m
+2026-06-19 00:51:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.098 ms - -[0m
+2026-06-19 00:51:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 314.015 ms - -[0m
+2026-06-19 00:51:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 416.773 ms - -[0m
+2026-06-19 00:51:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 395.598 ms - -[0m
+2026-06-19 00:52:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 213.588 ms - -[0m
+2026-06-19 00:52:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.364 ms - -[0m
+2026-06-19 00:52:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.641 ms - -[0m
+2026-06-19 00:52:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 426.821 ms - -[0m
+2026-06-19 00:52:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 403.395 ms - -[0m
+2026-06-19 00:53:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.840 ms - -[0m
+2026-06-19 00:53:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.415 ms - -[0m
+2026-06-19 00:53:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 405.597 ms - -[0m
+2026-06-19 00:53:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 246.636 ms - -[0m
+2026-06-19 00:53:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 432.479 ms - -[0m
+2026-06-19 00:54:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 216.866 ms - -[0m
+2026-06-19 00:54:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 230.612 ms - -[0m
+2026-06-19 00:54:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 378.216 ms - -[0m
+2026-06-19 00:54:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 424.901 ms - -[0m
+2026-06-19 00:54:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 413.518 ms - -[0m
+2026-06-19 00:55:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 236.992 ms - -[0m
+2026-06-19 00:55:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 292.758 ms - -[0m
+2026-06-19 00:55:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 363.454 ms - -[0m
+2026-06-19 00:55:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 435.329 ms - -[0m
+2026-06-19 00:55:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 437.167 ms - -[0m
+2026-06-19 00:56:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 209.009 ms - -[0m
+2026-06-19 00:56:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 345.991 ms - -[0m
+2026-06-19 00:56:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 429.947 ms - -[0m
+2026-06-19 00:56:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 265.953 ms - -[0m
+2026-06-19 00:56:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 406.999 ms - -[0m
+2026-06-19 00:57:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.910 ms - -[0m
+2026-06-19 00:57:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 200.668 ms - -[0m
+2026-06-19 00:57:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 370.668 ms - -[0m
+2026-06-19 00:57:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 435.514 ms - -[0m
+2026-06-19 00:57:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 432.421 ms - -[0m
+2026-06-19 00:58:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 209.049 ms - -[0m
+2026-06-19 00:58:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 256.638 ms - -[0m
+2026-06-19 00:58:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 314.052 ms - -[0m
+2026-06-19 00:58:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 415.338 ms - -[0m
+2026-06-19 00:58:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 484.820 ms - -[0m
+2026-06-19 00:59:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 222.980 ms - -[0m
+2026-06-19 00:59:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 262.414 ms - -[0m
+2026-06-19 00:59:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 330.670 ms - -[0m
+2026-06-19 00:59:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 406.360 ms - -[0m
+2026-06-19 00:59:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 481.156 ms - -[0m
+2026-06-19 01:00:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 269.755 ms - -[0m
+2026-06-19 01:00:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 310.834 ms - -[0m
+2026-06-19 01:00:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 375.119 ms - -[0m
+2026-06-19 01:00:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 466.415 ms - -[0m
+2026-06-19 01:00:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 543.438 ms - -[0m
+2026-06-19 01:01:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 244.789 ms - -[0m
+2026-06-19 01:01:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 304.385 ms - -[0m
+2026-06-19 01:01:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 285.124 ms - -[0m
+2026-06-19 01:01:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 423.763 ms - -[0m
+2026-06-19 01:01:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 429.985 ms - -[0m
+2026-06-19 01:02:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 203.252 ms - -[0m
+2026-06-19 01:02:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 248.331 ms - -[0m
+2026-06-19 01:02:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 314.703 ms - -[0m
+2026-06-19 01:02:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 429.867 ms - -[0m
+2026-06-19 01:02:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 429.596 ms - -[0m
+2026-06-19 01:03:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 219.837 ms - -[0m
+2026-06-19 01:03:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.663 ms - -[0m
+2026-06-19 01:03:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 334.154 ms - -[0m
+2026-06-19 01:03:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 443.533 ms - -[0m
+2026-06-19 01:03:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 422.298 ms - -[0m
+2026-06-19 01:04:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 218.710 ms - -[0m
+2026-06-19 01:04:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.277 ms - -[0m
+2026-06-19 01:04:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.743 ms - -[0m
+2026-06-19 01:04:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.198 ms - -[0m
+2026-06-19 01:04:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 471.688 ms - -[0m
+2026-06-19 01:05:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.266 ms - -[0m
+2026-06-19 01:05:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 245.357 ms - -[0m
+2026-06-19 01:05:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 303.515 ms - -[0m
+2026-06-19 01:05:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 425.425 ms - -[0m
+2026-06-19 01:05:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 445.334 ms - -[0m
+2026-06-19 01:06:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.093 ms - -[0m
+2026-06-19 01:06:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 212.390 ms - -[0m
+2026-06-19 01:06:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 433.624 ms - -[0m
+2026-06-19 01:06:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 253.332 ms - -[0m
+2026-06-19 01:06:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 447.869 ms - -[0m
+2026-06-19 01:07:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 202.488 ms - -[0m
+2026-06-19 01:07:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 212.856 ms - -[0m
+2026-06-19 01:07:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 375.908 ms - -[0m
+2026-06-19 01:07:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 413.322 ms - -[0m
+2026-06-19 01:07:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.804 ms - -[0m
+2026-06-19 01:08:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 214.749 ms - -[0m
+2026-06-19 01:08:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 240.527 ms - -[0m
+2026-06-19 01:08:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.189 ms - -[0m
+2026-06-19 01:08:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 427.252 ms - -[0m
+2026-06-19 01:08:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 414.472 ms - -[0m
+2026-06-19 01:09:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.258 ms - -[0m
+2026-06-19 01:09:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 287.788 ms - -[0m
+2026-06-19 01:09:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 325.774 ms - -[0m
+2026-06-19 01:09:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 431.111 ms - -[0m
+2026-06-19 01:09:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 497.378 ms - -[0m
+2026-06-19 01:10:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 212.515 ms - -[0m
+2026-06-19 01:10:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.150 ms - -[0m
+2026-06-19 01:10:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.726 ms - -[0m
+2026-06-19 01:10:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 398.978 ms - -[0m
+2026-06-19 01:10:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 432.729 ms - -[0m
+2026-06-19 01:11:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 217.410 ms - -[0m
+2026-06-19 01:11:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 243.979 ms - -[0m
+2026-06-19 01:11:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 324.345 ms - -[0m
+2026-06-19 01:11:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 464.809 ms - -[0m
+2026-06-19 01:11:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 420.491 ms - -[0m
+2026-06-19 01:12:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 208.977 ms - -[0m
+2026-06-19 01:12:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 246.248 ms - -[0m
+2026-06-19 01:12:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 363.929 ms - -[0m
+2026-06-19 01:12:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 476.740 ms - -[0m
+2026-06-19 01:12:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 439.519 ms - -[0m
+2026-06-19 01:13:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 221.244 ms - -[0m
+2026-06-19 01:13:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 423.906 ms - -[0m
+2026-06-19 01:13:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 457.678 ms - -[0m
+2026-06-19 01:13:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 276.861 ms - -[0m
+2026-06-19 01:13:07 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 443.004 ms - -[0m
+2026-06-19 01:14:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 467.802 ms - -[0m
+2026-06-19 01:14:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 346.041 ms - -[0m
+2026-06-19 01:14:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 233.044 ms - -[0m
+2026-06-19 01:14:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.271 ms - -[0m
+2026-06-19 01:14:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 439.756 ms - -[0m
+2026-06-19 01:15:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 237.923 ms - -[0m
+2026-06-19 01:15:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 222.610 ms - -[0m
+2026-06-19 01:15:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 383.959 ms - -[0m
+2026-06-19 01:15:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 449.431 ms - -[0m
+2026-06-19 01:15:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 407.729 ms - -[0m
+2026-06-19 01:16:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 218.202 ms - -[0m
+2026-06-19 01:16:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 248.148 ms - -[0m
+2026-06-19 01:16:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 346.140 ms - -[0m
+2026-06-19 01:16:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 488.993 ms - -[0m
+2026-06-19 01:16:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 443.707 ms - -[0m
+2026-06-19 01:17:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.100 ms - -[0m
+2026-06-19 01:17:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 252.463 ms - -[0m
+2026-06-19 01:17:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 315.047 ms - -[0m
+2026-06-19 01:17:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 476.230 ms - -[0m
+2026-06-19 01:17:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 511.305 ms - -[0m
+2026-06-19 01:18:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 228.431 ms - -[0m
+2026-06-19 01:18:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 269.633 ms - -[0m
+2026-06-19 01:18:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 344.031 ms - -[0m
+2026-06-19 01:18:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 428.599 ms - -[0m
+2026-06-19 01:18:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 480.746 ms - -[0m
+2026-06-19 01:19:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.785 ms - -[0m
+2026-06-19 01:19:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 261.935 ms - -[0m
+2026-06-19 01:19:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 302.304 ms - -[0m
+2026-06-19 01:19:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 424.905 ms - -[0m
+2026-06-19 01:19:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 440.860 ms - -[0m
+2026-06-19 01:20:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 205.782 ms - -[0m
+2026-06-19 01:20:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.617 ms - -[0m
+2026-06-19 01:20:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 319.208 ms - -[0m
+2026-06-19 01:20:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 427.564 ms - -[0m
+2026-06-19 01:20:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 405.084 ms - -[0m
+2026-06-19 01:21:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 326.578 ms - -[0m
+2026-06-19 01:21:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 451.073 ms - -[0m
+2026-06-19 01:21:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 219.275 ms - -[0m
+2026-06-19 01:21:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 223.959 ms - -[0m
+2026-06-19 01:21:07 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 440.127 ms - -[0m
+2026-06-19 01:22:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.694 ms - -[0m
+2026-06-19 01:22:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 253.442 ms - -[0m
+2026-06-19 01:22:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.922 ms - -[0m
+2026-06-19 01:22:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 404.978 ms - -[0m
+2026-06-19 01:22:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 444.520 ms - -[0m
+2026-06-19 01:23:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.673 ms - -[0m
+2026-06-19 01:23:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 320.334 ms - -[0m
+2026-06-19 01:23:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 252.354 ms - -[0m
+2026-06-19 01:23:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 483.586 ms - -[0m
+2026-06-19 01:23:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 449.563 ms - -[0m
+2026-06-19 01:24:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 198.806 ms - -[0m
+2026-06-19 01:24:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 242.827 ms - -[0m
+2026-06-19 01:24:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 315.151 ms - -[0m
+2026-06-19 01:24:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 416.525 ms - -[0m
+2026-06-19 01:24:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 414.385 ms - -[0m
+2026-06-19 01:25:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 224.021 ms - -[0m
+2026-06-19 01:25:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 250.568 ms - -[0m
+2026-06-19 01:25:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 330.147 ms - -[0m
+2026-06-19 01:25:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 404.913 ms - -[0m
+2026-06-19 01:25:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 423.379 ms - -[0m
+2026-06-19 01:26:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 208.134 ms - -[0m
+2026-06-19 01:26:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 247.291 ms - -[0m
+2026-06-19 01:26:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.889 ms - -[0m
+2026-06-19 01:26:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 400.196 ms - -[0m
+2026-06-19 01:26:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 446.788 ms - -[0m
+2026-06-19 01:27:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 255.300 ms - -[0m
+2026-06-19 01:27:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.833 ms - -[0m
+2026-06-19 01:27:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 256.531 ms - -[0m
+2026-06-19 01:27:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 428.119 ms - -[0m
+2026-06-19 01:27:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 459.613 ms - -[0m
+2026-06-19 01:28:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 270.500 ms - -[0m
+2026-06-19 01:28:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 476.608 ms - -[0m
+2026-06-19 01:28:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 373.082 ms - -[0m
+2026-06-19 01:28:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 300.072 ms - -[0m
+2026-06-19 01:28:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 516.191 ms - -[0m
+2026-06-19 01:29:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 202.892 ms - -[0m
+2026-06-19 01:29:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 213.167 ms - -[0m
+2026-06-19 01:29:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 440.831 ms - -[0m
+2026-06-19 01:29:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 466.163 ms - -[0m
+2026-06-19 01:29:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 463.059 ms - -[0m
+2026-06-19 01:30:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 262.740 ms - -[0m
+2026-06-19 01:30:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 255.817 ms - -[0m
+2026-06-19 01:30:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 425.484 ms - -[0m
+2026-06-19 01:30:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 478.850 ms - -[0m
+2026-06-19 01:30:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 561.570 ms - -[0m
+2026-06-19 01:31:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 294.812 ms - -[0m
+2026-06-19 01:31:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 290.929 ms - -[0m
+2026-06-19 01:31:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 445.881 ms - -[0m
+2026-06-19 01:31:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 530.120 ms - -[0m
+2026-06-19 01:31:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 714.499 ms - -[0m
+2026-06-19 01:32:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 202.068 ms - -[0m
+2026-06-19 01:32:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 231.113 ms - -[0m
+2026-06-19 01:32:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 297.688 ms - -[0m
+2026-06-19 01:32:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 442.095 ms - -[0m
+2026-06-19 01:32:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 542.597 ms - -[0m
+2026-06-19 01:33:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 208.196 ms - -[0m
+2026-06-19 01:33:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 218.180 ms - -[0m
+2026-06-19 01:33:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 322.232 ms - -[0m
+2026-06-19 01:33:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 434.110 ms - -[0m
+2026-06-19 01:33:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 555.748 ms - -[0m
+2026-06-19 01:34:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 234.947 ms - -[0m
+2026-06-19 01:34:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 237.576 ms - -[0m
+2026-06-19 01:34:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 302.247 ms - -[0m
+2026-06-19 01:34:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 562.640 ms - -[0m
+2026-06-19 01:34:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 484.618 ms - -[0m
+2026-06-19 01:35:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 254.698 ms - -[0m
+2026-06-19 01:35:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 255.272 ms - -[0m
+2026-06-19 01:35:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 393.288 ms - -[0m
+2026-06-19 01:35:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.306 ms - -[0m
+2026-06-19 01:35:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 436.377 ms - -[0m
+2026-06-19 01:36:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 382.573 ms - -[0m
+2026-06-19 01:36:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 442.141 ms - -[0m
+2026-06-19 01:36:06 [info]: [0mGET /api/billing/dashboard [36m304[0m 211.801 ms - -[0m
+2026-06-19 01:36:06 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 270.038 ms - -[0m
+2026-06-19 01:36:07 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 470.983 ms - -[0m
+2026-06-19 01:37:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 245.072 ms - -[0m
+2026-06-19 01:37:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 233.457 ms - -[0m
+2026-06-19 01:37:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 308.772 ms - -[0m
+2026-06-19 01:37:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.991 ms - -[0m
+2026-06-19 01:37:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 419.468 ms - -[0m
+2026-06-19 01:38:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 219.304 ms - -[0m
+2026-06-19 01:38:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 217.789 ms - -[0m
+2026-06-19 01:38:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 296.366 ms - -[0m
+2026-06-19 01:38:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 407.041 ms - -[0m
+2026-06-19 01:38:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 494.594 ms - -[0m
+2026-06-19 01:39:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 198.875 ms - -[0m
+2026-06-19 01:39:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 213.283 ms - -[0m
+2026-06-19 01:39:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 334.085 ms - -[0m
+2026-06-19 01:39:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 485.262 ms - -[0m
+2026-06-19 01:39:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 412.851 ms - -[0m
+2026-06-19 01:40:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 209.337 ms - -[0m
+2026-06-19 01:40:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 209.703 ms - -[0m
+2026-06-19 01:40:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 387.877 ms - -[0m
+2026-06-19 01:40:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 435.621 ms - -[0m
+2026-06-19 01:40:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 418.504 ms - -[0m
+2026-06-19 01:41:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 222.610 ms - -[0m
+2026-06-19 01:41:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 263.914 ms - -[0m
+2026-06-19 01:41:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 327.953 ms - -[0m
+2026-06-19 01:41:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 433.107 ms - -[0m
+2026-06-19 01:41:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 411.177 ms - -[0m
+2026-06-19 01:42:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 246.919 ms - -[0m
+2026-06-19 01:42:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 278.045 ms - -[0m
+2026-06-19 01:42:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 361.496 ms - -[0m
+2026-06-19 01:42:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 467.479 ms - -[0m
+2026-06-19 01:42:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 450.440 ms - -[0m
+2026-06-19 01:43:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 231.311 ms - -[0m
+2026-06-19 01:43:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 279.462 ms - -[0m
+2026-06-19 01:43:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 347.381 ms - -[0m
+2026-06-19 01:43:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 425.841 ms - -[0m
+2026-06-19 01:43:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 481.482 ms - -[0m
+2026-06-19 01:44:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.985 ms - -[0m
+2026-06-19 01:44:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 252.901 ms - -[0m
+2026-06-19 01:44:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 306.031 ms - -[0m
+2026-06-19 01:44:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 438.886 ms - -[0m
+2026-06-19 01:44:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 394.998 ms - -[0m
+2026-06-19 01:45:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.568 ms - -[0m
+2026-06-19 01:45:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.826 ms - -[0m
+2026-06-19 01:45:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 316.984 ms - -[0m
+2026-06-19 01:45:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 392.078 ms - -[0m
+2026-06-19 01:45:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 429.693 ms - -[0m
+2026-06-19 01:46:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 215.991 ms - -[0m
+2026-06-19 01:46:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 281.182 ms - -[0m
+2026-06-19 01:46:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 307.068 ms - -[0m
+2026-06-19 01:46:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 419.963 ms - -[0m
+2026-06-19 01:46:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 405.374 ms - -[0m
+2026-06-19 01:47:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 217.273 ms - -[0m
+2026-06-19 01:47:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 255.915 ms - -[0m
+2026-06-19 01:47:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 308.357 ms - -[0m
+2026-06-19 01:47:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 404.911 ms - -[0m
+2026-06-19 01:47:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 433.165 ms - -[0m
+2026-06-19 01:48:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 201.073 ms - -[0m
+2026-06-19 01:48:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.722 ms - -[0m
+2026-06-19 01:48:06 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 313.489 ms - -[0m
+2026-06-19 01:48:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.798 ms - -[0m
+2026-06-19 01:48:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 429.338 ms - -[0m
+2026-06-19 01:49:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 199.839 ms - -[0m
+2026-06-19 01:49:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.975 ms - -[0m
+2026-06-19 01:49:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 292.699 ms - -[0m
+2026-06-19 01:49:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 408.615 ms - -[0m
+2026-06-19 01:49:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 434.711 ms - -[0m
+2026-06-19 01:50:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 216.197 ms - -[0m
+2026-06-19 01:50:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.646 ms - -[0m
+2026-06-19 01:50:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 322.800 ms - -[0m
+2026-06-19 01:50:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 401.622 ms - -[0m
+2026-06-19 01:50:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 449.678 ms - -[0m
+2026-06-19 01:51:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.926 ms - -[0m
+2026-06-19 01:51:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 244.623 ms - -[0m
+2026-06-19 01:51:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 302.537 ms - -[0m
+2026-06-19 01:51:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 420.135 ms - -[0m
+2026-06-19 01:51:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 399.085 ms - -[0m
+2026-06-19 01:52:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 200.212 ms - -[0m
+2026-06-19 01:52:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 240.046 ms - -[0m
+2026-06-19 01:52:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 321.787 ms - -[0m
+2026-06-19 01:52:05 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 402.019 ms - -[0m
+2026-06-19 01:52:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 400.997 ms - -[0m
+2026-06-19 01:53:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 216.322 ms - -[0m
+2026-06-19 01:53:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.648 ms - -[0m
+2026-06-19 01:53:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 304.607 ms - -[0m
+2026-06-19 01:53:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 408.209 ms - -[0m
+2026-06-19 01:53:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 404.357 ms - -[0m
+2026-06-19 01:54:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 194.927 ms - -[0m
+2026-06-19 01:54:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 238.138 ms - -[0m
+2026-06-19 01:54:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 299.605 ms - -[0m
+2026-06-19 01:54:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 406.471 ms - -[0m
+2026-06-19 01:54:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 414.718 ms - -[0m
+2026-06-19 01:55:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.845 ms - -[0m
+2026-06-19 01:55:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 239.140 ms - -[0m
+2026-06-19 01:55:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 309.885 ms - -[0m
+2026-06-19 01:55:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 396.982 ms - -[0m
+2026-06-19 01:55:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 422.127 ms - -[0m
+2026-06-19 01:56:05 [info]: [0mGET /api/billing/dashboard [36m304[0m 206.735 ms - -[0m
+2026-06-19 01:56:05 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 242.494 ms - -[0m
+2026-06-19 01:56:05 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 290.686 ms - -[0m
+2026-06-19 01:56:06 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 419.076 ms - -[0m
+2026-06-19 01:56:06 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 411.226 ms - -[0m
+2026-06-19 01:56:43 [info]: [0mGET /api/billing/dashboard [36m304[0m 197.255 ms - -[0m
+2026-06-19 01:56:43 [info]: [0mGET /api/inventory/alerts/low-stock?limit=1 [36m304[0m 251.522 ms - -[0m
+2026-06-19 01:56:43 [info]: [0mGET /api/employees/attendance?date=2026-06-18&limit=8 [36m304[0m 322.897 ms - -[0m
+2026-06-19 01:56:43 [info]: [0mGET /api/billing/invoices?limit=6&page=1 [36m304[0m 413.759 ms - -[0m
+2026-06-19 01:56:43 [info]: [0mGET /api/billing/invoices?isVoided=true&limit=1 [36m304[0m 403.543 ms - -[0m
+2026-06-19 01:56:47 [info]: [0mGET /api/employees [32m200[0m 306.803 ms - -[0m
+2026-06-19 01:56:47 [info]: [0mGET /api/employees [36m304[0m 301.779 ms - -[0m
+2026-06-19 01:56:53 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [32m200[0m 314.171 ms - 124[0m
+2026-06-19 01:56:53 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 296.594 ms - -[0m
+2026-06-19 01:59:13 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-06-19 01:59:13 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-19 01:59:13 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-19 01:59:13 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-19 01:59:13 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-19 01:59:13 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-19 01:59:18 [info]: [0mGET /api/employees [36m304[0m 631.616 ms - -[0m
+2026-06-19 02:02:21 [info]: [0mGET /api/inventory/suppliers [36m304[0m 223.050 ms - -[0m
+2026-06-19 02:02:22 [info]: [0mGET /api/inventory/products?limit=1000 [32m200[0m 380.934 ms - -[0m
+2026-06-19 02:02:22 [info]: [0mGET /api/inventory/suppliers [36m304[0m 214.291 ms - -[0m
+2026-06-19 02:02:22 [info]: [0mGET /api/inventory/products?limit=1000 [36m304[0m 367.594 ms - -[0m
+2026-06-19 02:02:24 [info]: [0mGET /api/inventory/products?limit=60 [32m200[0m 369.089 ms - -[0m
+2026-06-19 02:02:24 [info]: [0mGET /api/inventory/products?limit=60 [36m304[0m 373.859 ms - -[0m
+2026-06-19 02:02:25 [info]: [0mGET /api/inventory/suppliers [36m304[0m 203.579 ms - -[0m
+2026-06-19 02:02:25 [info]: [0mGET /api/inventory/products?limit=1000 [36m304[0m 370.234 ms - -[0m
+2026-06-19 02:02:25 [info]: [0mGET /api/inventory/suppliers [36m304[0m 200.946 ms - -[0m
+2026-06-19 02:02:26 [info]: [0mGET /api/inventory/products?limit=1000 [36m304[0m 373.110 ms - -[0m
+2026-06-19 02:04:16 [info]: [0mGET /api/employees [36m304[0m 376.803 ms - -[0m
+2026-06-19 02:04:16 [info]: [0mGET /api/employees [36m304[0m 363.903 ms - -[0m
+2026-06-19 02:04:18 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 374.399 ms - -[0m
+2026-06-19 02:04:18 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 358.659 ms - -[0m
+2026-06-19 02:06:34 [info]: [0mGET /api/auth/me [32m200[0m 240.077 ms - 338[0m
+2026-06-19 02:06:34 [info]: [0mGET /api/auth/me [36m304[0m 247.505 ms - -[0m
+2026-06-19 02:06:34 [info]: [0mGET /api/employees [36m304[0m 300.459 ms - -[0m
+2026-06-19 02:06:35 [info]: [0mGET /api/employees [36m304[0m 296.691 ms - -[0m
+2026-06-19 02:06:39 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 308.318 ms - -[0m
+2026-06-19 02:06:39 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 301.902 ms - -[0m
+2026-06-19 02:07:14 [info]: [0mGET /api/inventory/suppliers [36m304[0m 256.690 ms - -[0m
+2026-06-19 02:07:14 [info]: [0mGET /api/inventory/products?limit=1000 [36m304[0m 319.716 ms - -[0m
+2026-06-19 02:07:15 [info]: [0mGET /api/inventory/suppliers [36m304[0m 245.525 ms - -[0m
+2026-06-19 02:07:15 [info]: [0mGET /api/inventory/products?limit=1000 [36m304[0m 310.130 ms - -[0m
+2026-06-19 02:07:17 [info]: [0mGET /api/inventory/products?limit=60 [36m304[0m 304.672 ms - -[0m
+2026-06-19 02:07:17 [info]: [0mGET /api/inventory/products?limit=60 [36m304[0m 303.608 ms - -[0m
+2026-06-19 02:12:27 [info]: [0mGET /api/employees [36m304[0m 299.446 ms - -[0m
+2026-06-19 02:12:27 [info]: [0mGET /api/employees [36m304[0m 296.642 ms - -[0m
+2026-06-19 02:12:29 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 313.930 ms - -[0m
+2026-06-19 02:12:29 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 296.429 ms - -[0m
+2026-06-19 02:13:30 [info]: [0mGET /api/employees [36m304[0m 444.093 ms - -[0m
+2026-06-19 02:14:22 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 295.642 ms - -[0m
+2026-06-19 02:14:22 [info]: [0mGET /api/employees/attendance?date=2026-06-18 [36m304[0m 298.736 ms - -[0m
+2026-06-19 02:15:08 [info]: [0mGET /api/auth/me [36m304[0m 207.231 ms - -[0m
+2026-06-19 02:15:08 [info]: [0mGET /api/auth/me [36m304[0m 205.102 ms - -[0m
+2026-06-19 02:15:08 [info]: [0mGET /api/employees [36m304[0m 368.255 ms - -[0m
+2026-06-19 02:15:09 [info]: [0mGET /api/employees [36m304[0m 358.690 ms - -[0m
+2026-06-19 02:36:46 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-06-19 02:36:46 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-19 02:36:46 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-19 02:36:46 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-19 02:36:46 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-19 02:36:46 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-19 02:50:38 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-19 02:50:38 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-19 02:50:38 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-19 02:50:38 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-19 02:50:38 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-19 02:50:38 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-19 03:01:58 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-19 03:01:58 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-19 03:01:58 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-19 03:01:58 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-19 03:01:58 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-19 03:01:58 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-19 03:02:35 [info]: [0mPOST /api/auth/login [32m200[0m 890.324 ms - 486[0m
+2026-06-19 03:02:35 [info]: [0mPOST /api/analytics/chat [33m401[0m 2.912 ms - 70[0m
+2026-06-19 03:02:37 [info]: [0mPOST /api/analytics/chat [33m401[0m 1.750 ms - 70[0m
+2026-06-19 03:02:39 [info]: [0mPOST /api/analytics/chat [33m401[0m 1.234 ms - 70[0m
+2026-06-19 03:02:41 [info]: [0mPOST /api/analytics/chat [33m401[0m 1.391 ms - 70[0m
+2026-06-19 03:03:12 [info]: [0mPOST /api/auth/login [32m200[0m 952.008 ms - 486[0m
+2026-06-19 03:03:15 [info]: [0mPOST /api/analytics/chat [32m200[0m 2898.718 ms - 237[0m
+2026-06-19 03:03:19 [info]: [0mPOST /api/analytics/chat [32m200[0m 2340.817 ms - 308[0m
+2026-06-19 03:03:23 [info]: [0mPOST /api/analytics/chat [32m200[0m 1522.711 ms - 176[0m
+2026-06-19 03:03:28 [info]: [0mPOST /api/analytics/chat [32m200[0m 3417.429 ms - 832[0m
+2026-06-19 03:15:27 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 09:40:13 [info]: 🔄  MongoDB reconnected.
+2026-06-19 11:41:07 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 11:42:01 [info]: 🔄  MongoDB reconnected.
+2026-06-19 11:42:21 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 13:39:27 [info]: 🔄  MongoDB reconnected.
+2026-06-19 13:40:11 [info]: 🔄  MongoDB reconnected.
+2026-06-19 13:40:41 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 13:41:29 [info]: 🔄  MongoDB reconnected.
+2026-06-19 13:43:00 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 13:43:13 [info]: 🔄  MongoDB reconnected.
+2026-06-19 13:45:32 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 13:46:16 [info]: 🔄  MongoDB reconnected.
+2026-06-19 13:49:11 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 13:52:04 [info]: 🔄  MongoDB reconnected.
+2026-06-19 14:27:29 [warn]: ⚠️   MongoDB disconnected.
+2026-06-19 14:27:44 [info]: 🔄  MongoDB reconnected.
+2026-06-20 17:53:10 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-06-20 17:53:10 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-20 17:53:10 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-20 17:53:10 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-20 17:53:10 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-20 17:53:10 [info]: ⏰  EOD Email Report Scheduler started.
