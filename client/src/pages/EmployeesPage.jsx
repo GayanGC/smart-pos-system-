@@ -82,45 +82,14 @@ export default function EmployeesPage() {
               </div>
             </div>
             
-            {/* TASKS CHECKLIST UI */}
-            {tasks.length > 0 && (
-              <div className="mt-4 p-4 rounded-xl border border-violet-500/30 bg-violet-500/10 animate-fade-up">
-                <h3 className="text-violet-300 font-bold mb-3 flex items-center gap-2">
-                  <span>📋</span> Today's Checklist
-                </h3>
-                <div className="space-y-2">
-                  {tasks.map(task => (
-                    <div 
-                      key={task._id} 
-                      className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                        task.status === 'completed' 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 opacity-70' 
-                          : 'bg-slate-900 border-slate-700 hover:border-violet-400/50'
-                      }`}
-                    >
-                      <button
-                        onClick={() => { if(task.status !== 'completed') handleCompleteTask(task._id) }}
-                        disabled={task.status === 'completed'}
-                        className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
-                          task.status === 'completed'
-                            ? 'bg-emerald-500 text-white'
-                            : 'bg-slate-800 border-2 border-slate-600 hover:border-violet-400 cursor-pointer'
-                        }`}
-                      >
-                        {task.status === 'completed' && (
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </button>
-                      <span className={`text-sm font-medium ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
-                        {task.title}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+            {/* Skeleton loader tasks space */}
+            <div className="mt-4 p-4 rounded-xl border border-violet-500/10 bg-violet-500/5 animate-pulse">
+              <div className="h-4 bg-slate-800 rounded w-1/3 mb-3"></div>
+              <div className="space-y-2">
+                <div className="h-10 bg-slate-800 rounded w-full"></div>
+                <div className="h-10 bg-slate-800 rounded w-full"></div>
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <>
@@ -165,7 +134,7 @@ function DirectoryTab({ employees, onRefresh }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
-              {employees.length === 0 ? (
+              {(!employees || employees.length === 0) ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
                     No employees found. Add one to get started.
@@ -173,21 +142,21 @@ function DirectoryTab({ employees, onRefresh }) {
                 </tr>
               ) : (
                 employees.map((emp) => (
-                  <tr key={emp._id} className="hover:bg-slate-900/40 transition-colors">
+                  <tr key={emp?._id} className="hover:bg-slate-900/40 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold">
-                          {emp.firstName.charAt(0)}{emp.lastName.charAt(0)}
+                          {emp?.firstName?.charAt(0) || '?'}{emp?.lastName?.charAt(0) || '?'}
                         </div>
                         <div>
-                          <p className="text-slate-200 font-medium">{emp.firstName} {emp.lastName}</p>
-                          <p className="text-slate-500 text-xs">ID: {emp.employeeId}</p>
+                          <p className="text-slate-200 font-medium">{emp?.firstName || 'Unknown'} {emp?.lastName || ''}</p>
+                          <p className="text-slate-500 text-xs">ID: {emp?.employeeId || 'N/A'}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-300">{emp.designation || 'Staff'}</td>
+                    <td className="px-6 py-4 text-slate-300">{emp?.designation || 'Staff'}</td>
                     <td className="px-6 py-4 text-slate-300 text-right font-mono">
-                      Rs. {(emp.hourlyRate || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      Rs. {(emp?.hourlyRate || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
@@ -198,8 +167,8 @@ function DirectoryTab({ employees, onRefresh }) {
                       </button>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${emp.isActive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
-                        {emp.isActive ? 'Active' : 'Inactive'}
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${emp?.isActive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
+                        {emp?.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                   </tr>
@@ -361,26 +330,26 @@ function AttendanceTab() {
             <tbody className="divide-y divide-slate-800/50">
               {loading ? (
                 <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">Loading...</td></tr>
-              ) : attendance.length === 0 ? (
+              ) : (!attendance || attendance.length === 0) ? (
                 <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">No attendance records for this date.</td></tr>
               ) : (
                 attendance.map((record) => (
-                  <tr key={record._id} className="hover:bg-slate-900/40 transition-colors">
+                  <tr key={record?._id} className="hover:bg-slate-900/40 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-200">
-                      {record.employeeId?.firstName} {record.employeeId?.lastName}
+                      {record?.employeeId?.firstName || 'Unknown'} {record?.employeeId?.lastName || ''}
                     </td>
                     <td className="px-6 py-4 text-center text-emerald-400 font-mono">
-                      {new Date(record.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {record?.clockIn ? new Date(record.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                     </td>
                     <td className="px-6 py-4 text-center text-amber-400 font-mono">
-                      {record.clockOut ? new Date(record.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                      {record?.clockOut ? new Date(record.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                     </td>
                     <td className="px-6 py-4 text-center font-bold text-slate-300">
-                      {record.clockOut ? `${record.totalHoursWorked}h` : 'In Progress'}
+                      {record?.clockOut ? `${record?.totalHoursWorked || 0}h` : 'In Progress'}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${!record.clockOut ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
-                        {!record.clockOut ? 'Clocked In' : 'Completed'}
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${!record?.clockOut ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
+                        {!record?.clockOut ? 'Clocked In' : 'Completed'}
                       </span>
                     </td>
                   </tr>
@@ -618,7 +587,7 @@ function QrScannerPanel({ onScanSuccess }) {
         )}
         
         {/* TASKS CHECKLIST UI */}
-        {tasks.length > 0 && (
+        {(tasks && tasks.length > 0) && (
           <div className="mt-4 p-4 rounded-xl border border-violet-500/30 bg-violet-500/10 animate-fade-up">
             <h3 className="text-violet-300 font-bold mb-3 flex items-center gap-2">
               <span>📋</span> Today's Checklist
@@ -626,30 +595,30 @@ function QrScannerPanel({ onScanSuccess }) {
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {tasks.map(task => (
                 <div 
-                  key={task._id} 
+                  key={task?._id} 
                   className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                    task.status === 'completed' 
+                    task?.status === 'completed' 
                       ? 'bg-emerald-500/10 border-emerald-500/30 opacity-70' 
                       : 'bg-slate-900 border-slate-700 hover:border-violet-400/50'
                   }`}
                 >
                   <button
-                    onClick={() => { if(task.status !== 'completed') handleCompleteTask(task._id) }}
-                    disabled={task.status === 'completed'}
+                    onClick={() => { if(task?.status !== 'completed') handleCompleteTask(task?._id) }}
+                    disabled={task?.status === 'completed'}
                     className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
-                      task.status === 'completed'
+                      task?.status === 'completed'
                         ? 'bg-emerald-500 text-white'
                         : 'bg-slate-800 border-2 border-slate-600 hover:border-violet-400 cursor-pointer'
                     }`}
                   >
-                    {task.status === 'completed' && (
+                    {task?.status === 'completed' && (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     )}
                   </button>
-                  <span className={`text-sm font-medium ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
-                    {task.title}
+                  <span className={`text-sm font-medium ${task?.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
+                    {task?.title || 'Untitled Task'}
                   </span>
                 </div>
               ))}
@@ -751,28 +720,28 @@ function PayrollTab({ employees }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/50">
-            {employees.length === 0 ? (
+            {(!employees || employees.length === 0) ? (
               <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">No employees found.</td></tr>
             ) : (
               employees.map((emp) => {
-                const pRecord = payroll.find(p => p.employeeId._id === emp._id)
+                const pRecord = (payroll || []).find(p => p?.employeeId?._id === emp?._id)
                 
                 return (
-                  <tr key={emp._id} className="hover:bg-slate-900/40 transition-colors">
+                  <tr key={emp?._id} className="hover:bg-slate-900/40 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-200">
-                      {emp.firstName} {emp.lastName}
-                      <p className="text-xs text-slate-500 font-normal mt-0.5">Rate: Rs.{emp.hourlyRate || 0}/hr</p>
+                      {emp?.firstName || 'Unknown'} {emp?.lastName || ''}
+                      <p className="text-xs text-slate-500 font-normal mt-0.5">Rate: Rs.{emp?.hourlyRate || 0}/hr</p>
                     </td>
                     <td className="px-6 py-4 text-center font-mono text-slate-300">
-                      {pRecord ? `${pRecord.totalHoursWorked}h` : '-'}
+                      {pRecord ? `${pRecord?.totalHoursWorked || 0}h` : '-'}
                     </td>
                     <td className="px-6 py-4 text-right font-mono text-emerald-400 font-semibold">
-                      {pRecord ? `Rs. ${pRecord.grossPay.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '-'}
+                      {pRecord ? `Rs. ${(pRecord?.grossPay || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '-'}
                     </td>
                     <td className="px-6 py-4 text-center">
                       {!pRecord ? (
                         <span className="text-slate-500 text-xs italic">Not Generated</span>
-                      ) : pRecord.isPaid ? (
+                      ) : pRecord?.isPaid ? (
                         <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded-full text-[10px] font-bold uppercase">Paid</span>
                       ) : (
                         <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded-full text-[10px] font-bold uppercase">Unpaid</span>
@@ -781,15 +750,15 @@ function PayrollTab({ employees }) {
                     <td className="px-6 py-4 text-center">
                       {!pRecord ? (
                         <button 
-                          onClick={() => handleGenerate(emp._id)}
-                          disabled={generatingFor === emp._id}
+                          onClick={() => handleGenerate(emp?._id)}
+                          disabled={generatingFor === emp?._id}
                           className="text-violet-400 hover:text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
                         >
-                          {generatingFor === emp._id ? 'Generating...' : 'Compute Salary'}
+                          {generatingFor === emp?._id ? 'Generating...' : 'Compute Salary'}
                         </button>
-                      ) : !pRecord.isPaid ? (
+                      ) : !pRecord?.isPaid ? (
                         <button 
-                          onClick={() => handlePay(pRecord._id)}
+                          onClick={() => handlePay(pRecord?._id)}
                           className="text-white bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-emerald-900/40"
                         >
                           Mark Paid
