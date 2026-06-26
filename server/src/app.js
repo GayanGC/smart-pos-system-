@@ -126,8 +126,21 @@ app.use('/api/billing',    billingRoutes);
 app.use('/api/employees',  employeeRoutes);
 app.use('/api/analytics',  analyticsRoutes);
 
+// ─── Static files (PWA) ────────────────────────────────────────────────────
+const path = require('path');
+const clientDistPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDistPath));
+
+// Fallback for React Router & PWA routes
+app.get('*', (req, res, next) => {
+  if (req.originalUrl.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(clientDistPath, 'index.html'));
+});
+
 // ─── 404 — Unmatched routes ────────────────────────────────────────────────
-app.use((req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({
     success: false,
     message: `Route '${req.originalUrl}' not found on this server.`,

@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/server/src/server.js"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/client/dist/sw.js"
+    },
+    {
+      "source": "/workbox-(.*)",
+      "destination": "/client/dist/workbox-$1"
+    },
+    {
+      "source": "/registerSW.js",
+      "destination": "/client/dist/registerSW.js"
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "destination": "/client/dist/manifest.webmanifest"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/client/dist/$1"
+    }
+  ]
+}
