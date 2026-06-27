@@ -76,30 +76,7 @@ const createInvoice = asyncHandler(async (req, res) => {
   session.startTransaction();
 
   try {
-    // ── Verify inventory stock levels to prevent negative stock ────────────────
-    for (const item of lineItems) {
-      const product = await Product.findById(item.productId).session(session);
-      if (!product || !product.isActive) {
-        throw new Error(`Product "${item.name || 'Unknown'}" not found or inactive.`);
-      }
-
-      if (product.recipeIngredients && product.recipeIngredients.length > 0) {
-        for (const ingredient of product.recipeIngredients) {
-          const ingProduct = await Product.findById(ingredient.productId).session(session);
-          const requiredQty = ingredient.quantityRequired * item.quantity;
-          if (!ingProduct) {
-            throw new Error(`Ingredient reference missing or deleted in the database (ID: ${ingredient.productId}). Please update the recipe for "${product.name}".`);
-          }
-          if (ingProduct.quantityInStock < requiredQty) {
-            throw new Error(`Insufficient stock for ingredient "${ingProduct.name}". Available: ${ingProduct.quantityInStock}, Requested: ${requiredQty}.`);
-          }
-        }
-      } else {
-        if (product.quantityInStock < item.quantity) {
-          throw new Error(`Insufficient stock for "${product.name}". Available: ${product.quantityInStock}, Requested: ${item.quantity}.`);
-        }
-      }
-    }
+    // ── Eradicated procedural read-and-save stock check (relying on atomic deductStock) ──
 
     // ── Generate invoice number ──────────────────────────────────────────────
     const crypto = require('crypto');
