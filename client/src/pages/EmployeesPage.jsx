@@ -95,10 +95,10 @@ export default function EmployeesPage() {
           </div>
         ) : (
           <>
-            {activeTab === 'directory' && <DirectoryTab employees={employees} onRefresh={fetchEmployees} />}
-            {activeTab === 'attendance' && <AttendanceTab employees={employees} setWelcomeModal={setWelcomeModal} />}
-            {activeTab === 'payroll' && <PayrollTab employees={employees} onRefresh={fetchEmployees} />}
-            {activeTab === 'tasks' && <TasksTab employees={employees} />}
+            {activeTab === 'directory' && <DirectoryTab employees={employees || []} onRefresh={fetchEmployees} />}
+            {activeTab === 'attendance' && <AttendanceTab employees={employees || []} setWelcomeModal={setWelcomeModal} />}
+            {activeTab === 'payroll' && <PayrollTab employees={employees || []} onRefresh={fetchEmployees} />}
+            {activeTab === 'tasks' && <TasksTab employees={employees || []} />}
           </>
         )}
       </div>
@@ -408,7 +408,7 @@ function AttendanceTab({ employees, setWelcomeModal }) {
                     
                     {/* Active Duty Tasks Sub-Grid */}
                     {(() => {
-                      const empTasks = tasksForDate.filter(t => String(t.employeeId) === String(record?.employeeId?._id));
+                      const empTasks = (tasksForDate || []).filter(t => String(t.employeeId) === String(record?.employeeId?._id));
                       if (empTasks.length === 0) return null;
                       return (
                         <tr className="bg-slate-900/20 border-b-0">
@@ -702,7 +702,8 @@ function PayrollTab({ employees, onRefresh }) {
       const res = await api.get('/employees/payroll')
       const targetMonth = new Date(month).getMonth()
       const targetYear = new Date(month).getFullYear()
-      const filtered = res.data.data.filter(p => {
+      const filtered = (res.data?.data || []).filter(p => {
+        if (!p || !p.periodStart) return false;
         const d = new Date(p.periodStart)
         return d.getMonth() === targetMonth && d.getFullYear() === targetYear
       })
@@ -795,9 +796,9 @@ function PayrollTab({ employees, onRefresh }) {
           </thead>
           <tbody className="divide-y divide-slate-800/50">
             {(!employees || employees.length === 0) ? (
-              <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">No employees found.</td></tr>
+              <tr><td colSpan="7" className="px-6 py-8 text-center text-slate-500">No employees found.</td></tr>
             ) : (
-              employees.map((emp) => {
+              (employees || []).map((emp) => {
                 const pRecord = (payroll || []).find(p => p?.employeeId?._id === emp?._id)
                 
                 return (
@@ -950,7 +951,7 @@ function TasksTab({ employees }) {
               className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-200 outline-none focus:border-violet-500 transition-colors"
             >
               <option value="">-- Choose Employee --</option>
-              {employees.filter(e => e.isActive).map(emp => (
+              {(employees || []).filter(e => e.isActive).map(emp => (
                 <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.designation})</option>
               ))}
             </select>

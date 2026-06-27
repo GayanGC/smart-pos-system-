@@ -138,7 +138,7 @@ const clockIn = asyncHandler(async (req, res) => {
   if (existingRecord) {
     return sendError(res, {
       statusCode: 409,
-      message: `${employee.fullName} is already clocked in today.`,
+      message: `${employee.firstName} ${employee.lastName} is already clocked in today.`,
     });
   }
 
@@ -196,14 +196,14 @@ const clockOut = asyncHandler(async (req, res) => {
   if (!existingRecord) {
     return sendError(res, {
       statusCode: 404,
-      message: `${employee.fullName} has not clocked in today.`,
+      message: `${employee.firstName} ${employee.lastName} has not clocked in today.`,
     });
   }
 
   if (existingRecord.clockOut) {
     return sendError(res, {
       statusCode: 409,
-      message: `${employee.fullName} has already clocked out today.`,
+      message: `${employee.firstName} ${employee.lastName} has already clocked out today.`,
     });
   }
 
@@ -211,13 +211,14 @@ const clockOut = asyncHandler(async (req, res) => {
   existingRecord.computeHours();
   await existingRecord.save();
 
+  const empName = `${employee.firstName} ${employee.lastName}`.trim();
   return sendSuccess(res, {
     data: {
       action:   'clock_out',
       record:   existingRecord,
-      employee: { id: employee._id, name: employee.fullName },
+      employee: { id: employee._id, name: empName, firstName: employee.firstName },
     },
-    message: `🕐 Clock-out recorded for ${employee.fullName}. Hours worked: ${existingRecord.totalHoursWorked}h.`,
+    message: `🕐 Clock-out recorded for ${empName}. Hours worked: ${existingRecord.totalHoursWorked}h.`,
   });
 });
 
@@ -267,7 +268,7 @@ const syncOfflineAttendance = asyncHandler(async (req, res) => {
 
   const results = { synced: [], failed: [] };
 
-  for (const log of attendanceLogs) {
+  for (const log of (attendanceLogs || [])) {
     try {
       const employee = await Employee.findOne({ qrCodeToken: log.qrToken, isActive: true });
       if (!employee) {
