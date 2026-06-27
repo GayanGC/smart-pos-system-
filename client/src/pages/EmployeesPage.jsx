@@ -3,6 +3,7 @@ import api from '../api/axios'
 import { QRCodeCanvas } from 'qrcode.react'
 import { Html5Qrcode } from 'html5-qrcode'
 import { saveAttendanceOffline } from '../utils/offlineSync'
+import ErrorBoundary from '../components/common/ErrorBoundary'
 
 const TABS = [
   { id: 'directory', label: 'Employee Directory' },
@@ -74,33 +75,35 @@ export default function EmployeesPage() {
 
       {/* Tab Content */}
       <div className="relative">
-        {loading && activeTab === 'directory' ? (
-          <div className="animate-pulse flex space-x-4">
-            <div className="flex-1 space-y-4 py-1">
-              <div className="h-4 bg-slate-800 rounded w-3/4"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-slate-800 rounded"></div>
-                <div className="h-4 bg-slate-800 rounded w-5/6"></div>
+        <ErrorBoundary fallbackMessage="Failed to load employee tab data.">
+          {loading && activeTab === 'directory' ? (
+            <div className="animate-pulse flex space-x-4">
+              <div className="flex-1 space-y-4 py-1">
+                <div className="h-4 bg-slate-800 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-slate-800 rounded"></div>
+                  <div className="h-4 bg-slate-800 rounded w-5/6"></div>
+                </div>
+              </div>
+              
+              {/* Skeleton loader tasks space */}
+              <div className="mt-4 p-4 rounded-xl border border-violet-500/10 bg-violet-500/5 animate-pulse">
+                <div className="h-4 bg-slate-800 rounded w-1/3 mb-3"></div>
+                <div className="space-y-2">
+                  <div className="h-10 bg-slate-800 rounded w-full"></div>
+                  <div className="h-10 bg-slate-800 rounded w-full"></div>
+                </div>
               </div>
             </div>
-            
-            {/* Skeleton loader tasks space */}
-            <div className="mt-4 p-4 rounded-xl border border-violet-500/10 bg-violet-500/5 animate-pulse">
-              <div className="h-4 bg-slate-800 rounded w-1/3 mb-3"></div>
-              <div className="space-y-2">
-                <div className="h-10 bg-slate-800 rounded w-full"></div>
-                <div className="h-10 bg-slate-800 rounded w-full"></div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
-            {activeTab === 'directory' && <DirectoryTab employees={employees || []} onRefresh={fetchEmployees} />}
-            {activeTab === 'attendance' && <AttendanceTab employees={employees || []} setWelcomeModal={setWelcomeModal} />}
-            {activeTab === 'payroll' && <PayrollTab employees={employees || []} onRefresh={fetchEmployees} />}
-            {activeTab === 'tasks' && <TasksTab employees={employees || []} />}
-          </>
-        )}
+          ) : (
+            <>
+              {activeTab === 'directory' && <ErrorBoundary><DirectoryTab employees={employees || []} onRefresh={fetchEmployees} /></ErrorBoundary>}
+              {activeTab === 'attendance' && <ErrorBoundary><AttendanceTab employees={employees || []} setWelcomeModal={setWelcomeModal} /></ErrorBoundary>}
+              {activeTab === 'payroll' && <ErrorBoundary><PayrollTab employees={employees || []} onRefresh={fetchEmployees} /></ErrorBoundary>}
+              {activeTab === 'tasks' && <ErrorBoundary><TasksTab employees={employees || []} /></ErrorBoundary>}
+            </>
+          )}
+        </ErrorBoundary>
       </div>
 
     </div>
@@ -443,7 +446,9 @@ function AttendanceTab({ employees, setWelcomeModal }) {
       
       {/* 40% Right Side QR Scanner */}
       <div className="lg:col-span-2">
-        <QrScannerPanel onScanSuccess={fetchAttendance} setWelcomeModal={setWelcomeModal} />
+        <ErrorBoundary fallbackMessage="QR Scanner encountered a crash and was isolated.">
+          <QrScannerPanel onScanSuccess={fetchAttendance} setWelcomeModal={setWelcomeModal} />
+        </ErrorBoundary>
       </div>
     </div>
   )
