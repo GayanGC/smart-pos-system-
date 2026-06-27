@@ -37,26 +37,37 @@ function getProductName(name) {
   return SINHALA_TRANSLATIONS[name] || name;
 }
 
+const GLOBAL_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80'
+
 function getFallbackImage(name = '', category = '') {
   const n = name.toLowerCase()
   const c = category.toLowerCase()
   
-  if (n.includes('rice') || c.includes('rice')) {
-    return 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&auto=format&fit=crop&q=80'
+  if (n.includes('kottu') || n.includes('dolphin') || c.includes('kottu') || c.includes('dolphin')) {
+    return 'https://images.unsplash.com/photo-1694665103603-6e3e0ef9a37a?w=400&q=80'
   }
-  if (n.includes('kottu') || c.includes('kottu')) {
-    return 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=300&auto=format&fit=crop&q=80'
+  if (n.includes('rice') || n.includes('biryani') || n.includes('chopsuey') || c.includes('rice') || c.includes('biryani') || c.includes('chopsuey')) {
+    return 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80'
   }
-  if (n.includes('noodles') || c.includes('noodles')) {
-    return 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=300&auto=format&fit=crop&q=80'
+  if (n.includes('noodles') || n.includes('pasta') || c.includes('noodles') || c.includes('pasta')) {
+    return 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80'
   }
-  if (n.includes('bakery') || n.includes('bread') || c.includes('bakery') || c.includes('bread')) {
-    return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=80'
+  if (
+    n.includes('bakery') || n.includes('bread') || n.includes('bun') || n.includes('roll') || n.includes('pan') ||
+    c.includes('bakery') || c.includes('bread') || c.includes('bun') || c.includes('roll') || c.includes('pan')
+  ) {
+    return 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80'
   }
-  if (n.includes('cake') || c.includes('cake')) {
-    return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&auto=format&fit=crop&q=80'
+  if (n.includes('cake') || n.includes('pastry') || n.includes('cupcake') || c.includes('cake') || c.includes('pastry') || c.includes('cupcake')) {
+    return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80'
   }
-  return 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=300&auto=format&fit=crop&q=80'
+  if (
+    n.includes('drinks') || n.includes('bima') || n.includes('juice') || n.includes('coffee') || n.includes('tea') || n.includes('soda') ||
+    c.includes('drinks') || c.includes('bima') || c.includes('juice') || c.includes('coffee') || c.includes('tea') || c.includes('soda')
+  ) {
+    return 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'
+  }
+  return GLOBAL_FALLBACK
 }
 
 function ProductCard({ product, onAdd }) {
@@ -85,6 +96,10 @@ function ProductCard({ product, onAdd }) {
         <img
           src={imageSrc}
           alt={displayName}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = GLOBAL_FALLBACK;
+          }}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {/* Stock overlays */}
