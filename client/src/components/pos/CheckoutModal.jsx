@@ -146,8 +146,9 @@ export default function CheckoutModal({
               </button>
             </div>
 
-            <div className="flex-1 w-full flex items-center justify-center overflow-y-auto print:overflow-visible">
-              <div className={`w-full max-w-sm flex justify-center ${printView === 'receipt' ? 'block print:block' : 'hidden print:hidden'}`}>
+            {/* Screen UI - Tab View */}
+            <div className="flex-1 w-full flex items-center justify-center overflow-y-auto print:hidden">
+              <div className={`w-full max-w-sm flex justify-center ${printView === 'receipt' ? 'block' : 'hidden'}`}>
                 <ReceiptPrint 
                   lineItems={lineItems} 
                   grandTotal={grandTotal}
@@ -160,7 +161,7 @@ export default function CheckoutModal({
                   isLivePreview={true}
                 />
               </div>
-              <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block print:block' : 'hidden print:hidden'}`}>
+              <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
                 <KitchenPrint 
                   invoiceNumber="NEW"
                   lineItems={(lineItems || []).filter(item => {
@@ -171,6 +172,31 @@ export default function CheckoutModal({
                   isLivePreview={true}
                 />
               </div>
+            </div>
+
+            {/* Print Only Container */}
+            <div className="hidden print:block w-full max-w-sm mx-auto">
+              <ReceiptPrint 
+                lineItems={lineItems} 
+                grandTotal={grandTotal}
+                subTotal={subTotal}
+                totalDiscount={totalDiscount}
+                paymentMethod={method}
+                amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                changeDue={changeDue}
+                cashierName={user?.name || user?.username || 'Admin'}
+                isLivePreview={false}
+              />
+              <div className="print:break-after-page" style={{ pageBreakAfter: 'always' }}></div>
+              <KitchenPrint 
+                invoiceNumber="NEW"
+                lineItems={(lineItems || []).filter(item => {
+                  const cat = (item.category || '').toLowerCase()
+                  return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat // Default everything to kitchen if uncategorized except specific exclusions
+                })}
+                cashierName={user?.name || user?.username || 'Admin'}
+                isLivePreview={false}
+              />
             </div>
 
             <div className="mt-4 shrink-0 print:hidden text-center w-full max-w-sm">
