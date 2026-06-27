@@ -19,16 +19,20 @@ export default function ReceiptPrint({
   return (
     <div className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto p-4 text-sm ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} id="print-receipt">
       {/* ── Header ── */}
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold tracking-widest mb-1">C CAFE</h1>
-        <p className="text-xs text-gray-600">123 Culinary Street, Food City</p>
-        <p className="text-xs text-gray-600">Tel: +94 77 123 4567</p>
-        <div className="border-b-2 border-dashed border-gray-400 my-3"></div>
-        <div className="flex justify-between text-xs">
+      <div className="flex flex-col items-center text-center mb-4">
+        {/* Circular Logo */}
+        <div className="w-14 h-14 border-2 border-black rounded-full flex items-center justify-center mb-2">
+          <span className="font-bold text-2xl font-sans">C</span>
+        </div>
+        <h1 className="text-3xl font-extrabold tracking-widest mb-1">C CAFE</h1>
+        <p className="text-xs font-semibold text-black">No 650, Airport Road, Anuradhapura</p>
+        <p className="text-xs font-semibold text-black">Tel : 025 70 29 500</p>
+        <div className="border-b-2 border-dashed border-gray-400 w-full my-3"></div>
+        <div className="flex justify-between text-xs w-full">
           <span>{dateStr} {timeStr}</span>
           <span>Cashier: {cashierName}</span>
         </div>
-        <div className="border-b-2 border-dashed border-gray-400 my-3"></div>
+        <div className="border-b-2 border-dashed border-gray-400 w-full my-3"></div>
       </div>
 
       {/* ── Item Table ── */}
