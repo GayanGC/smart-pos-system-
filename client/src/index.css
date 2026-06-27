@@ -247,7 +247,33 @@
   color: #0f172a !important;
   border-bottom-color: #e2e8f0 !important;
 }
+
 .light-theme .divide-slate-800\/40,
 .light-theme .divide-slate-800 {
   border-color: #e2e8f0 !important;
 }
+
+/* ── Active Status Badges and Navigation Safety Overrides ── */
+.light-theme [class*="bg-emerald-500\/10"].text-emerald-400,
+.light-theme [class*="bg-emerald-600"].text-emerald-400,
+.light-theme .badge-green,
+[class*="bg-emerald-500\/10"].text-emerald-400,
+[class*="bg-emerald-600"].text-emerald-400,
+.badge-green {
+  color: #ffffff !important;
+}
+
+.light-theme [class*="bg-violet-600\/20"].text-violet-300,
+.light-theme [class*="bg-violet-600"].text-violet-300,
+.light-theme [class*="bg-violet-700"].text-violet-300,
+.light-theme [class*="bg-violet-600\/20"],
+.light-theme [class*="bg-violet-600"] {
+  color: #ffffff !important;
+}
+
+/* Make sure active employee/attendance navigation sub-tabs specifically have white text */
+.light-theme button[class*="bg-violet-600\/20"],
+.light-theme button[class*="bg-violet-600"] {
+  color: #ffffff !important;
+}
+
