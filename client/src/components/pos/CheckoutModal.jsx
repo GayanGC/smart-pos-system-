@@ -67,17 +67,26 @@ export default function CheckoutModal({
   const amountRef = useRef(null)
   const { user } = useAuth()
 
+  const selectTimerRef = useRef(null)
+  const printTimer1Ref = useRef(null)
+  const printTimer2Ref = useRef(null)
+
   // Reset state whenever modal opens
   useEffect(() => {
     if (isOpen) {
       setMethod('cash')
-      setAmountPaid(grandTotal.toFixed(2)) // pre-fill exact amount
+      setAmountPaid((grandTotal || 0).toFixed(2)) // pre-fill exact amount
       setCardRef('')
       setSuccess(false)
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
-      setTimeout(() => amountRef.current?.select(), 50)
+      selectTimerRef.current = setTimeout(() => amountRef.current?.select(), 50)
+    }
+    return () => {
+      if (selectTimerRef.current) clearTimeout(selectTimerRef.current)
+      if (printTimer1Ref.current) clearTimeout(printTimer1Ref.current)
+      if (printTimer2Ref.current) clearTimeout(printTimer2Ref.current)
     }
   }, [isOpen, grandTotal])
 
@@ -85,7 +94,7 @@ export default function CheckoutModal({
     setPrintSequence('receipt')
     
     // Structured timeout to paint Receipt layout
-    setTimeout(() => {
+    printTimer1Ref.current = setTimeout(() => {
       window.print() // Blocks until print dialog is closed
       
       // Once receipt dialog closes, mount KOT
@@ -94,7 +103,7 @@ export default function CheckoutModal({
       // Nested double requestAnimationFrame + structured 500ms timeout to guarantee full layout paint
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setTimeout(() => {
+          printTimer2Ref.current = setTimeout(() => {
             window.print() // Blocks until print dialog is closed
             setPrintSequence('idle')
           }, 500) // 500ms safety buffer

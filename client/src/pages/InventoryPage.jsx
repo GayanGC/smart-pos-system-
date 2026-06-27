@@ -60,25 +60,25 @@ export default function InventoryPage() {
   }, [fetchProducts, fetchSuppliers])
 
   // Summary Card calculations
-  const totalItems = products.length
-  const outOfStockCount = products.filter(p => p.quantityInStock <= 0).length
-  const lowStockCount = products.filter(p => p.quantityInStock <= p.lowStockThreshold && p.quantityInStock > 0).length
+  const totalItems = products?.length || 0
+  const outOfStockCount = products.filter(p => (p?.quantityInStock || 0) <= 0).length
+  const lowStockCount = products.filter(p => (p?.quantityInStock || 0) <= (p?.lowStockThreshold || 0) && (p?.quantityInStock || 0) > 0).length
 
   // Filtered Products
   const filteredProducts = products.filter(product => {
     const matchesSearch = 
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      (product.sku && product.sku.toLowerCase().includes(search.toLowerCase())) ||
-      (product.barcode && product.barcode.includes(search))
+      (product?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (product?.sku && product.sku.toLowerCase().includes(search.toLowerCase())) ||
+      (product?.barcode && product.barcode.includes(search))
       
-    const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter
+    const matchesCategory = categoryFilter === 'All' || product?.category === categoryFilter
     
     return matchesSearch && matchesCategory
   })
 
   // Sort by updatedAt desc so newest additions appear first
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    return new Date(b.updatedAt) - new Date(a.updatedAt)
+    return new Date(b?.updatedAt || 0) - new Date(a?.updatedAt || 0)
   })
 
   // Pagination bounds
@@ -270,31 +270,31 @@ export default function InventoryPage() {
                 </tr>
               ) : (
                 paginatedProducts.map((p) => {
-                  const isOut = p.quantityInStock <= 0
-                  const isLow = !isOut && p.quantityInStock <= p.lowStockThreshold
+                  const isOut = (p?.quantityInStock || 0) <= 0
+                  const isLow = !isOut && (p?.quantityInStock || 0) <= (p?.lowStockThreshold || 0)
                   
                   return (
-                    <tr key={p._id} className="hover:bg-slate-900/20 transition-colors group">
+                    <tr key={p?._id} className="hover:bg-slate-900/20 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-slate-200">{p.name}</span>
-                          <span className="text-[11px] font-mono text-slate-500">SKU: {p.sku} | BC: {p.barcode || 'N/A'}</span>
+                          <span className="font-semibold text-slate-200">{p?.name || 'Unnamed'}</span>
+                          <span className="text-[11px] font-mono text-slate-500">SKU: {p?.sku || 'N/A'} | BC: {p?.barcode || 'N/A'}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 font-medium">{p.category}</span>
+                        <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 font-medium">{p?.category || 'Uncategorized'}</span>
                       </td>
                       <td className="px-6 py-4 text-right font-mono text-slate-300">
-                        Rs. {p.costPrice.toFixed(2)}
+                        Rs. {(p?.costPrice || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 text-right font-mono text-slate-100 font-semibold">
-                        Rs. {p.sellingPrice.toFixed(2)}
+                        Rs. {(p?.sellingPrice || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 text-center font-mono">
                         <span className={`font-bold ${isOut ? 'text-rose-500' : isLow ? 'text-amber-500' : 'text-slate-300'}`}>
-                          {p.quantityInStock}
+                          {p?.quantityInStock || 0}
                         </span>
-                        <span className="text-[10px] text-slate-600"> / {p.lowStockThreshold} min</span>
+                        <span className="text-[10px] text-slate-600"> / {p?.lowStockThreshold || 0} min</span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
@@ -512,19 +512,19 @@ function ProductFormModal({ product = null, suppliers, onClose, onSuccess }) {
   // Load existing product details if editing
   useEffect(() => {
     if (product) {
-      const isCustomCat = !DEFAULT_CATEGORIES.includes(product.category)
+      const isCustomCat = !DEFAULT_CATEGORIES.includes(product?.category || '')
       setFormData({
-        name: product.name || '',
-        sku: product.sku || '',
-        barcode: product.barcode || '',
-        category: isCustomCat ? 'Custom' : (product.category || 'Bakery'),
-        customCategory: isCustomCat ? (product.category || '') : '',
-        costPrice: product.costPrice ? String(product.costPrice) : '',
-        sellingPrice: product.sellingPrice ? String(product.sellingPrice) : '',
-        quantityInStock: product.quantityInStock !== undefined ? String(product.quantityInStock) : '',
-        lowStockThreshold: product.lowStockThreshold !== undefined ? String(product.lowStockThreshold) : '10',
-        expiryDate: product.expiryDate ? new Date(product.expiryDate).toISOString().split('T')[0] : '',
-        supplierId: product.supplier?.supplierId || ''
+        name: product?.name || '',
+        sku: product?.sku || '',
+        barcode: product?.barcode || '',
+        category: isCustomCat ? 'Custom' : (product?.category || 'Bakery'),
+        customCategory: isCustomCat ? (product?.category || '') : '',
+        costPrice: product?.costPrice ? String(product.costPrice) : '',
+        sellingPrice: product?.sellingPrice ? String(product.sellingPrice) : '',
+        quantityInStock: product?.quantityInStock !== undefined ? String(product.quantityInStock) : '',
+        lowStockThreshold: product?.lowStockThreshold !== undefined ? String(product.lowStockThreshold) : '10',
+        expiryDate: product?.expiryDate ? new Date(product.expiryDate).toISOString().split('T')[0] : '',
+        supplierId: product?.supplier?.supplierId || ''
       })
     } else {
       // Default to first supplier if available for new products

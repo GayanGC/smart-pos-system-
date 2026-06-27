@@ -187,6 +187,7 @@ export default function PosPage() {
   const [isCashDrawerOpen, setIsCashDrawerOpen] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [gridResetKey, setGridResetKey] = useState(0)
 
   // Track network status
   useEffect(() => {
@@ -199,16 +200,17 @@ export default function PosPage() {
 
   // ── Cart operations ────────────────────────────────────────────────────
   const handleAddToCart = useCallback((product) => {
+    if (!product) return
     dispatch({
       type: 'ADD',
       payload: {
-        productId: product._id,
-        name:      product.name,
-        sku:       product.sku,
-        barcode:   product.barcode,
-        unitPrice: product.sellingPrice,
-        taxRate:   product.taxRate || 0,
-        quantityInStock: product.quantityInStock,
+        productId: product?._id,
+        name:      product?.name || 'Unnamed Item',
+        sku:       product?.sku || 'N/A',
+        barcode:   product?.barcode || '',
+        unitPrice: product?.sellingPrice || 0,
+        taxRate:   product?.taxRate || 0,
+        quantityInStock: product?.quantityInStock || 0,
       },
     })
   }, [])
@@ -312,7 +314,7 @@ export default function PosPage() {
 
         {/* Product grid — fills remaining space */}
         <div className="flex-1 overflow-hidden">
-          <ProductGrid onAddToCart={handleAddToCart} />
+          <ProductGrid key={gridResetKey} onAddToCart={handleAddToCart} />
         </div>
       </div>
 
@@ -343,6 +345,7 @@ export default function PosPage() {
         onSuccessReset={() => {
           handleClear();
           setIsCheckoutOpen(false);
+          setGridResetKey(prev => prev + 1);
         }}
         grandTotal={cart.grandTotal}
         subTotal={cart.subTotal}
