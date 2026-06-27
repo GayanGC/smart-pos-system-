@@ -30,7 +30,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const {
   getProducts, createProduct, getProductById,
   getProductBySku, getProductByBarcode,
-  updateProduct, deleteProduct,
+  updateProduct, deleteProduct, adjustProductStock,
   getLowStockAlerts, getExpiringProducts,
   getSuppliers, createSupplier, getSupplierById,
   updateSupplier, deleteSupplier, processSupplierInvoiceOCR,
@@ -60,6 +60,8 @@ router.route('/products/:id')
   .get(getProductById)
   .put(authorize('super_admin', 'admin', 'manager'), updateProduct)
   .delete(authorize('super_admin', 'admin'), deleteProduct);
+
+router.post('/products/:id/adjust-stock', authorize('super_admin', 'admin', 'manager'), adjustProductStock);
 
 // ── Suppliers CRUD ───────────────────────────────────────────────────────────
 router.route('/suppliers')

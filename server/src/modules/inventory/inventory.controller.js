@@ -219,6 +219,45 @@ const deleteProduct = asyncHandler(async (req, res) => {
   return sendSuccess(res, { message: 'Product deactivated successfully.' });
 });
 
+/**
+ * @desc  Manually adjust stock for a product (atomic $inc)
+ */
+const adjustProductStock = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { type, quantity, reason } = req.body;
+
+  if (!['add', 'reduce'].includes(type) || !quantity || !reason) {
+    return sendError(res, { statusCode: 400, message: 'Invalid adjustment parameters.' });
+  }
+
+  const qty = Number(quantity);
+  if (isNaN(qty) || qty <= 0) {
+    return sendError(res, { statusCode: 400, message: 'Quantity must be a positive number.' });
+  }
+
+  const incValue = type === 'add' ? qty : -qty;
+
+  // Use $inc for atomic updates, ensure quantity doesn't drop below 0 if reducing
+  const query = { _id: id };
+  if (type === 'reduce') {
+    query.quantityInStock = { $gte: qty };
+  }
+
+  const product = await Product.findOneAndUpdate(
+    query,
+    { $inc: { quantityInStock: incValue } },
+    { new: true, runValidators: true }
+  );
+
+  if (!product) {
+    return sendError(res, { statusCode: 400, message: 'Product not found or insufficient stock to reduce.' });
+  }
+
+  console.log(`[STOCK ADJUSTMENT] Product ${product.sku} | Type: ${type} | Qty: ${qty} | Reason: ${reason} | New Stock: ${product.quantityInStock}`);
+
+  return sendSuccess(res, { data: product, message: 'Stock adjusted successfully.' });
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 //  STOCK ALERTS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -418,7 +457,7 @@ module.exports = {
   // Products
   getProducts, createProduct, getProductById,
   getProductBySku, getProductByBarcode,
-  updateProduct, deleteProduct,
+  updateProduct, deleteProduct, adjustProductStock,
   // Alerts
   getLowStockAlerts, getExpiringProducts,
   // Suppliers

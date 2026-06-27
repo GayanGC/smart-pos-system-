@@ -27,6 +27,7 @@ export default function InventoryPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [deletingProduct, setDeletingProduct] = useState(null)
+  const [adjustingProduct, setAdjustingProduct] = useState(null)
 
   // Fetch all active products
   const fetchProducts = useCallback(async () => {
@@ -309,6 +310,12 @@ export default function InventoryPage() {
                       <td className="px-6 py-4 text-right">
                         <div className="flex gap-2 justify-end">
                           <button
+                            onClick={() => setAdjustingProduct(p)}
+                            className="bg-slate-900 border border-slate-800 hover:border-emerald-500/30 hover:bg-emerald-600/10 text-slate-400 hover:text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                          >
+                            Adjust Stock
+                          </button>
+                          <button
                             onClick={() => setEditingProduct(p)}
                             className="bg-slate-900 border border-slate-800 hover:border-violet-500/30 hover:bg-violet-600/10 text-slate-400 hover:text-violet-400 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                           >
@@ -377,6 +384,15 @@ export default function InventoryPage() {
           suppliers={suppliers} 
           onClose={() => setEditingProduct(null)} 
           onSuccess={() => { setEditingProduct(null); fetchProducts() }} 
+        />
+      )}
+
+      {/* ADJUSTMENT MODAL */}
+      {adjustingProduct && (
+        <StockAdjustmentModal 
+          product={adjustingProduct} 
+          onClose={() => setAdjustingProduct(null)} 
+          onSuccess={() => { setAdjustingProduct(null); fetchProducts() }} 
         />
       )}
 
@@ -777,6 +793,115 @@ function ProductFormModal({ product = null, suppliers, onClose, onSuccess }) {
               className="flex-1 px-4 py-3 bg-violet-600 hover:bg-violet-500 disabled:bg-violet-600/50 text-white rounded-xl text-xs font-semibold shadow-lg shadow-violet-600/10 transition-colors"
             >
               {loading ? 'Submitting...' : isEdit ? 'Save Changes' : 'Create Product'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+/* ── STOCK ADJUSTMENT MODAL ────────────────────────────────────────────── */
+function StockAdjustmentModal({ product, onClose, onSuccess }) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  
+  const [formData, setFormData] = useState({
+    type: 'add',
+    quantity: '',
+    reason: ''
+  })
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    
+    try {
+      await api.post(`/inventory/products/${product._id}/adjust-stock`, formData)
+      onSuccess()
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to adjust stock.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
+      <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl flex flex-col">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-white">Adjust Stock</h3>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-300 text-lg transition-colors cursor-pointer p-1">
+            ✕
+          </button>
+        </div>
+        
+        <p className="text-slate-300 text-sm mb-4">
+          Adjusting stock for: <span className="font-semibold text-slate-100">{product.name}</span>
+          <br/>
+          <span className="text-xs text-slate-500">Current Stock: {product.quantityInStock}</span>
+        </p>
+
+        {error && (
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 px-4 py-3 rounded-xl text-xs font-semibold mb-6 flex items-center gap-2">
+            <span>⚠️</span>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs font-medium">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-slate-400 font-semibold">Adjustment Type *</label>
+            <select
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              className="bg-slate-900 border border-slate-800 focus:border-violet-500 rounded-xl px-4 py-2.5 text-slate-200 outline-none transition-colors cursor-pointer"
+            >
+              <option value="add">Add Stock (Restock/New Batch)</option>
+              <option value="reduce">Reduce Stock (Wastage/Damaged/Expired)</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-slate-400 font-semibold">Quantity *</label>
+            <input
+              type="number"
+              min="1"
+              required
+              placeholder="Number of units"
+              value={formData.quantity}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+              className="bg-slate-900 border border-slate-800 focus:border-violet-500 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-600 outline-none transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-slate-400 font-semibold">Reason / Notes *</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Baked fresh batch"
+              value={formData.reason}
+              onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+              className="bg-slate-900 border border-slate-800 focus:border-violet-500 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-600 outline-none transition-colors"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4 border-t border-slate-900">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold border border-slate-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/10 transition-colors"
+            >
+              {loading ? 'Saving...' : 'Confirm'}
             </button>
           </div>
         </form>
