@@ -145,6 +145,30 @@ function SkeletonCard() {
   )
 }
 
+const CATEGORY_IMAGES = {
+  All: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80',
+  RICE: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80',
+  KOTTU: 'https://images.unsplash.com/photo-1694665103603-6e3e0ef9a37a?w=400&q=80',
+  NOODLES: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80',
+  BAKERY: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80',
+  BREAD: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80',
+  CAKES: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
+  MEALS: 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=400&q=80',
+  HOT_DRINKS: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'
+}
+
+const CATEGORY_SINHALA = {
+  All: 'සියලුම අයිතම',
+  RICE: 'සහල්',
+  KOTTU: 'කොත්තු',
+  NOODLES: 'නූඩ්ල්ස්',
+  BAKERY: 'බේකරි',
+  BREAD: 'පාන්',
+  CAKES: 'කේක්',
+  MEALS: 'ආහාර',
+  HOT_DRINKS: 'බීම'
+}
+
 /* ── Main Component ────────────────────────────────────────────────────── */
 const POS_CATEGORIES = [
   { id: 'All', icon: '🍱', label: 'All Items' },
@@ -159,6 +183,7 @@ const POS_CATEGORIES = [
 ]
 
 export default function ProductGrid({ onAddToCart }) {
+  const [viewLevel, setViewLevel] = useState('categories')
   const [products,       setProducts]       = useState([])
   const [categories,     setCategories]     = useState(POS_CATEGORIES)
   const [activeCategory, setActiveCategory] = useState('All')
@@ -288,7 +313,12 @@ export default function ProductGrid({ onAddToCart }) {
           ref={searchRef}
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            if (e.target.value) {
+              setViewLevel('products')
+            }
+          }}
           onKeyDown={handleSearchKeyDown}
           placeholder="Search name, SKU, or scan barcode — press Enter to add"
           className="input-field pl-10 pr-4 text-sm h-11"
@@ -298,7 +328,11 @@ export default function ProductGrid({ onAddToCart }) {
         />
         {search && (
           <button
-            onClick={() => { setSearch(''); searchRef.current?.focus() }}
+            onClick={() => {
+              setSearch('')
+              setViewLevel('categories')
+              searchRef.current?.focus()
+            }}
             className="absolute inset-y-0 right-3.5 flex items-center text-slate-500 hover:text-slate-300"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -309,61 +343,124 @@ export default function ProductGrid({ onAddToCart }) {
       </div>
 
       {/* ── Category Tiles ────────────────────────────────────────── */}
-      <div className="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-none flex-shrink-0 snap-x">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`
-              flex-shrink-0 w-[96px] h-[96px] flex flex-col items-center justify-center gap-2 rounded-3xl
-              border transition-all duration-200 snap-center
-              focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer
-              ${activeCategory === cat.id
-                ? 'bg-gradient-to-b from-violet-500 to-violet-700 border-violet-400/50 text-white shadow-lg shadow-violet-900/40 scale-105'
-                : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:border-violet-500/30 hover:bg-slate-800'}
-            `}
-          >
-            <span className={`text-3xl drop-shadow-md transition-transform duration-200 ${activeCategory === cat.id ? 'scale-110' : 'grayscale-[20%]'}`}>
-              {cat.icon}
-            </span>
-            <span className="text-xs font-bold tracking-wide uppercase">
-              {cat.label}
-            </span>
-          </button>
-        ))}
-      </div>
+      {viewLevel === 'products' && (
+        <div className="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-none flex-shrink-0 snap-x">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`
+                flex-shrink-0 w-[96px] h-[96px] flex flex-col items-center justify-center gap-2 rounded-3xl
+                border transition-all duration-200 snap-center
+                focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer
+                ${activeCategory === cat.id
+                  ? 'bg-gradient-to-b from-violet-500 to-violet-700 border-violet-400/50 text-white shadow-lg shadow-violet-900/40 scale-105'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:border-violet-500/30 hover:bg-slate-800'}
+              `}
+            >
+              <span className={`text-3xl drop-shadow-md transition-transform duration-200 ${activeCategory === cat.id ? 'scale-110' : 'grayscale-[20%]'}`}>
+                {cat.icon}
+              </span>
+              <span className="text-xs font-bold tracking-wide uppercase">
+                {cat.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
-      {/* ── Product grid ──────────────────────────────────────────── */}
+      {/* ── Grid Area ──────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto pr-1">
-        {error && (
-          <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
-            <p className="text-sm">{error}</p>
-            <button onClick={() => fetchProducts()} className="btn-secondary text-xs py-1.5 px-3">Retry</button>
-          </div>
-        )}
-
-        {loading ? (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2">
-            {Array.from({ length: 20 }).map((_, i) => <SkeletonCard key={i} />)}
-          </div>
-        ) : products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
-            <svg className="w-10 h-10 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
-            <p className="text-sm">No products found</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2 pb-4">
-            {[...products].sort((a, b) => {
-              const freqA = clickFreq[a._id] || 0;
-              const freqB = clickFreq[b._id] || 0;
-              if (freqA !== freqB) return freqB - freqA;
-              return a.name.localeCompare(b.name);
-            }).map((p) => (
-              <ProductCard key={p._id} product={p} onAdd={handleProductClick} />
+        {viewLevel === 'categories' ? (
+          /* Level 1: Visual Category Directory */
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 pb-4 animate-fade-up">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setActiveCategory(cat.id)
+                  setViewLevel('products')
+                }}
+                className="group relative flex flex-col items-stretch rounded-2xl border text-center transition-all duration-200 overflow-hidden h-full border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg"
+              >
+                {/* Category Image */}
+                <div className="relative w-full h-32 overflow-hidden bg-slate-950 flex-shrink-0">
+                  <img
+                    src={CATEGORY_IMAGES[cat.id]}
+                    alt={cat.label}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <span className="text-4xl drop-shadow-md">{cat.icon}</span>
+                  </div>
+                </div>
+                {/* Category Text (Sinhala & English) */}
+                <div className="relative z-10 flex flex-col justify-center items-center flex-1 gap-0.5 p-3 bg-slate-950/90 border-t border-slate-800 w-full min-h-[4.5rem]">
+                  <p className="font-bold text-slate-100 text-sm leading-snug w-full">
+                    {CATEGORY_SINHALA[cat.id]}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                    {cat.label}
+                  </p>
+                </div>
+              </button>
             ))}
           </div>
+        ) : (
+          /* Level 2: Sub-items grid */
+          <>
+            {error && (
+              <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
+                <p className="text-sm">{error}</p>
+                <button onClick={() => fetchProducts()} className="btn-secondary text-xs py-1.5 px-3">Retry</button>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-2 flex flex-col items-center justify-center h-full animate-pulse min-h-[7.5rem]">
+                  <div className="text-3xl mb-1">⬅️</div>
+                  <div className="skeleton h-3 w-3/4 rounded" />
+                </div>
+                {Array.from({ length: 19 }).map((_, i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : products.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full gap-4 pt-10">
+                <button
+                  onClick={() => setViewLevel('categories')}
+                  className="btn-secondary py-3 px-6 text-sm font-bold rounded-xl border border-slate-700/60 hover:bg-slate-800 text-slate-200 flex items-center gap-2"
+                >
+                  ⬅️ Back to Categories
+                </button>
+                <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
+                  <svg className="w-10 h-10 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <p className="text-sm">No products found</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2 pb-4">
+                {/* Back button chip inside product grid */}
+                <button
+                  onClick={() => setViewLevel('categories')}
+                  className="group relative flex flex-col items-center justify-center rounded-2xl border p-2 text-center transition-all duration-200 h-full border-violet-500/40 bg-violet-600/10 hover:bg-violet-600 text-violet-400 hover:text-white cursor-pointer shadow-sm min-h-[7.5rem]"
+                >
+                  <div className="text-3xl mb-1 group-hover:scale-110 transition-transform">⬅️</div>
+                  <span className="text-xs font-bold leading-tight">Back to<br/>Categories</span>
+                </button>
+                
+                {[...products].sort((a, b) => {
+                  const freqA = clickFreq[a._id] || 0;
+                  const freqB = clickFreq[b._id] || 0;
+                  if (freqA !== freqB) return freqB - freqA;
+                  return a.name.localeCompare(b.name);
+                }).map((p) => (
+                  <ProductCard key={p._id} product={p} onAdd={handleProductClick} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
