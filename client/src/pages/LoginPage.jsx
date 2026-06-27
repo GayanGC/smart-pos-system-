@@ -43,75 +43,43 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-slate-950">
 
-      {/* ── Left: Brand panel ──────────────────────────────────────── */}
-      <div className="hidden lg:flex w-[45%] relative overflow-hidden bg-gradient-to-br from-slate-950 via-violet-950/50 to-slate-950 flex-col items-center justify-center p-16">
-        {/* Background glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-violet-600/20 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-fuchsia-600/10 blur-[80px] pointer-events-none" />
+      {/* ── Left: Main Form Panel ─────────────────────────────────── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 w-full lg:w-[55%] relative overflow-hidden">
+        {/* Background ambient glows */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
 
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(139,92,246,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.8) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
+        <div className="w-full max-w-md bg-slate-900/50 border border-slate-800/60 p-8 sm:p-10 rounded-3xl backdrop-blur-xl shadow-2xl space-y-8 animate-fade-up z-10">
+          
+          {/* Logo & Branding */}
+          <div className="text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 flex items-center justify-center shadow-[0_0_35px_rgba(99,102,241,0.4)] border border-violet-400/20">
+                <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
 
-        <div className="relative z-10 max-w-sm text-center space-y-6">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-2xl shadow-violet-900/60 animate-pulse-ring">
-              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div>
+              <h1 className="text-3xl font-black text-white tracking-tight uppercase">Ai MANAGER</h1>
+              <p className="text-[10px] text-violet-400 font-bold tracking-[0.2em] uppercase mt-1">
+                SMART POS & SHOP MANAGEMENT SYSTEM
+              </p>
             </div>
           </div>
 
-          <div>
-            <h1 className="text-4xl font-black text-white tracking-tight">Smart ERP</h1>
-            <p className="text-violet-300/70 font-medium mt-1">Cloud POS System</p>
-          </div>
-
-          <p className="text-slate-400 text-sm leading-relaxed">
-            The complete enterprise solution — real-time sales analytics, AI-powered insights, offline POS, and smart inventory management.
-          </p>
-
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {['AI Analytics', 'Offline Mode', 'Live Dashboard', 'QR Attendance'].map((f) => (
-              <span key={f} className="badge-violet text-[11px] font-medium">{f}</span>
-            ))}
-          </div>
-        </div>
-
-        {/* Version tag */}
-        <div className="absolute bottom-6 text-[10px] text-slate-700 font-medium">v0.1.0 · Smart Cloud ERP</div>
-      </div>
-
-      {/* ── Right: Login form ──────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm space-y-8 animate-fade-up">
-
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <span className="font-bold text-xl text-slate-100">Smart ERP</span>
-          </div>
+          <div className="border-t border-slate-800/60 my-6" />
 
           {/* Heading */}
-          <div>
-            <h2 className="text-3xl font-bold text-slate-100 tracking-tight">Welcome back</h2>
-            <p className="text-slate-500 mt-1 text-sm">Sign in to your account to continue.</p>
+          <div className="space-y-1">
+            <h2 className="text-xl font-bold text-slate-100">Welcome back</h2>
+            <p className="text-slate-400 text-xs">Sign in to your manager account to continue.</p>
           </div>
 
           {/* Error alert */}
           {error && (
-            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm px-4 py-3 rounded-xl animate-fade-up flex items-center gap-2">
+            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs px-4 py-3 rounded-xl animate-fade-up flex items-center gap-2">
               <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
@@ -123,7 +91,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="space-y-1.5">
-              <label htmlFor="login-email" className="text-sm font-medium text-slate-400">
+              <label htmlFor="login-email" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 Email address
               </label>
               <input
@@ -135,13 +103,13 @@ export default function LoginPage() {
                 autoFocus
                 autoComplete="email"
                 placeholder="admin@example.com"
-                className="input-field"
+                className="input-field h-12 bg-slate-950/80 border-slate-800 focus:border-violet-500/50"
               />
             </div>
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="login-password" className="text-sm font-medium text-slate-400">
+              <label htmlFor="login-password" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 Password
               </label>
               <div className="relative">
@@ -153,7 +121,7 @@ export default function LoginPage() {
                   required
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="input-field pr-10"
+                  className="input-field h-12 pr-10 bg-slate-950/80 border-slate-800 focus:border-violet-500/50"
                 />
                 <button
                   type="button"
@@ -180,11 +148,11 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               id="login-submit-btn"
-              className="btn-primary w-full py-3 text-base"
+              className="btn-primary w-full h-12 text-sm font-semibold tracking-wide uppercase transition-all duration-200 shadow-lg shadow-violet-950/20"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 rounded-full border-2 border-violet-300 border-t-transparent animate-spin" />
+                  <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
                   Signing in…
                 </span>
               ) : (
@@ -194,11 +162,28 @@ export default function LoginPage() {
           </form>
 
           {/* Hint */}
-          <p className="text-center text-xs text-slate-700">
-            Contact your administrator if you cannot access your account.
+          <p className="text-center text-[10px] text-slate-500">
+            Contact your system administrator if you cannot access your account.
           </p>
         </div>
       </div>
+
+      {/* ── Right: Split-Pane Cinematic Image Panel ──────────────── */}
+      <div className="hidden lg:block w-[45%] relative overflow-hidden bg-slate-900">
+        <img
+          src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&q=80"
+          alt="Professional Corporate Manager"
+          className="absolute inset-0 w-full h-full object-cover grayscale-[15%] contrast-110 brightness-[0.8]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/20 to-transparent" />
+        
+        {/* Decorative branding elements over the image */}
+        <div className="absolute bottom-10 left-10 z-10 text-left">
+          <p className="text-xs font-bold text-violet-400 tracking-[0.3em] uppercase">Ai MANAGER v0.1.0</p>
+          <h2 className="text-2xl font-black text-white mt-1 leading-tight tracking-tight">Smart Cloud ERP Solutions</h2>
+        </div>
+      </div>
+
     </div>
   )
 }

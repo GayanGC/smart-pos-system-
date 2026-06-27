@@ -186,7 +186,7 @@ export default function CheckoutModal({
                 <KitchenPrint 
                   invoiceNumber="NEW"
                   lineItems={(lineItems || []).filter(item => {
-                    const cat = (item.category || '').toLowerCase()
+                    const cat = (item?.category || '').toLowerCase()
                     return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat // Default everything to kitchen if uncategorized except specific exclusions
                   })}
                   cashierName={user?.name || user?.username || 'Admin'}
@@ -226,7 +226,7 @@ export default function CheckoutModal({
                   <KitchenPrint 
                     invoiceNumber="NEW"
                     lineItems={(lineItems || []).filter(item => {
-                      const cat = (item.category || '').toLowerCase()
+                      const cat = (item?.category || '').toLowerCase()
                       return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
                     })}
                     cashierName={user?.name || user?.username || 'Admin'}
