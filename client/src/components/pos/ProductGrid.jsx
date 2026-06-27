@@ -32,53 +32,40 @@ function ProductCard({ product, onAdd }) {
       onClick={() => !isOutOfStock && onAdd(product)}
       disabled={isOutOfStock}
       className={`
-        group relative flex flex-col rounded-2xl border p-4 text-left
-        transition-all duration-200 overflow-hidden
+        group relative flex flex-col items-center justify-center rounded-3xl border p-2 text-center
+        transition-all duration-200 overflow-hidden aspect-square
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
           ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-900/40'
-          : 'border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg'}
+          : 'border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg'}
       `}
     >
       {/* Gradient background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full gap-2">
-        {/* Category chip */}
-        <span className="badge-slate self-start text-[10px]">{product.category || 'General'}</span>
-
+      <div className="relative z-10 flex flex-col h-full w-full justify-between items-center gap-1 p-1">
+        
         {/* Product name */}
-        <p className="font-semibold text-slate-100 text-sm leading-tight line-clamp-2 flex-1">
+        <p className="font-bold text-slate-100 text-xs sm:text-sm leading-tight line-clamp-3 w-full mt-1">
           {product.name}
         </p>
 
-        {/* SKU */}
-        <p className="text-[10px] text-slate-500 font-mono">{product.sku}</p>
-
         {/* Price + stock */}
-        <div className="flex items-end justify-between mt-1">
-          <p className="text-base font-bold text-violet-400">
-            {'Rs. ' + product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        <div className="flex flex-col items-center justify-end w-full mb-1">
+          <p className="text-sm sm:text-base font-black text-violet-400">
+            {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          {isLowStock && (
-            <span className="badge-amber text-[9px]">Low</span>
-          )}
-          {isOutOfStock && (
-            <span className="badge-red text-[9px]">Out</span>
-          )}
+          <div className="flex gap-1 h-3 mt-1">
+            {isLowStock && (
+              <span className="badge-amber text-[8px] px-1 py-0 h-4 flex items-center">Low</span>
+            )}
+            {isOutOfStock && (
+              <span className="badge-red text-[8px] px-1 py-0 h-4 flex items-center">Out</span>
+            )}
+          </div>
         </div>
 
-        {/* Quick-add overlay button */}
-        {!isOutOfStock && (
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center shadow-lg">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-            </div>
-          </div>
-        )}
       </div>
     </button>
   )
@@ -87,11 +74,10 @@ function ProductCard({ product, onAdd }) {
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4 space-y-3 animate-pulse">
-      <div className="skeleton h-3 w-16 rounded-full" />
-      <div className="skeleton h-4 w-full rounded" />
-      <div className="skeleton h-3 w-20 rounded" />
-      <div className="skeleton h-5 w-24 rounded mt-auto" />
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/40 p-4 space-y-3 animate-pulse aspect-square flex flex-col items-center justify-center">
+      <div className="skeleton h-4 w-3/4 rounded-full mt-2" />
+      <div className="skeleton h-3 w-1/2 rounded-full" />
+      <div className="skeleton h-5 w-1/2 rounded mt-auto mb-2" />
     </div>
   )
 }
@@ -117,6 +103,24 @@ export default function ProductGrid({ onAddToCart }) {
   const [loading,        setLoading]        = useState(true)
   const [error,          setError]          = useState(null)
   const searchRef = useRef(null)
+
+  // Smart Sorting: Frequency tracking
+  const [clickFreq, setClickFreq] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('pos_item_freq')) || {}
+    } catch {
+      return {}
+    }
+  })
+
+  const handleProductClick = useCallback((product) => {
+    onAddToCart(product)
+    setClickFreq(prev => {
+      const newFreq = { ...prev, [product._id]: (prev[product._id] || 0) + 1 }
+      localStorage.setItem('pos_item_freq', JSON.stringify(newFreq))
+      return newFreq
+    })
+  }, [onAddToCart])
 
   // Auto-focus search bar on mount (barcode scanner input target)
   useEffect(() => { searchRef.current?.focus() }, [])
@@ -178,14 +182,14 @@ export default function ProductGrid({ onAddToCart }) {
       // Try exact barcode
       let match = await db.products.where('barcode').equals(query).first()
       if (match) {
-        onAddToCart(match)
+        handleProductClick(match)
         setSearch('')
         return
       }
       // Try exact SKU
       match = await db.products.where('sku').equals(query.toUpperCase()).first()
       if (match) {
-        onAddToCart(match)
+        handleProductClick(match)
         setSearch('')
       }
       return
@@ -194,7 +198,7 @@ export default function ProductGrid({ onAddToCart }) {
     // Try exact barcode lookup first
     try {
       const { data } = await api.get(`/inventory/products/barcode/${encodeURIComponent(query)}`)
-      onAddToCart(data.data)
+      handleProductClick(data.data)
       setSearch('')
       return
     } catch { /* not found by barcode, fall through */ }
@@ -202,7 +206,7 @@ export default function ProductGrid({ onAddToCart }) {
     // Try exact SKU lookup
     try {
       const { data } = await api.get(`/inventory/products/sku/${encodeURIComponent(query.toUpperCase())}`)
-      onAddToCart(data.data)
+      handleProductClick(data.data)
       setSearch('')
     } catch { /* no exact match — leave search results visible */ }
   }
@@ -248,7 +252,7 @@ export default function ProductGrid({ onAddToCart }) {
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
             className={`
-              flex-shrink-0 w-[72px] h-[72px] flex flex-col items-center justify-center gap-1.5 rounded-2xl
+              flex-shrink-0 w-[96px] h-[96px] flex flex-col items-center justify-center gap-2 rounded-3xl
               border transition-all duration-200 snap-center
               focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer
               ${activeCategory === cat.id
@@ -256,10 +260,10 @@ export default function ProductGrid({ onAddToCart }) {
                 : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:border-violet-500/30 hover:bg-slate-800'}
             `}
           >
-            <span className={`text-2xl drop-shadow-md transition-transform duration-200 ${activeCategory === cat.id ? 'scale-110' : 'grayscale-[20%]'}`}>
+            <span className={`text-3xl drop-shadow-md transition-transform duration-200 ${activeCategory === cat.id ? 'scale-110' : 'grayscale-[20%]'}`}>
               {cat.icon}
             </span>
-            <span className="text-[10px] font-bold tracking-wide uppercase">
+            <span className="text-xs font-bold tracking-wide uppercase">
               {cat.label}
             </span>
           </button>
@@ -276,8 +280,8 @@ export default function ProductGrid({ onAddToCart }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
-            {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
@@ -287,9 +291,14 @@ export default function ProductGrid({ onAddToCart }) {
             <p className="text-sm">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-3 pb-4">
-            {products.map((p) => (
-              <ProductCard key={p._id} product={p} onAdd={onAddToCart} />
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 pb-4">
+            {[...products].sort((a, b) => {
+              const freqA = clickFreq[a._id] || 0;
+              const freqB = clickFreq[b._id] || 0;
+              if (freqA !== freqB) return freqB - freqA;
+              return a.name.localeCompare(b.name);
+            }).map((p) => (
+              <ProductCard key={p._id} product={p} onAdd={handleProductClick} />
             ))}
           </div>
         )}
