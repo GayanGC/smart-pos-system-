@@ -144,7 +144,7 @@ function DirectoryTab({ employees, onRefresh }) {
                   </td>
                 </tr>
               ) : (
-                employees.map((emp) => (
+                (employees || []).map((emp) => (
                   <tr key={emp?._id} className="hover:bg-slate-900/40 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -200,17 +200,17 @@ function DirectoryTab({ employees, onRefresh }) {
             <p className="text-slate-400 mb-6 font-medium">Your Assigned Tasks for Today ({new Date().toLocaleDateString()})</p>
             
             <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-none">
-              {(!welcomeModal.data?.tasks || welcomeModal.data.tasks.length === 0) ? (
+              {(!welcomeModal.data?.tasks || welcomeModal.data?.tasks?.length === 0) ? (
                 <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-center text-slate-500">
                   You have no specific tasks assigned for today. Have a great shift!
                 </div>
               ) : (
-                welcomeModal.data.tasks.map(t => (
-                  <div key={t._id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl flex items-start gap-4 shadow-sm shadow-black/40">
+                (welcomeModal.data?.tasks || []).map(t => (
+                  <div key={t?._id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl flex items-start gap-4 shadow-sm shadow-black/40">
                     <div className="w-2 h-2 mt-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
                     <div>
-                      <p className="text-slate-200 font-medium">{t.taskDescription}</p>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide font-bold">{t.status}</span>
+                      <p className="text-slate-200 font-medium">{t?.taskDescription}</p>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide font-bold">{t?.status}</span>
                     </div>
                   </div>
                 ))
@@ -384,7 +384,7 @@ function AttendanceTab({ employees, setWelcomeModal }) {
               ) : (!attendance || attendance.length === 0) ? (
                 <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">No attendance records for this date.</td></tr>
               ) : (
-                attendance.map((record) => (
+                (attendance || []).map((record) => (
                   <React.Fragment key={record?._id}>
                     <tr className="hover:bg-slate-900/40 transition-colors">
                       <td className="px-6 py-4 font-medium text-slate-200">
@@ -408,8 +408,8 @@ function AttendanceTab({ employees, setWelcomeModal }) {
                     
                     {/* Active Duty Tasks Sub-Grid */}
                     {(() => {
-                      const empTasks = (tasksForDate || []).filter(t => String(t.employeeId) === String(record?.employeeId?._id));
-                      if (empTasks.length === 0) return null;
+                      const empTasks = (tasksForDate || []).filter(t => String(t?.employeeId) === String(record?.employeeId?._id));
+                      if (!empTasks || empTasks.length === 0) return null;
                       return (
                         <tr className="bg-slate-900/20 border-b-0">
                           <td colSpan="5" className="px-6 py-3">
@@ -420,10 +420,10 @@ function AttendanceTab({ employees, setWelcomeModal }) {
                               </p>
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {empTasks.map(t => (
-                                  <div key={t._id} className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-lg border border-slate-800/50 shadow-sm">
-                                    <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${t.status === 'Completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-amber-500'}`} />
-                                    <span className={`text-xs truncate ${t.status === 'Completed' ? 'text-slate-500 line-through' : 'text-slate-300 font-medium'}`} title={t.taskDescription}>
-                                      {t.taskDescription}
+                                  <div key={t?._id} className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-lg border border-slate-800/50 shadow-sm">
+                                    <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${t?.status === 'Completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-amber-500'}`} />
+                                    <span className={`text-xs truncate ${t?.status === 'Completed' ? 'text-slate-500 line-through' : 'text-slate-300 font-medium'}`} title={t?.taskDescription}>
+                                      {t?.taskDescription}
                                     </span>
                                   </div>
                                 ))}
@@ -630,7 +630,7 @@ function QrScannerPanel({ onScanSuccess, setWelcomeModal }) {
   const handleCompleteTask = async (taskId) => {
     try {
       await api.patch(`/employees/tasks/${taskId}/complete`, { qrCodeToken: currentScanToken })
-      setTasks(prev => prev.map(t => t._id === taskId ? { ...t, status: 'completed' } : t))
+      setTasks(prev => (prev || []).map(t => t?._id === taskId ? { ...t, status: 'completed' } : t))
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to complete task.')
     }
@@ -815,9 +815,9 @@ function PayrollTab({ employees, onRefresh }) {
                     </td>
                     <td className="px-6 py-4 text-right font-mono text-rose-400">
                       {pRecord 
-                        ? `Rs. ${(pRecord?.deductions?.find(d => d.label === 'Salary Advance')?.amount || 0).toLocaleString()}` 
+                        ? `Rs. ${(pRecord?.deductions?.find(d => d?.label === 'Salary Advance')?.amount || 0).toLocaleString()}` 
                         : (emp?.salaryAdvances?.length > 0 
-                            ? `(Pending Rs. ${emp.salaryAdvances.reduce((s, a) => s + a.amount, 0).toLocaleString()})`
+                            ? `(Pending Rs. ${(emp?.salaryAdvances || []).reduce((s, a) => s + (a?.amount || 0), 0).toLocaleString()})`
                             : '-')
                       }
                     </td>
@@ -951,8 +951,8 @@ function TasksTab({ employees }) {
               className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-200 outline-none focus:border-violet-500 transition-colors"
             >
               <option value="">-- Choose Employee --</option>
-              {(employees || []).filter(e => e.isActive).map(emp => (
-                <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.designation})</option>
+              {(employees || []).filter(e => e?.isActive).map(emp => (
+                <option key={emp?._id} value={emp?._id}>{emp?.firstName} {emp?.lastName} ({emp?.designation})</option>
               ))}
             </select>
           </div>
