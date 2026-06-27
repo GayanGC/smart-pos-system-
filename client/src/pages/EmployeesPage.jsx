@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import api from '../api/axios'
 import { QRCodeCanvas } from 'qrcode.react'
-import { Html5Qrcode } from 'html5-qrcode'
+import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode'
 import { saveAttendanceOffline } from '../utils/offlineSync'
 import ErrorBoundary from '../components/common/ErrorBoundary'
 
@@ -485,6 +485,9 @@ function QrScannerPanel({ onScanSuccess, setWelcomeModal }) {
   useEffect(() => {
     let isMounted = true
     let isScanning = false
+    const readerEl = document.getElementById("reader")
+    if (!readerEl) return
+
     const html5Qrcode = new Html5Qrcode("reader")
 
     html5Qrcode.start(
@@ -568,7 +571,7 @@ function QrScannerPanel({ onScanSuccess, setWelcomeModal }) {
       (errorMessage) => { /* ignore verbose logs */ }
     ).then(() => {
       if (!isMounted) {
-        if (html5Qrcode.isScanning) {
+        if (html5Qrcode && html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
           html5Qrcode.stop()
             .then(() => html5Qrcode.clear())
             .catch(err => console.error("Scanner stop error", err))
@@ -588,7 +591,7 @@ function QrScannerPanel({ onScanSuccess, setWelcomeModal }) {
       if (html5Qrcode) {
         const stopScanner = async () => {
           try {
-            if (html5Qrcode.isScanning) {
+            if (html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
               await html5Qrcode.stop();
             }
             await html5Qrcode.clear();
