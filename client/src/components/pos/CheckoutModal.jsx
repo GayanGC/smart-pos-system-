@@ -10,6 +10,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import ReceiptPrint from './ReceiptPrint'
+import KitchenPrint from './KitchenPrint'
 
 const METHODS = [
   {
@@ -60,6 +61,7 @@ export default function CheckoutModal({
   const [amountPaid,  setAmountPaid]  = useState('')
   const [cardRef,     setCardRef]     = useState('')
   const [success,     setSuccess]     = useState(false)
+  const [printView,   setPrintView]   = useState('receipt') // 'receipt' or 'kot'
   const [error,       setError]       = useState(null)
   const amountRef = useRef(null)
   const { user } = useAuth()
@@ -71,6 +73,7 @@ export default function CheckoutModal({
       setAmountPaid(grandTotal.toFixed(2)) // pre-fill exact amount
       setCardRef('')
       setSuccess(false)
+      setPrintView('receipt')
       setError(null)
       setTimeout(() => amountRef.current?.select(), 50)
     }
@@ -127,28 +130,65 @@ export default function CheckoutModal({
               Payment Complete!
             </h2>
             
+            {/* Tab selector for Print Previews */}
+            <div className="print:hidden flex gap-2 mb-4 bg-slate-900 border border-slate-800 p-1 rounded-xl">
+              <button 
+                onClick={() => setPrintView('receipt')} 
+                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${printView === 'receipt' ? 'bg-violet-600 text-white shadow-md shadow-violet-900/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+              >
+                Customer Receipt
+              </button>
+              <button 
+                onClick={() => setPrintView('kot')} 
+                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${printView === 'kot' ? 'bg-orange-500 text-white shadow-md shadow-orange-900/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+              >
+                Kitchen Ticket (KOT)
+              </button>
+            </div>
+
             <div className="flex-1 w-full flex items-center justify-center overflow-y-auto print:overflow-visible">
-              <ReceiptPrint 
-                lineItems={lineItems} 
-                grandTotal={grandTotal}
-                subTotal={subTotal}
-                totalDiscount={totalDiscount}
-                paymentMethod={method}
-                amountPaid={method === 'cash' ? numericPaid : grandTotal}
-                changeDue={changeDue}
-                cashierName={user?.name || user?.username || 'Admin'}
-                isLivePreview={true}
-              />
+              <div className={`w-full max-w-sm flex justify-center ${printView === 'receipt' ? 'block print:block' : 'hidden print:hidden'}`}>
+                <ReceiptPrint 
+                  lineItems={lineItems} 
+                  grandTotal={grandTotal}
+                  subTotal={subTotal}
+                  totalDiscount={totalDiscount}
+                  paymentMethod={method}
+                  amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                  changeDue={changeDue}
+                  cashierName={user?.name || user?.username || 'Admin'}
+                  isLivePreview={true}
+                />
+              </div>
+              <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block print:block' : 'hidden print:hidden'}`}>
+                <KitchenPrint 
+                  invoiceNumber="NEW"
+                  lineItems={(lineItems || []).filter(item => {
+                    const cat = (item.category || '').toLowerCase()
+                    return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat // Default everything to kitchen if uncategorized except specific exclusions
+                  })}
+                  cashierName={user?.name || user?.username || 'Admin'}
+                  isLivePreview={true}
+                />
+              </div>
             </div>
 
             <div className="mt-4 shrink-0 print:hidden text-center w-full max-w-sm">
               {!isOnline && <p className="text-xs text-amber-400 mb-3">Saved offline — will sync when connected</p>}
-              <button 
-                onClick={onSuccessReset} 
-                className="btn-primary w-full py-3.5 text-lg font-bold tracking-wide"
-              >
-                OK / New Sale
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => window.print()} 
+                  className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl font-bold transition-colors"
+                >
+                  Print Selected
+                </button>
+                <button 
+                  onClick={onSuccessReset} 
+                  className="flex-1 btn-primary py-3.5 text-lg font-bold tracking-wide"
+                >
+                  New Sale
+                </button>
+              </div>
             </div>
           </div>
         )}
