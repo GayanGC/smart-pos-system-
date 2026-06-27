@@ -180,27 +180,22 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   color: #0f172a !important;
 }
-.light-theme .text-white {
+
+.light-theme [class*="text-white"] {
   color: #0f172a !important;
 }
 /* Ensure button labels/icons remain white when they have text-white */
-.light-theme button .text-white,
-.light-theme .btn-primary,
-.light-theme .btn-primary .text-white,
-.light-theme .btn-success,
-.light-theme .btn-success .text-white,
-.light-theme .bg-violet-600,
-.light-theme .bg-violet-600 .text-white,
-.light-theme .bg-violet-700,
-.light-theme .bg-violet-700 .text-white,
-.light-theme .bg-emerald-600,
-.light-theme .bg-emerald-600 .text-white,
-.light-theme .bg-rose-600,
-.light-theme .bg-rose-600 .text-white,
-.light-theme .bg-gradient-to-br,
-.light-theme .bg-gradient-to-br .text-white {
+.light-theme button [class*="text-white"],
+.light-theme .btn-primary [class*="text-white"],
+.light-theme .btn-success [class*="text-white"],
+.light-theme .bg-violet-600 [class*="text-white"],
+.light-theme .bg-violet-700 [class*="text-white"],
+.light-theme .bg-emerald-600 [class*="text-white"],
+.light-theme .bg-rose-600 [class*="text-white"],
+.light-theme .bg-gradient-to-br [class*="text-white"] {
   color: #ffffff !important;
 }
+
 .light-theme .btn-primary, .light-theme .bg-violet-600, .light-theme .from-violet-600, .light-theme .to-violet-800, .light-theme .from-violet-500, .light-theme .to-violet-700, .light-theme .bg-violet-600\/20 {
   background-color: #1d4ed8 !important; /* Professional Blue */
   background-image: none !important;
