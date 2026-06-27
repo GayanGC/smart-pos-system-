@@ -7,7 +7,7 @@
  */
 
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 
 /* ── Inline SVG Icons ─────────────────────────────────────────────────── */
@@ -47,6 +47,16 @@ const icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   ),
+  sun: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  ),
+  moon: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+  ),
 }
 
 /* ── Nav items per role ───────────────────────────────────────────────── */
@@ -67,6 +77,22 @@ export default function Sidebar({ collapsed, onToggle }) {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
   const navItems = isAdmin ? adminNavItems : cashierNavItems
+
+  const [isLight, setIsLight] = useState(() => {
+    return localStorage.getItem('theme') === 'light'
+  })
+
+  useEffect(() => {
+    if (isLight) {
+      document.body.classList.add('light-theme')
+      localStorage.setItem('theme', 'light')
+    } else {
+      document.body.classList.remove('light-theme')
+      localStorage.setItem('theme', 'dark')
+    }
+  }, [isLight])
+
+  const toggleTheme = () => setIsLight(!isLight)
 
   const handleLogout = async () => {
     await logout()
@@ -160,10 +186,10 @@ export default function Sidebar({ collapsed, onToggle }) {
         {!collapsed && user && (
           <div className="flex items-center gap-3 px-2 py-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              {user.name?.charAt(0).toUpperCase()}
+              A
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-slate-200 truncate">{user.name}</p>
+              <p className="text-xs font-semibold text-slate-200 truncate">AI Manager</p>
               <p className="text-[10px] text-slate-500 capitalize truncate">{user.role?.replace('_', ' ')}</p>
             </div>
           </div>
@@ -199,6 +225,21 @@ export default function Sidebar({ collapsed, onToggle }) {
           <span className={`transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}>
             {icons.chevron}
           </span>
+        </button>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          className={`
+            w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium
+            text-amber-400 hover:bg-amber-500/10
+            transition-all duration-150
+            ${collapsed ? 'justify-center' : 'justify-start'}
+          `}
+        >
+          <span className="flex-shrink-0">{isLight ? icons.moon : icons.sun}</span>
+          {!collapsed && <span>{isLight ? 'Dark Mode' : 'Light Mode'}</span>}
         </button>
       </div>
     </aside>
