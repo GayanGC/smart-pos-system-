@@ -176,27 +176,35 @@ export default function CheckoutModal({
 
             {/* Print Only Container */}
             <div className="hidden print:block w-full max-w-sm mx-auto">
-              <ReceiptPrint 
-                lineItems={lineItems} 
-                grandTotal={grandTotal}
-                subTotal={subTotal}
-                totalDiscount={totalDiscount}
-                paymentMethod={method}
-                amountPaid={method === 'cash' ? numericPaid : grandTotal}
-                changeDue={changeDue}
-                cashierName={user?.name || user?.username || 'Admin'}
-                isLivePreview={false}
-              />
-              <div className="print:break-after-page" style={{ pageBreakAfter: 'always' }}></div>
-              <KitchenPrint 
-                invoiceNumber="NEW"
-                lineItems={(lineItems || []).filter(item => {
-                  const cat = (item.category || '').toLowerCase()
-                  return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat // Default everything to kitchen if uncategorized except specific exclusions
-                })}
-                cashierName={user?.name || user?.username || 'Admin'}
-                isLivePreview={false}
-              />
+              <style>{`
+                @media print {
+                  .receipt-section { page-break-after: always; }
+                }
+              `}</style>
+              <div className="receipt-section">
+                <ReceiptPrint 
+                  lineItems={lineItems} 
+                  grandTotal={grandTotal}
+                  subTotal={subTotal}
+                  totalDiscount={totalDiscount}
+                  paymentMethod={method}
+                  amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                  changeDue={changeDue}
+                  cashierName={user?.name || user?.username || 'Admin'}
+                  isLivePreview={false}
+                />
+              </div>
+              <div className="kot-section">
+                <KitchenPrint 
+                  invoiceNumber="NEW"
+                  lineItems={(lineItems || []).filter(item => {
+                    const cat = (item.category || '').toLowerCase()
+                    return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
+                  })}
+                  cashierName={user?.name || user?.username || 'Admin'}
+                  isLivePreview={false}
+                />
+              </div>
             </div>
 
             <div className="mt-4 shrink-0 print:hidden text-center w-full max-w-sm">
@@ -206,7 +214,7 @@ export default function CheckoutModal({
                   onClick={() => window.print()} 
                   className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl font-bold transition-colors"
                 >
-                  Print Selected
+                  Print Receipt & KOT
                 </button>
                 <button 
                   onClick={onSuccessReset} 
