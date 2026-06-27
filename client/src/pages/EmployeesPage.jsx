@@ -18,6 +18,7 @@ export default function EmployeesPage() {
   const [employees, setEmployees] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [welcomeModal, setWelcomeModal] = useState({ isOpen: false, data: null })
 
   const fetchEmployees = async () => {
     try {
@@ -95,7 +96,7 @@ export default function EmployeesPage() {
         ) : (
           <>
             {activeTab === 'directory' && <DirectoryTab employees={employees} onRefresh={fetchEmployees} />}
-            {activeTab === 'attendance' && <AttendanceTab employees={employees} />}
+            {activeTab === 'attendance' && <AttendanceTab employees={employees} setWelcomeModal={setWelcomeModal} />}
             {activeTab === 'payroll' && <PayrollTab employees={employees} onRefresh={fetchEmployees} />}
             {activeTab === 'tasks' && <TasksTab employees={employees} />}
           </>
@@ -187,6 +188,43 @@ function DirectoryTab({ employees, onRefresh }) {
 
       {selectedQrEmployee && (
         <QrCodeModal employee={selectedQrEmployee} onClose={() => setSelectedQrEmployee(null)} />
+      )}
+
+      {/* ── Welcome & Workload Modal (In-App Overlay) ── */}
+      {welcomeModal.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-slate-950 border border-violet-500/50 shadow-[0_0_50px_-12px_rgba(139,92,246,0.5)] rounded-2xl p-8 w-full max-w-lg animate-fade-up">
+            <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-2">
+              Good Morning, {welcomeModal.data?.employee?.firstName}!
+            </h2>
+            <p className="text-slate-400 mb-6 font-medium">Your Assigned Tasks for Today ({new Date().toLocaleDateString()})</p>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-none">
+              {(!welcomeModal.data?.tasks || welcomeModal.data.tasks.length === 0) ? (
+                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-center text-slate-500">
+                  You have no specific tasks assigned for today. Have a great shift!
+                </div>
+              ) : (
+                welcomeModal.data.tasks.map(t => (
+                  <div key={t._id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl flex items-start gap-4 shadow-sm shadow-black/40">
+                    <div className="w-2 h-2 mt-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                    <div>
+                      <p className="text-slate-200 font-medium">{t.taskDescription}</p>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide font-bold">{t.status}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <button 
+              onClick={() => setWelcomeModal({ isOpen: false, data: null })}
+              className="mt-8 w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors border border-slate-700"
+            >
+              Start Shift
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )
@@ -284,8 +322,9 @@ function QrCodeModal({ employee, onClose }) {
 }
 
 /* ── 2. Attendance Tab ───────────────────────────────────────────────────── */
-function AttendanceTab() {
+function AttendanceTab({ employees, setWelcomeModal }) {
   const [attendance, setAttendance] = useState([])
+  const [tasksForDate, setTasksForDate] = useState([])
   const [loading, setLoading] = useState(false)
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]) // Today
 
@@ -301,8 +340,18 @@ function AttendanceTab() {
     }
   }, [date])
 
+  const fetchTasksForDate = async () => {
+    try {
+      const res = await api.get(`/employees/tasks?date=${date}`)
+      setTasksForDate(res.data.data || [])
+    } catch (err) {
+      console.error('Failed to fetch tasks for date', err)
+    }
+  }
+
   useEffect(() => {
     fetchAttendance()
+    fetchTasksForDate()
   }, [date])
 
   return (
@@ -336,25 +385,55 @@ function AttendanceTab() {
                 <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">No attendance records for this date.</td></tr>
               ) : (
                 attendance.map((record) => (
-                  <tr key={record?._id} className="hover:bg-slate-900/40 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-200">
-                      {record?.employeeId?.firstName || 'Unknown'} {record?.employeeId?.lastName || ''}
-                    </td>
-                    <td className="px-6 py-4 text-center text-emerald-400 font-mono">
-                      {record?.clockIn ? new Date(record.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                    </td>
-                    <td className="px-6 py-4 text-center text-amber-400 font-mono">
-                      {record?.clockOut ? new Date(record.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                    </td>
-                    <td className="px-6 py-4 text-center font-bold text-slate-300">
-                      {record?.clockOut ? `${record?.totalHoursWorked || 0}h` : 'In Progress'}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${!record?.clockOut ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
-                        {!record?.clockOut ? 'Clocked In' : 'Completed'}
-                      </span>
-                    </td>
-                  </tr>
+                  <React.Fragment key={record?._id}>
+                    <tr className="hover:bg-slate-900/40 transition-colors">
+                      <td className="px-6 py-4 font-medium text-slate-200">
+                        {record?.employeeId?.firstName || 'Unknown'} {record?.employeeId?.lastName || ''}
+                      </td>
+                      <td className="px-6 py-4 text-center text-emerald-400 font-mono">
+                        {record?.clockIn ? new Date(record.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                      </td>
+                      <td className="px-6 py-4 text-center text-amber-400 font-mono">
+                        {record?.clockOut ? new Date(record.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                      </td>
+                      <td className="px-6 py-4 text-center font-bold text-slate-300">
+                        {record?.clockOut ? `${record?.totalHoursWorked || 0}h` : 'In Progress'}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${!record?.clockOut ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
+                          {!record?.clockOut ? 'Clocked In' : 'Completed'}
+                        </span>
+                      </td>
+                    </tr>
+                    
+                    {/* Active Duty Tasks Sub-Grid */}
+                    {(() => {
+                      const empTasks = tasksForDate.filter(t => String(t.employeeId) === String(record?.employeeId?._id));
+                      if (empTasks.length === 0) return null;
+                      return (
+                        <tr className="bg-slate-900/20 border-b-0">
+                          <td colSpan="5" className="px-6 py-3">
+                            <div className="ml-4 pl-4 border-l-2 border-violet-500/30 py-1">
+                              <p className="text-[10px] font-bold text-violet-400 mb-2 uppercase tracking-widest flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                                Active Duty Tasks
+                              </p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {empTasks.map(t => (
+                                  <div key={t._id} className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-lg border border-slate-800/50 shadow-sm">
+                                    <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${t.status === 'Completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-amber-500'}`} />
+                                    <span className={`text-xs truncate ${t.status === 'Completed' ? 'text-slate-500 line-through' : 'text-slate-300 font-medium'}`} title={t.taskDescription}>
+                                      {t.taskDescription}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })()}
+                  </React.Fragment>
                 ))
               )}
             </tbody>
@@ -364,13 +443,13 @@ function AttendanceTab() {
       
       {/* 40% Right Side QR Scanner */}
       <div className="lg:col-span-2">
-        <QrScannerPanel onScanSuccess={fetchAttendance} />
+        <QrScannerPanel onScanSuccess={fetchAttendance} setWelcomeModal={setWelcomeModal} />
       </div>
     </div>
   )
 }
 
-function QrScannerPanel({ onScanSuccess }) {
+function QrScannerPanel({ onScanSuccess, setWelcomeModal }) {
   const [scanError, setScanError] = useState(null)
   const [lastScanned, setLastScanned] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -457,8 +536,13 @@ function QrScannerPanel({ onScanSuccess }) {
               name: actionResponse.data.data.employee.name,
               message: actionResponse.data.message
             })
-            if (actionResponse.data.data.tasks) {
-              setTasks(actionResponse.data.data.tasks)
+
+            // Only trigger Welcome Modal on successful Clock In
+            if (actionResponse.data.data.action === 'clock_in') {
+              setWelcomeModal({
+                isOpen: true,
+                data: actionResponse.data.data
+              })
             }
           }
           
@@ -587,46 +671,7 @@ function QrScannerPanel({ onScanSuccess }) {
              <p>{lastScanned.message}</p>
           </div>
         )}
-        
-        {/* TASKS CHECKLIST UI */}
-        {(tasks && tasks.length > 0) && (
-          <div className="mt-4 p-4 rounded-xl border border-violet-500/30 bg-violet-500/10 animate-fade-up">
-            <h3 className="text-violet-300 font-bold mb-3 flex items-center gap-2">
-              <span>📋</span> Today's Checklist
-            </h3>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {tasks.map(task => (
-                <div 
-                  key={task?._id} 
-                  className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                    task?.status === 'completed' 
-                      ? 'bg-emerald-500/10 border-emerald-500/30 opacity-70' 
-                      : 'bg-slate-900 border-slate-700 hover:border-violet-400/50'
-                  }`}
-                >
-                  <button
-                    onClick={() => { if(task?.status !== 'completed') handleCompleteTask(task?._id) }}
-                    disabled={task?.status === 'completed'}
-                    className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
-                      task?.status === 'completed'
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-800 border-2 border-slate-600 hover:border-violet-400 cursor-pointer'
-                    }`}
-                  >
-                    {task?.status === 'completed' && (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                  <span className={`text-sm font-medium ${task?.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-200'}`}>
-                    {task?.title || 'Untitled Task'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* We removed the static tasks checklist UI here in favor of the In-App overlay and sub-grid. */}
 
         {!scanError && !lastScanned && (
            <div className="text-slate-500 text-sm text-center py-6 bg-slate-900/50 rounded-xl border border-slate-800/50">

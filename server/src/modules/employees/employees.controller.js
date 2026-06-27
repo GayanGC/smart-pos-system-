@@ -151,15 +151,16 @@ const clockIn = asyncHandler(async (req, res) => {
   });
 
   const tasks = await Task.find({
-    assignedTo: employee._id,
-    status: 'pending',
-    date: { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) }
+    employeeId: employee._id,
+    status: 'Pending',
+    scheduledFor: { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) }
   });
 
+  const empName = `${employee.firstName} ${employee.lastName}`.trim();
   return sendSuccess(res, {
     statusCode: 201,
-    data: { action: 'clock_in', record, employee: { id: employee._id, name: employee.fullName }, tasks },
-    message: `✅ Clock-in recorded for ${employee.fullName} at ${now.toLocaleTimeString()}.`,
+    data: { action: 'clock_in', record, employee: { id: employee._id, name: empName, firstName: employee.firstName }, tasks },
+    message: `✅ Clock-in recorded for ${empName} at ${now.toLocaleTimeString()}.`,
   });
 });
 
@@ -432,12 +433,12 @@ const markPayrollAsPaid = asyncHandler(async (req, res) => {
 const getTasks = asyncHandler(async (req, res) => {
   const { employeeId, date, status } = req.query;
   const filter = {};
-  if (employeeId) filter.assignedTo = employeeId;
+  if (employeeId) filter.employeeId = employeeId;
   if (status) filter.status = status;
   if (date) {
     const startOfDay = new Date(date);
     startOfDay.setUTCHours(0, 0, 0, 0);
-    filter.date = { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) };
+    filter.scheduledFor = { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) };
   }
 
   const tasks = await Task.find(filter).sort({ date: -1 });
@@ -505,20 +506,9 @@ const assignTask = asyncHandler(async (req, res) => {
     status: 'Pending'
   });
 
-  // Trigger owner email (fire and forget)
-  try {
-    const { sendEmail } = require('../../utils/emailReportService');
-    const dashboardLink = `${process.env.CLIENT_ORIGIN || 'http://localhost:3000'}/tasks/${task._id}`;
-    await sendEmail({
-      to: process.env.OWNER_EMAIL || 'owner@smartclouderp.com',
-      subject: `New Task Assigned to ${employee.firstName}`,
-      text: `A new task "${taskDescription}" was assigned to ${employee.firstName} ${employee.lastName} for ${new Date(scheduledFor).toDateString()}.\n\nReview and approve here: ${dashboardLink}`
-    });
-  } catch (err) {
-    console.error('Failed to send task email:', err.message);
-  }
+  // Removed email dispatch logic to rely completely on the In-App Terminal Modal.
 
-  return sendSuccess(res, { statusCode: 201, data: task, message: 'Task assigned and notification sent.' });
+  return sendSuccess(res, { statusCode: 201, data: task, message: 'Task assigned successfully.' });
 });
 
 const getEmployeeTasks = asyncHandler(async (req, res) => {
