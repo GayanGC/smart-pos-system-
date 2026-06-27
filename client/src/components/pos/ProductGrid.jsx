@@ -74,14 +74,14 @@ function ProductCard({ product, onAdd }) {
   const isOutOfStock = product.quantityInStock <= 0
   const isLowStock   = !isOutOfStock && product.quantityInStock <= product.lowStockThreshold
   const gradient     = CARD_GRADIENTS[product.name.charCodeAt(0) % CARD_GRADIENTS.length]
-  const displayName = getProductName(product.name)
+  const displayName = getProductName(product.name || '')
 
   return (
     <button
       onClick={() => !isOutOfStock && onAdd(product)}
       disabled={isOutOfStock}
       className={`
-        group relative flex flex-col justify-center items-center rounded-2xl border px-3 py-4 h-20 text-center
+        group relative flex flex-col justify-center items-center rounded-2xl border px-3 py-4 h-24 text-center
         transition-all duration-200 overflow-hidden
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
@@ -94,20 +94,20 @@ function ProductCard({ product, onAdd }) {
 
       {/* Stock indicators */}
       {isLowStock && (
-        <span className="absolute top-1 right-2 badge-amber text-[8px] px-1 py-0 shadow-md">Low</span>
+        <span className="absolute top-1.5 right-2.5 badge-amber text-[8px] px-1 py-0 shadow-md">Low</span>
       )}
       {isOutOfStock && (
-        <span className="absolute top-1 right-2 badge-red text-[8px] px-1 py-0 shadow-md">Out</span>
+        <span className="absolute top-1.5 right-2.5 badge-red text-[8px] px-1 py-0 shadow-md">Out</span>
       )}
 
       {/* Product name (supports Sinhala Unicode cleanly) */}
-      <p className="relative z-10 font-bold text-slate-100 text-xs sm:text-sm leading-snug line-clamp-1 w-full break-words">
+      <p className="relative z-10 text-base font-bold text-slate-100 dark:text-slate-100 leading-snug line-clamp-1 w-full break-words">
         {displayName}
       </p>
 
       {/* Price */}
-      <p className="relative z-10 text-xs sm:text-sm font-bold text-violet-400 mt-1 w-full">
-        Rs. {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      <p className="relative z-10 text-sm font-black text-violet-400 mt-1 w-full">
+        Rs. {(product.sellingPrice || 0).toFixed(2)}
       </p>
     </button>
   )
@@ -116,7 +116,7 @@ function ProductCard({ product, onAdd }) {
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-3 py-4 h-20 flex flex-col justify-center items-center animate-pulse">
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-3 py-4 h-24 flex flex-col justify-center items-center animate-pulse">
       <div className="skeleton h-3 w-3/4 rounded" />
       <div className="skeleton h-3.5 w-1/2 rounded mt-2" />
     </div>
@@ -395,8 +395,8 @@ export default function ProductGrid({ onAddToCart }) {
             )}
 
             {loading ? (
-              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2">
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-2 flex flex-col items-center justify-center h-20 animate-pulse">
+              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-2 flex flex-col items-center justify-center h-24 animate-pulse">
                   <div className="text-xl mb-0.5">⬅️</div>
                   <div className="skeleton h-2 w-3/4 rounded" />
                 </div>
@@ -418,11 +418,11 @@ export default function ProductGrid({ onAddToCart }) {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2 pb-4">
+              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2 pb-4">
                 {/* Back button chip inside product grid */}
                 <button
                   onClick={() => setViewLevel('categories')}
-                  className="group relative flex flex-col items-center justify-center rounded-2xl border p-2 text-center transition-all duration-200 h-20 border-violet-500/40 bg-violet-600/10 hover:bg-violet-600 text-violet-400 hover:text-white cursor-pointer shadow-sm"
+                  className="group relative flex flex-col items-center justify-center rounded-2xl border p-2 text-center transition-all duration-200 h-24 border-violet-500/40 bg-violet-600/10 hover:bg-violet-600 text-violet-400 hover:text-white cursor-pointer shadow-sm"
                 >
                   <div className="text-xl mb-0.5 group-hover:scale-110 transition-transform">⬅️</div>
                   <span className="text-[10px] font-bold leading-none">Back to Categories</span>
