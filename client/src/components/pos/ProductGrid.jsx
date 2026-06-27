@@ -32,8 +32,8 @@ function ProductCard({ product, onAdd }) {
       onClick={() => !isOutOfStock && onAdd(product)}
       disabled={isOutOfStock}
       className={`
-        group relative flex flex-col items-center justify-center rounded-3xl border p-2 text-center
-        transition-all duration-200 overflow-hidden aspect-square
+        group relative flex flex-col items-center justify-center rounded-2xl border px-1 py-1.5 text-center
+        transition-all duration-200 overflow-hidden
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
           ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-900/40'
@@ -44,26 +44,28 @@ function ProductCard({ product, onAdd }) {
       <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full w-full justify-between items-center gap-1 p-1">
+      <div className="relative z-10 flex flex-col h-full w-full justify-between items-center gap-0.5">
         
         {/* Product name */}
-        <p className="font-bold text-slate-100 text-xs sm:text-sm leading-tight line-clamp-3 w-full mt-1">
+        <p className="font-bold text-slate-100 text-xs sm:text-sm leading-tight line-clamp-2 w-full mt-0.5">
           {product.name}
         </p>
 
         {/* Price + stock */}
-        <div className="flex flex-col items-center justify-end w-full mb-1">
+        <div className="flex flex-col items-center justify-end w-full mb-0.5">
           <p className="text-sm sm:text-base font-black text-violet-400">
             {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <div className="flex gap-1 h-3 mt-1">
-            {isLowStock && (
-              <span className="badge-amber text-[8px] px-1 py-0 h-4 flex items-center">Low</span>
-            )}
-            {isOutOfStock && (
-              <span className="badge-red text-[8px] px-1 py-0 h-4 flex items-center">Out</span>
-            )}
-          </div>
+          {(isLowStock || isOutOfStock) && (
+            <div className="flex gap-1 h-3 mt-0.5">
+              {isLowStock && (
+                <span className="badge-amber text-[8px] px-1 py-0 h-4 flex items-center">Low</span>
+              )}
+              {isOutOfStock && (
+                <span className="badge-red text-[8px] px-1 py-0 h-4 flex items-center">Out</span>
+              )}
+            </div>
+          )}
         </div>
 
       </div>
@@ -74,10 +76,9 @@ function ProductCard({ product, onAdd }) {
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="rounded-3xl border border-slate-800 bg-slate-900/40 p-4 space-y-3 animate-pulse aspect-square flex flex-col items-center justify-center">
-      <div className="skeleton h-4 w-3/4 rounded-full mt-2" />
-      <div className="skeleton h-3 w-1/2 rounded-full" />
-      <div className="skeleton h-5 w-1/2 rounded mt-auto mb-2" />
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-2 py-3 space-y-2 animate-pulse flex flex-col items-center justify-center">
+      <div className="skeleton h-4 w-3/4 rounded-full mt-1" />
+      <div className="skeleton h-5 w-1/2 rounded mt-auto mb-1" />
     </div>
   )
 }
@@ -280,7 +281,7 @@ export default function ProductGrid({ onAddToCart }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2">
             {Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : products.length === 0 ? (
@@ -291,7 +292,7 @@ export default function ProductGrid({ onAddToCart }) {
             <p className="text-sm">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 pb-4">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2 pb-4">
             {[...products].sort((a, b) => {
               const freqA = clickFreq[a._id] || 0;
               const freqB = clickFreq[b._id] || 0;
