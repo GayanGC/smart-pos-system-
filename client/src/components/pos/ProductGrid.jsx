@@ -26,48 +26,52 @@ function ProductCard({ product, onAdd }) {
   const isOutOfStock = product.quantityInStock <= 0
   const isLowStock   = !isOutOfStock && product.quantityInStock <= product.lowStockThreshold
   const gradient     = CARD_GRADIENTS[product.name.charCodeAt(0) % CARD_GRADIENTS.length]
+  const placeholderImage = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&auto=format&fit=crop&q=80'
+  const imageSrc = product.imageUrl || placeholderImage
 
   return (
     <button
       onClick={() => !isOutOfStock && onAdd(product)}
       disabled={isOutOfStock}
       className={`
-        group relative flex flex-col items-center justify-center rounded-2xl border px-1 py-1.5 text-center
-        transition-all duration-200 overflow-hidden
+        group relative flex flex-col items-stretch rounded-2xl border text-center
+        transition-all duration-200 overflow-hidden h-full
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
           ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-900/40'
           : 'border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg'}
       `}
     >
-      {/* Gradient background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+      {/* Product Image Header */}
+      <div className="relative w-full h-24 sm:h-28 overflow-hidden bg-slate-950 flex-shrink-0">
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        {/* Stock overlays */}
+        {isLowStock && (
+          <span className="absolute top-1.5 left-1.5 badge-amber text-[8px] px-1 py-0.5 shadow-md">Low</span>
+        )}
+        {isOutOfStock && (
+          <span className="absolute top-1.5 left-1.5 badge-red text-[8px] px-1 py-0.5 shadow-md">Out</span>
+        )}
+      </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col h-full w-full justify-between items-center gap-0.5">
-        
-        {/* Product name */}
-        <p className="font-bold text-slate-100 text-xs sm:text-sm leading-tight line-clamp-2 w-full mt-0.5">
+      {/* Dark high-contrast footer pad */}
+      <div className="relative z-10 flex flex-col justify-between items-center flex-1 gap-1 p-2 bg-slate-950/90 border-t border-slate-800 w-full min-h-[4.5rem]">
+        {/* Gradient overlay inside footer on hover */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+
+        {/* Product name (supports Sinhala Unicode cleanly with break-words) */}
+        <p className="relative z-10 font-bold text-slate-100 text-xs sm:text-sm leading-snug line-clamp-2 w-full break-words">
           {product.name}
         </p>
 
-        {/* Price + stock */}
-        <div className="flex flex-col items-center justify-end w-full mb-0.5">
-          <p className="text-sm sm:text-base font-black text-violet-400">
-            {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </p>
-          {(isLowStock || isOutOfStock) && (
-            <div className="flex gap-1 h-3 mt-0.5">
-              {isLowStock && (
-                <span className="badge-amber text-[8px] px-1 py-0 h-4 flex items-center">Low</span>
-              )}
-              {isOutOfStock && (
-                <span className="badge-red text-[8px] px-1 py-0 h-4 flex items-center">Out</span>
-              )}
-            </div>
-          )}
-        </div>
-
+        {/* Price */}
+        <p className="relative z-10 text-sm sm:text-base font-black text-violet-400 mt-auto w-full">
+          Rs. {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </p>
       </div>
     </button>
   )
@@ -76,9 +80,14 @@ function ProductCard({ product, onAdd }) {
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-2 py-3 space-y-2 animate-pulse flex flex-col items-center justify-center">
-      <div className="skeleton h-4 w-3/4 rounded-full mt-1" />
-      <div className="skeleton h-5 w-1/2 rounded mt-auto mb-1" />
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden flex flex-col items-stretch animate-pulse">
+      {/* Image skeleton */}
+      <div className="w-full h-24 sm:h-28 bg-slate-800" />
+      {/* Footer skeleton */}
+      <div className="p-2 bg-slate-950/95 space-y-2 flex flex-col items-center justify-center min-h-[4.5rem]">
+        <div className="skeleton h-3.5 w-3/4 rounded-full" />
+        <div className="skeleton h-4 w-1/2 rounded mt-auto" />
+      </div>
     </div>
   )
 }
@@ -281,8 +290,8 @@ export default function ProductGrid({ onAddToCart }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2">
-            {Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)}
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-7 gap-2">
+            {Array.from({ length: 14 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
@@ -292,7 +301,7 @@ export default function ProductGrid({ onAddToCart }) {
             <p className="text-sm">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2 pb-4">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-7 gap-2 pb-4">
             {[...products].sort((a, b) => {
               const freqA = clickFreq[a._id] || 0;
               const freqB = clickFreq[b._id] || 0;
