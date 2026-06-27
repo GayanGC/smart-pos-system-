@@ -84,18 +84,22 @@ export default function CheckoutModal({
   const triggerSequentialPrint = () => {
     setPrintSequence('receipt')
     
-    // Structured timeout to guarantee Receipt layout is fully painted
+    // Structured timeout to paint Receipt layout
     setTimeout(() => {
       window.print() // Blocks until print dialog is closed
       
-      // Switch to KOT
+      // Once receipt dialog closes, mount KOT
       setPrintSequence('kot')
       
-      // Structured 600ms timeout buffer to guarantee KOT layout is fully painted in background
-      setTimeout(() => {
-        window.print() // Blocks until KOT print dialog is closed
-        setPrintSequence('idle')
-      }, 600)
+      // Nested double requestAnimationFrame + structured 500ms timeout to guarantee full layout paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            window.print() // Blocks until print dialog is closed
+            setPrintSequence('idle')
+          }, 500) // 500ms safety buffer
+        })
+      })
     }, 400)
   }
 
@@ -327,13 +331,13 @@ export default function CheckoutModal({
               {/* Change due */}
               {numericPaid > 0 && (
                 <div className={`
-                  flex items-center justify-between p-3 rounded-xl border
+                  flex items-center justify-between h-20 px-6 rounded-2xl border
                   ${changeDue > 0 
-                    ? 'bg-emerald-600 border-emerald-500 shadow-md change-due-active' 
-                    : 'bg-slate-800/50 border-slate-700/40'}
+                    ? 'bg-emerald-600 border-emerald-500 shadow-lg change-due-active text-white' 
+                    : 'bg-slate-800/50 border-slate-700/40 text-slate-500'}
                 `}>
-                  <span className="text-sm font-bold" style={{ fontWeight: 900 }}>Change Due</span>
-                  <span className="text-xl font-bold tabular-nums" style={{ fontWeight: 900 }}>
+                  <span className="text-base font-bold" style={{ color: changeDue > 0 ? '#ffffff' : '#64748b', fontWeight: 900, textShadow: changeDue > 0 ? '0 1px 2px rgba(0,0,0,0.2)' : 'none' }}>Change Due</span>
+                  <span className="text-2xl font-bold tabular-nums" style={{ color: changeDue > 0 ? '#ffffff' : '#64748b', fontWeight: 900, textShadow: changeDue > 0 ? '0 1px 2px rgba(0,0,0,0.2)' : 'none' }}>
                     {fmt(changeDue)}
                   </span>
                 </div>
@@ -383,7 +387,7 @@ export default function CheckoutModal({
             onClick={handleConfirm}
             disabled={!canSubmit || loading}
             id="confirm-payment-btn"
-            className="btn-success w-full py-3.5 text-base flex items-center justify-center gap-2"
+            className="btn-success w-full h-20 text-xl font-bold flex items-center justify-center gap-2.5 rounded-2xl"
           >
             {loading ? (
               <>
