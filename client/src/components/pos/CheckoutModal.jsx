@@ -62,6 +62,7 @@ export default function CheckoutModal({
   const [cardRef,     setCardRef]     = useState('')
   const [success,     setSuccess]     = useState(false)
   const [printView,   setPrintView]   = useState('receipt') // 'receipt' or 'kot'
+  const [printSequence, setPrintSequence] = useState('idle') // 'idle' | 'receipt' | 'kot'
   const [error,       setError]       = useState(null)
   const amountRef = useRef(null)
   const { user } = useAuth()
@@ -74,18 +75,29 @@ export default function CheckoutModal({
       setCardRef('')
       setSuccess(false)
       setPrintView('receipt')
+      setPrintSequence('idle')
       setError(null)
       setTimeout(() => amountRef.current?.select(), 50)
     }
   }, [isOpen, grandTotal])
 
+  const triggerSequentialPrint = () => {
+    setPrintSequence('receipt')
+    setTimeout(() => {
+      window.print()
+      // window.print() blocks until dialog closes/prints
+      setPrintSequence('kot')
+      setTimeout(() => {
+        window.print()
+        setPrintSequence('idle')
+      }, 300) // Wait for KOT DOM render
+    }, 300) // Wait for Receipt DOM render
+  }
+
   // Auto-trigger print when successful
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
-        window.print()
-      }, 500)
-      return () => clearTimeout(timer)
+      triggerSequentialPrint()
     }
   }, [success])
 
@@ -176,42 +188,41 @@ export default function CheckoutModal({
 
             {/* Print Only Container */}
             <div className="hidden print:block w-full max-w-sm mx-auto">
-              <style>{`
-                @media print {
-                  .receipt-section { page-break-after: always; }
-                }
-              `}</style>
-              <div className="receipt-section">
-                <ReceiptPrint 
-                  lineItems={lineItems} 
-                  grandTotal={grandTotal}
-                  subTotal={subTotal}
-                  totalDiscount={totalDiscount}
-                  paymentMethod={method}
-                  amountPaid={method === 'cash' ? numericPaid : grandTotal}
-                  changeDue={changeDue}
-                  cashierName={user?.name || user?.username || 'Admin'}
-                  isLivePreview={false}
-                />
-              </div>
-              <div className="kot-section">
-                <KitchenPrint 
-                  invoiceNumber="NEW"
-                  lineItems={(lineItems || []).filter(item => {
-                    const cat = (item.category || '').toLowerCase()
-                    return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
-                  })}
-                  cashierName={user?.name || user?.username || 'Admin'}
-                  isLivePreview={false}
-                />
-              </div>
+              {(printSequence === 'receipt' || printSequence === 'idle') && (
+                <div className="receipt-section">
+                  <ReceiptPrint 
+                    lineItems={lineItems} 
+                    grandTotal={grandTotal}
+                    subTotal={subTotal}
+                    totalDiscount={totalDiscount}
+                    paymentMethod={method}
+                    amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                    changeDue={changeDue}
+                    cashierName={user?.name || user?.username || 'Admin'}
+                    isLivePreview={false}
+                  />
+                </div>
+              )}
+              {printSequence === 'kot' && (
+                <div className="kot-section">
+                  <KitchenPrint 
+                    invoiceNumber="NEW"
+                    lineItems={(lineItems || []).filter(item => {
+                      const cat = (item.category || '').toLowerCase()
+                      return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
+                    })}
+                    cashierName={user?.name || user?.username || 'Admin'}
+                    isLivePreview={false}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mt-4 shrink-0 print:hidden text-center w-full max-w-sm">
               {!isOnline && <p className="text-xs text-amber-400 mb-3">Saved offline — will sync when connected</p>}
               <div className="flex gap-2">
                 <button 
-                  onClick={() => window.print()} 
+                  onClick={triggerSequentialPrint} 
                   className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl font-bold transition-colors"
                 >
                   Print Receipt & KOT
