@@ -103,6 +103,8 @@ export default function CashDrawerModal({ isOpen, onClose }) {
               >
                 <option value="payout">Cash Payout (Expense/Withdrawal)</option>
                 <option value="payin">Cash Pay-in (Deposit/Change)</option>
+                <option value="customer_debt_collection">Customer Debt Collection (Cash IN)</option>
+                <option value="supplier_debt_payment">Supplier Debt Payment (Cash OUT)</option>
                 <option value="starting_drawer">Starting Drawer (Shift Start)</option>
               </select>
             </div>
@@ -172,6 +174,14 @@ export default function CashDrawerModal({ isOpen, onClose }) {
                     <p className="text-lg font-black text-emerald-400">Rs. {summary.cashSalesTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                   </div>
                   <div className="p-3 bg-slate-800 rounded-xl border border-slate-700">
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Customer Debt Col.</p>
+                    <p className="text-lg font-black text-emerald-400">Rs. {summary.customerDebtCollections.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                  </div>
+                  <div className="p-3 bg-slate-800 rounded-xl border border-slate-700">
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Supplier Debt Pay.</p>
+                    <p className="text-lg font-black text-rose-400">Rs. {summary.supplierDebtPayments.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                  </div>
+                  <div className="p-3 bg-slate-800 rounded-xl border border-slate-700">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Petty Cash Payouts</p>
                     <p className="text-lg font-black text-rose-400">Rs. {summary.totalPayouts.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                   </div>
@@ -187,20 +197,28 @@ export default function CashDrawerModal({ isOpen, onClose }) {
                     {summary.transactions.length === 0 ? (
                       <p className="text-xs text-slate-500 italic">No petty cash transactions logged today.</p>
                     ) : (
-                      summary.transactions.map(tx => (
+                      summary.transactions.map(tx => {
+                        const isOut = tx.type === 'payout' || tx.type === 'supplier_debt_payment';
+                        const tagColor = isOut ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400';
+                        let label = tx.type;
+                        if (tx.type === 'customer_debt_collection') label = 'Customer Debt Collected';
+                        if (tx.type === 'supplier_debt_payment') label = 'Supplier Paid';
+
+                        return (
                         <div key={tx._id} className="flex justify-between items-center p-2.5 bg-slate-950 rounded-lg border border-slate-800">
                           <div>
-                            <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${tx.type === 'payout' ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
-                              {tx.type}
+                            <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${tagColor}`}>
+                              {label}
                             </span>
                             <p className="text-xs text-slate-300 mt-1">{tx.reason}</p>
                             <p className="text-[10px] text-slate-500 mt-0.5">{new Date(tx.createdAt).toLocaleTimeString()}</p>
                           </div>
-                          <span className={`font-black tabular-nums text-sm ${tx.type === 'payout' ? 'text-rose-400' : 'text-emerald-400'}`}>
-                            {tx.type === 'payout' ? '-' : '+'}Rs. {tx.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                          <span className={`font-black tabular-nums text-sm ${isOut ? 'text-rose-400' : 'text-emerald-400'}`}>
+                            {isOut ? '-' : '+'}Rs. {tx.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                           </span>
                         </div>
-                      ))
+                        )
+                      })
                     )}
                   </div>
                 </div>

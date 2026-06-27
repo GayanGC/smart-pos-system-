@@ -768,20 +768,26 @@ const getCashSummary = asyncHandler(async (req, res) => {
   const transactions = await CashTransaction.find(filter).sort({ createdAt: -1 });
   let startingCash = 0;
   let totalPayouts = 0;
+  let customerDebtCollections = 0;
+  let supplierDebtPayments = 0;
   
   transactions.forEach(t => {
     if (t.type === 'starting_drawer') startingCash += t.amount;
     else if (t.type === 'payout') totalPayouts += t.amount;
-    else if (t.type === 'payin') startingCash += t.amount; // Just add pay-ins to starting cash for summary
+    else if (t.type === 'payin') startingCash += t.amount; // Just add generic pay-ins to starting cash for summary
+    else if (t.type === 'customer_debt_collection') customerDebtCollections += t.amount;
+    else if (t.type === 'supplier_debt_payment') supplierDebtPayments += t.amount;
   });
 
-  const finalExpectedCash = (startingCash + cashSalesTotal) - totalPayouts;
+  const finalExpectedCash = (startingCash + cashSalesTotal + customerDebtCollections) - (totalPayouts + supplierDebtPayments);
 
   return sendSuccess(res, {
     data: {
       startingCash,
       cashSalesTotal,
       totalPayouts,
+      customerDebtCollections,
+      supplierDebtPayments,
       finalExpectedCash,
       transactions
     },

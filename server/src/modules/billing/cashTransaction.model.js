@@ -10,7 +10,7 @@ const cashTransactionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['payout', 'payin', 'starting_drawer'],
+      enum: ['payout', 'payin', 'starting_drawer', 'customer_debt_collection', 'supplier_debt_payment'],
       default: 'payout',
     },
     amount: {
