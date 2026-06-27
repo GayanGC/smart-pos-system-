@@ -97,9 +97,14 @@ function SkeletonCard() {
 }
 
 /* ── Main Component ────────────────────────────────────────────────────── */
+const POS_CATEGORIES = [
+  'All', 'RICE', 'KOTTU', 'NOODLES', 
+  'BAKERY', 'BREAD', 'CAKES', 'MEALS', 'HOT_DRINKS'
+]
+
 export default function ProductGrid({ onAddToCart }) {
   const [products,       setProducts]       = useState([])
-  const [categories,     setCategories]     = useState(['All'])
+  const [categories,     setCategories]     = useState(POS_CATEGORIES)
   const [activeCategory, setActiveCategory] = useState('All')
   const [search,         setSearch]         = useState('')
   const [loading,        setLoading]        = useState(true)
@@ -136,7 +141,7 @@ export default function ProductGrid({ onAddToCart }) {
         }
         items = allItems.slice(0, 60)
       } else {
-        const params = { limit: 60 }
+        const params = { limit: 100 } // increase to 100 to show more grid items
         if (q)        params.search   = q
         if (category && category !== 'All') params.category = category
         const { data } = await api.get('/inventory/products', { params })
@@ -144,9 +149,8 @@ export default function ProductGrid({ onAddToCart }) {
       }
 
       setProducts(items)
-      // Extract unique categories
-      const cats = ['All', ...new Set(items.map((p) => p.category).filter(Boolean))]
-      setCategories(cats)
+      // Removed dynamic category extraction to prevent UI state bug where 
+      // active filters wiped out the sibling category pills.
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Failed to load products.')
     } finally {
