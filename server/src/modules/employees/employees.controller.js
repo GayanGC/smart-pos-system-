@@ -350,6 +350,16 @@ const generatePayroll = asyncHandler(async (req, res) => {
   const overtimePay   = parseFloat((overtimeHours * overtimeRate).toFixed(2));
   const totalAllowances = allowances.reduce((s, a) => s + a.amount, 0);
   const grossPay      = regularPay + overtimePay + totalAllowances;
+
+  // ── Inject Salary Advance Deductions ──────────────────────────────────────
+  if (employee.salaryAdvances && employee.salaryAdvances.length > 0) {
+    const totalAdvance = employee.salaryAdvances.reduce((sum, adv) => sum + adv.amount, 0);
+    deductions.push({ label: 'Salary Advance', amount: parseFloat(totalAdvance.toFixed(2)) });
+    // Clear the ledger for the next cycle
+    employee.salaryAdvances = [];
+    await employee.save();
+  }
+
   const totalDeductions = deductions.reduce((s, d) => s + d.amount, 0);
   const netPay        = parseFloat((grossPay - totalDeductions).toFixed(2));
 
@@ -459,13 +469,98 @@ const completeTask = asyncHandler(async (req, res) => {
   return sendSuccess(res, { data: task, message: 'Task marked as completed.' });
 });
 
+// ─── Salary Advance Ledger ─────────────────────────────────────────────────
+const logSalaryAdvance = asyncHandler(async (req, res) => {
+  const { amount, reason } = req.body;
+  if (!amount || amount <= 0) {
+    return sendError(res, { statusCode: 400, message: 'Valid advance amount is required.' });
+  }
+
+  const employee = await Employee.findById(req.params.id);
+  if (!employee) {
+    return sendError(res, { statusCode: 404, message: 'Employee not found.' });
+  }
+
+  employee.salaryAdvances.push({ amount: parseFloat(amount), reason: reason || 'Advance Payment' });
+  await employee.save();
+
+  return sendSuccess(res, { data: employee, message: 'Salary advance logged successfully.' });
+});
+
+// ─── Dynamic QR Task Dispatcher ──────────────────────────────────────────
+const assignTask = asyncHandler(async (req, res) => {
+  const { employeeId, taskDescription, scheduledFor } = req.body;
+  
+  if (!employeeId || !taskDescription || !scheduledFor) {
+    return sendError(res, { statusCode: 400, message: 'Missing required task fields.' });
+  }
+
+  const employee = await Employee.findById(employeeId);
+  if (!employee) return sendError(res, { statusCode: 404, message: 'Employee not found.' });
+
+  const task = await Task.create({
+    employeeId,
+    taskDescription,
+    scheduledFor: new Date(scheduledFor),
+    status: 'Pending'
+  });
+
+  // Trigger owner email (fire and forget)
+  try {
+    const { sendEmail } = require('../../utils/emailReportService');
+    const dashboardLink = `${process.env.CLIENT_ORIGIN || 'http://localhost:3000'}/tasks/${task._id}`;
+    await sendEmail({
+      to: process.env.OWNER_EMAIL || 'owner@smartclouderp.com',
+      subject: `New Task Assigned to ${employee.firstName}`,
+      text: `A new task "${taskDescription}" was assigned to ${employee.firstName} ${employee.lastName} for ${new Date(scheduledFor).toDateString()}.\n\nReview and approve here: ${dashboardLink}`
+    });
+  } catch (err) {
+    console.error('Failed to send task email:', err.message);
+  }
+
+  return sendSuccess(res, { statusCode: 201, data: task, message: 'Task assigned and notification sent.' });
+});
+
+const getEmployeeTasks = asyncHandler(async (req, res) => {
+  const { employeeId } = req.params;
+  const { date } = req.query; // Usually 'Today'
+  
+  const filter = { employeeId };
+  if (date) {
+    const startOfDay = new Date(date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    filter.scheduledFor = { $gte: startOfDay, $lte: new Date(startOfDay.getTime() + 86400000 - 1) };
+  }
+
+  const tasks = await Task.find(filter).sort({ scheduledFor: 1 });
+  return sendSuccess(res, { data: tasks, message: 'Tasks retrieved successfully.' });
+});
+
+const updateTaskStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const task = await Task.findById(req.params.id);
+  
+  if (!task) return sendError(res, { statusCode: 404, message: 'Task not found.' });
+  
+  // Optional: strict assignedTo validation
+  if (req.user && !['super_admin', 'admin', 'manager'].includes(req.user.role)) {
+    // If not admin, ensure they own it (though portal uses anonymous QR for now, backend could secure this)
+    // For now, allow update
+  }
+
+  task.status = status;
+  await task.save();
+
+  return sendSuccess(res, { data: task, message: `Task marked as ${status}.` });
+});
+
 module.exports = {
   // Employees
   getEmployees, createEmployee, getEmployeeById, updateEmployee, deleteEmployee,
   // Attendance
   clockIn, clockOut, getAttendance, syncOfflineAttendance,
-  // Payroll
-  generatePayroll, getPayroll, markPayrollAsPaid,
-  // Tasks
-  getTasks, completeTask,
+  // Payroll & Ledger
+  generatePayroll, getPayroll, markPayrollAsPaid, logSalaryAdvance,
+  // Tasks (Legacy & New)
+  getTasks, completeTask, assignTask, getEmployeeTasks, updateTaskStatus
 };

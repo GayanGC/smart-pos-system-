@@ -60,8 +60,24 @@ router.patch(
 );
 
 // ── Tasks ─────────────────────────────────────────────────────────────────
+router.post(
+  '/tasks',
+  authorize('super_admin', 'admin', 'manager'),
+  require('./employees.controller').assignTask
+);
+router.get('/tasks/:employeeId', require('./employees.controller').getEmployeeTasks);
+router.patch('/tasks/:id/status', require('./employees.controller').updateTaskStatus);
+
+// Legacy task routes (kept for backwards compatibility if needed, or replaced by above)
 router.get('/tasks', getTasks);
 router.patch('/tasks/:id/complete', completeTask);
+
+// ── Salary Advance ────────────────────────────────────────────────────────
+router.post(
+  '/:id/advance',
+  authorize('super_admin', 'admin', 'manager'),
+  require('./employees.controller').logSalaryAdvance
+);
 
 // ── Employee CRUD ─────────────────────────────────────────────────────────
 router.route('/')

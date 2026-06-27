@@ -8,6 +8,7 @@ const TABS = [
   { id: 'directory', label: 'Employee Directory' },
   { id: 'attendance', label: 'Live Attendance' },
   { id: 'payroll', label: 'Payroll Processor' },
+  { id: 'tasks', label: 'Task Dispatcher' },
 ]
 
 export default function EmployeesPage() {
@@ -95,7 +96,8 @@ export default function EmployeesPage() {
           <>
             {activeTab === 'directory' && <DirectoryTab employees={employees} onRefresh={fetchEmployees} />}
             {activeTab === 'attendance' && <AttendanceTab employees={employees} />}
-            {activeTab === 'payroll' && <PayrollTab employees={employees} />}
+            {activeTab === 'payroll' && <PayrollTab employees={employees} onRefresh={fetchEmployees} />}
+            {activeTab === 'tasks' && <TasksTab employees={employees} />}
           </>
         )}
       </div>
@@ -637,11 +639,17 @@ function QrScannerPanel({ onScanSuccess }) {
 }
 
 /* ── 3. Payroll Tab ──────────────────────────────────────────────────────── */
-function PayrollTab({ employees }) {
+function PayrollTab({ employees, onRefresh }) {
   const [payroll, setPayroll] = useState([])
   const [loading, setLoading] = useState(false)
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)) // YYYY-MM
   const [generatingFor, setGeneratingFor] = useState(null)
+  
+  // Advance Modal States
+  const [advanceModal, setAdvanceModal] = useState({ isOpen: false, employee: null })
+  const [advanceAmount, setAdvanceAmount] = useState('')
+  const [advanceReason, setAdvanceReason] = useState('')
+  const [advancing, setAdvancing] = useState(false)
 
   const fetchPayroll = async () => {
     setLoading(true)
@@ -696,6 +704,25 @@ function PayrollTab({ employees }) {
     }
   }
 
+  const handleLogAdvance = async (e) => {
+    e.preventDefault()
+    setAdvancing(true)
+    try {
+      await api.post(`/employees/${advanceModal.employee._id}/advance`, {
+        amount: Number(advanceAmount),
+        reason: advanceReason
+      })
+      onRefresh()
+      setAdvanceModal({ isOpen: false, employee: null })
+      setAdvanceAmount('')
+      setAdvanceReason('')
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error logging advance')
+    } finally {
+      setAdvancing(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -713,8 +740,10 @@ function PayrollTab({ employees }) {
           <thead className="bg-slate-900/80 text-slate-400 border-b border-slate-800">
             <tr>
               <th className="px-6 py-4 font-semibold">Employee</th>
-              <th className="px-6 py-4 font-semibold text-center">Hours Logged</th>
+              <th className="px-6 py-4 font-semibold text-center">Hours</th>
               <th className="px-6 py-4 font-semibold text-right">Gross Salary</th>
+              <th className="px-6 py-4 font-semibold text-right text-rose-300">Advances</th>
+              <th className="px-6 py-4 font-semibold text-right text-violet-300">Net Payable</th>
               <th className="px-6 py-4 font-semibold text-center">Status</th>
               <th className="px-6 py-4 font-semibold text-center">Action</th>
             </tr>
@@ -738,6 +767,17 @@ function PayrollTab({ employees }) {
                     <td className="px-6 py-4 text-right font-mono text-emerald-400 font-semibold">
                       {pRecord ? `Rs. ${(pRecord?.grossPay || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '-'}
                     </td>
+                    <td className="px-6 py-4 text-right font-mono text-rose-400">
+                      {pRecord 
+                        ? `Rs. ${(pRecord?.deductions?.find(d => d.label === 'Salary Advance')?.amount || 0).toLocaleString()}` 
+                        : (emp?.salaryAdvances?.length > 0 
+                            ? `(Pending Rs. ${emp.salaryAdvances.reduce((s, a) => s + a.amount, 0).toLocaleString()})`
+                            : '-')
+                      }
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono text-violet-300 font-bold">
+                      {pRecord ? `Rs. ${(pRecord?.netPay || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '-'}
+                    </td>
                     <td className="px-6 py-4 text-center">
                       {!pRecord ? (
                         <span className="text-slate-500 text-xs italic">Not Generated</span>
@@ -748,24 +788,34 @@ function PayrollTab({ employees }) {
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      {!pRecord ? (
-                        <button 
-                          onClick={() => handleGenerate(emp?._id)}
-                          disabled={generatingFor === emp?._id}
-                          className="text-violet-400 hover:text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
-                        >
-                          {generatingFor === emp?._id ? 'Generating...' : 'Compute Salary'}
-                        </button>
-                      ) : !pRecord?.isPaid ? (
-                        <button 
-                          onClick={() => handlePay(pRecord?._id)}
-                          className="text-white bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-emerald-900/40"
-                        >
-                          Mark Paid
-                        </button>
-                      ) : (
-                        <span className="text-slate-600 text-xs font-medium">Settled</span>
-                      )}
+                      <div className="flex justify-center gap-2">
+                        {!pRecord ? (
+                          <>
+                            <button 
+                              onClick={() => handleGenerate(emp?._id)}
+                              disabled={generatingFor === emp?._id}
+                              className="text-violet-400 hover:text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
+                            >
+                              {generatingFor === emp?._id ? 'Generating...' : 'Compute Salary'}
+                            </button>
+                            <button 
+                              onClick={() => setAdvanceModal({ isOpen: true, employee: emp })}
+                              className="text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                            >
+                              Log Advance
+                            </button>
+                          </>
+                        ) : !pRecord?.isPaid ? (
+                          <button 
+                            onClick={() => handlePay(pRecord?._id)}
+                            className="text-white bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-emerald-900/40"
+                          >
+                            Mark Paid
+                          </button>
+                        ) : (
+                          <span className="text-slate-600 text-xs font-medium">Settled</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 )
@@ -773,6 +823,118 @@ function PayrollTab({ employees }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      {advanceModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+            <h3 className="text-xl font-bold text-slate-100 mb-2">Log Salary Advance</h3>
+            <p className="text-sm text-slate-400 mb-4">
+              For {advanceModal.employee?.firstName} {advanceModal.employee?.lastName}
+            </p>
+            <form onSubmit={handleLogAdvance} className="space-y-4">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Advance Amount (Rs.)</label>
+                <input required type="number" min="1" value={advanceAmount} onChange={e => setAdvanceAmount(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 outline-none focus:border-violet-500 transition-colors" />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Reason (Optional)</label>
+                <input value={advanceReason} onChange={e => setAdvanceReason(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 outline-none focus:border-violet-500 transition-colors" />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setAdvanceModal({isOpen: false, employee: null})} className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium transition-colors">Cancel</button>
+                <button type="submit" disabled={advancing} className="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl font-medium transition-colors">
+                  {advancing ? 'Saving...' : 'Confirm'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── 4. Tasks Tab ────────────────────────────────────────────────────────── */
+function TasksTab({ employees }) {
+  const [taskDescription, setTaskDescription] = useState('')
+  const [employeeId, setEmployeeId] = useState('')
+  const [assigning, setAssigning] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+
+  const handleAssign = async (e) => {
+    e.preventDefault()
+    setAssigning(true)
+    setSuccessMsg('')
+    try {
+      // Schedule for tomorrow
+      const tmrw = new Date()
+      tmrw.setDate(tmrw.getDate() + 1)
+      tmrw.setHours(9, 0, 0, 0)
+      
+      await api.post('/employees/tasks', {
+        employeeId,
+        taskDescription,
+        scheduledFor: tmrw.toISOString()
+      })
+      setSuccessMsg('Task assigned and email sent successfully!')
+      setTaskDescription('')
+      setEmployeeId('')
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error assigning task')
+    } finally {
+      setAssigning(false)
+    }
+  }
+
+  return (
+    <div className="space-y-6 max-w-xl mx-auto">
+      <div>
+        <h2 className="text-xl font-bold text-slate-200">Dynamic Task Dispatcher</h2>
+        <p className="text-sm text-slate-400">Assign a task for tomorrow. An email notification will be sent automatically to the owner.</p>
+      </div>
+
+      <div className="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 shadow-xl shadow-black/20">
+        <form onSubmit={handleAssign} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Select Employee</label>
+            <select 
+              required
+              value={employeeId} 
+              onChange={e => setEmployeeId(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-200 outline-none focus:border-violet-500 transition-colors"
+            >
+              <option value="">-- Choose Employee --</option>
+              {employees.filter(e => e.isActive).map(emp => (
+                <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.designation})</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Task Description</label>
+            <textarea 
+              required
+              rows="3"
+              value={taskDescription} 
+              onChange={e => setTaskDescription(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 outline-none focus:border-violet-500 transition-colors resize-none"
+              placeholder="e.g. Clean the kitchen appliances deeply."
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={assigning}
+            className="w-full py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl font-bold transition-colors shadow-lg shadow-violet-900/40"
+          >
+            {assigning ? 'Dispatching...' : 'Dispatch Task for Tomorrow'}
+          </button>
+          
+          {successMsg && (
+            <div className="mt-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl text-sm font-medium text-center">
+              ✅ {successMsg}
+            </div>
+          )}
+        </form>
       </div>
     </div>
   )

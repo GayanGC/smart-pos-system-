@@ -84,6 +84,15 @@ const EmployeeSchema = new mongoose.Schema(
       accountNumber: { type: String, trim: true },
       branchCode:    { type: String, trim: true },
     },
+    
+    // ── Salary Advances (Cleared upon payroll generation) ──────────────────────
+    salaryAdvances: [
+      {
+        amount: { type: Number, required: true, min: 0 },
+        date: { type: Date, default: Date.now },
+        reason: { type: String, trim: true }
+      }
+    ],
 
     // ── Status ────────────────────────────────────────────────────────────────
     isActive: {

@@ -14,6 +14,7 @@ import DashboardPage from './pages/DashboardPage'
 import PosPage       from './pages/PosPage'
 import EmployeesPage from './pages/EmployeesPage'
 import InventoryPage from './pages/InventoryPage'
+import EmployeePortalPage from './pages/EmployeePortalPage'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Routes>
           {/* ── Public ──────────────────────────────────────────────────── */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/employees/portal/:employeeId" element={<EmployeePortalPage />} />
 
           {/* ── Protected (requires auth + optional role check) ──────────── */}
           <Route element={<AppLayout />}>

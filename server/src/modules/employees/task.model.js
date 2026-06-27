@@ -2,29 +2,33 @@ const mongoose = require('mongoose');
 
 const TaskSchema = new mongoose.Schema(
   {
-    title: {
+    taskDescription: {
       type: String,
-      required: [true, 'Task title is required.'],
+      required: [true, 'Task description is required.'],
       trim: true,
     },
-    assignedTo: {
+    employeeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Employee',
       required: [true, 'Assigned employee is required.'],
     },
-    date: {
+    assignedDate: {
       type: Date,
       default: Date.now,
     },
+    scheduledFor: {
+      type: Date,
+      required: [true, 'Task scheduled date is required.']
+    },
     status: {
       type: String,
-      enum: ['pending', 'completed'],
-      default: 'pending',
+      enum: ['Pending', 'Approved', 'Completed'],
+      default: 'Pending',
     },
   },
   { timestamps: true }
 );
 
-TaskSchema.index({ assignedTo: 1, date: 1, status: 1 });
+TaskSchema.index({ employeeId: 1, scheduledFor: 1, status: 1 });
 
 module.exports = mongoose.model('Task', TaskSchema);
