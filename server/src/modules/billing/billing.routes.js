@@ -19,7 +19,7 @@ const router = require('express').Router();
 const {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
-  triggerDailyReportEmail,
+  triggerDailyReportEmail, createCashTransaction, getCashSummary
 } = require('./billing.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
@@ -39,6 +39,13 @@ router.get(
   authorize('super_admin', 'admin', 'manager'),
   getDashboard
 );
+
+// ── Cash Management Routes
+router.route('/cash')
+  .post(authorize('super_admin', 'admin', 'cashier'), createCashTransaction);
+
+router.route('/cash/summary')
+  .get(authorize('super_admin', 'admin', 'cashier'), getCashSummary);
 
 // ── Offline Sync (most important endpoint for the offline-first POS) ───────
 router.post(

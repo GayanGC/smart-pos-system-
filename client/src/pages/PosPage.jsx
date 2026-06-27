@@ -20,6 +20,7 @@ import CheckoutModal  from '../components/pos/CheckoutModal'
 import api            from '../api/axios'
 import { saveInvoiceOffline } from '../utils/offlineSync'
 import { useAuth } from '../context/AuthContext'
+import CashDrawerModal from '../components/pos/CashDrawerModal'
 
 /* ══════════════════════════════════════════════════════════════════════════
    Cart Reducer
@@ -183,6 +184,7 @@ export default function PosPage() {
   const { user } = useAuth()
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
   const [isCheckoutOpen,  setIsCheckoutOpen]  = useState(false)
+  const [isCashDrawerOpen, setIsCashDrawerOpen] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
 
@@ -285,6 +287,15 @@ export default function PosPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setIsCashDrawerOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Cash Drawer
+            </button>
             {/* Network indicator */}
             <div
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border
@@ -340,6 +351,12 @@ export default function PosPage() {
         onConfirm={handleCheckout}
         loading={checkoutLoading}
         isOnline={isOnline}
+      />
+
+      {/* Cash Drawer Modal */}
+      <CashDrawerModal 
+        isOpen={isCashDrawerOpen} 
+        onClose={() => setIsCashDrawerOpen(false)} 
       />
     </div>
   )

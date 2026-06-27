@@ -13,6 +13,7 @@
 const Invoice   = require('./invoice.model');
 const Payment   = require('./payment.model');
 const Product   = require('../inventory/product.model');
+const CashTransaction = require('./cashTransaction.model');
 const asyncHandler      = require('../../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../../utils/responseFormatter');
 const generateInvoiceNumber      = require('../../utils/generateInvoiceNumber');
@@ -720,8 +721,76 @@ const triggerDailyReportEmail = asyncHandler(async (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  @desc    Create petty cash transaction (payout/payin/starting_drawer)
+//  @route   POST /api/billing/cash
+//  @access  Private (cashier/admin)
+// ═══════════════════════════════════════════════════════════════════════════
+const createCashTransaction = asyncHandler(async (req, res) => {
+  const { amount, reason, type } = req.body;
+  if (!amount || !reason) {
+    return sendError(res, { statusCode: 400, message: 'Amount and reason are required.' });
+  }
+
+  const tx = await CashTransaction.create({
+    cashierId: req.user._id,
+    amount: Number(amount),
+    reason,
+    type: type || 'payout',
+  });
+
+  return sendSuccess(res, { statusCode: 201, data: tx, message: 'Cash transaction logged.' });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  @desc    Get end-of-day / shift cash summary
+//  @route   GET /api/billing/cash/summary
+//  @access  Private
+// ═══════════════════════════════════════════════════════════════════════════
+const getCashSummary = asyncHandler(async (req, res) => {
+  const { date, cashierId } = req.query; // date in YYYY-MM-DD
+  
+  const filterDate = date ? new Date(date) : new Date();
+  const startOfDay = new Date(filterDate.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(filterDate.setHours(23, 59, 59, 999));
+
+  const filter = { createdAt: { $gte: startOfDay, $lte: endOfDay } };
+  if (cashierId) filter.cashierId = cashierId;
+  
+  // 1. Get cash sales total
+  const cashPayments = await Payment.aggregate([
+    { $match: { ...filter, paymentMethod: 'cash' } },
+    { $group: { _id: null, total: { $sum: '$amount' } } }
+  ]);
+  const cashSalesTotal = cashPayments.length > 0 ? cashPayments[0].total : 0;
+
+  // 2. Get petty cash payouts and starting cash
+  const transactions = await CashTransaction.find(filter).sort({ createdAt: -1 });
+  let startingCash = 0;
+  let totalPayouts = 0;
+  
+  transactions.forEach(t => {
+    if (t.type === 'starting_drawer') startingCash += t.amount;
+    else if (t.type === 'payout') totalPayouts += t.amount;
+    else if (t.type === 'payin') startingCash += t.amount; // Just add pay-ins to starting cash for summary
+  });
+
+  const finalExpectedCash = (startingCash + cashSalesTotal) - totalPayouts;
+
+  return sendSuccess(res, {
+    data: {
+      startingCash,
+      cashSalesTotal,
+      totalPayouts,
+      finalExpectedCash,
+      transactions
+    },
+    message: 'Cash summary retrieved successfully.'
+  });
+});
+
 module.exports = {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
-  triggerDailyReportEmail,
+  triggerDailyReportEmail, createCashTransaction, getCashSummary
 };
