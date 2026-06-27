@@ -8,6 +8,8 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import ReceiptPrint from './ReceiptPrint'
 
 const METHODS = [
   {
@@ -46,6 +48,8 @@ export default function CheckoutModal({
   isOpen,
   onClose,
   grandTotal,
+  subTotal,
+  totalDiscount,
   lineItems,
   onConfirm,
   loading,
@@ -57,6 +61,7 @@ export default function CheckoutModal({
   const [success,     setSuccess]     = useState(false)
   const [error,       setError]       = useState(null)
   const amountRef = useRef(null)
+  const { user } = useAuth()
 
   // Reset state whenever modal opens
   useEffect(() => {
@@ -113,7 +118,21 @@ export default function CheckoutModal({
             </div>
             <p className="text-xl font-bold text-slate-100">Payment Complete!</p>
             {!isOnline && <p className="text-xs text-amber-400">Saved offline — will sync when connected</p>}
-            <button onClick={onClose} className="btn-primary px-8 mt-2">New Sale</button>
+            <div className="flex gap-3 mt-2 print:hidden">
+              <button onClick={() => window.print()} className="btn-ghost px-6 border border-slate-700 bg-slate-800">Print Receipt</button>
+              <button onClick={onClose} className="btn-primary px-8">New Sale</button>
+            </div>
+            {/* Hidden printable receipt structure */}
+            <ReceiptPrint 
+              lineItems={lineItems} 
+              grandTotal={grandTotal}
+              subTotal={subTotal}
+              totalDiscount={totalDiscount}
+              paymentMethod={method}
+              amountPaid={method === 'cash' ? numericPaid : grandTotal}
+              changeDue={changeDue}
+              cashierName={user?.name || user?.username || 'Admin'}
+            />
           </div>
         )}
 

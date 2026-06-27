@@ -121,3 +121,28 @@
 .recharts-tooltip-label { @apply !text-slate-300; }
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical   line { stroke: rgb(51 65 85 / 0.5) !important; }
+
+/* ── Print Styles (Thermal Receipt) ─────────────────────────────────────── */
+@media print {
+  body {
+    background-color: white !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #print-receipt, #print-receipt * {
+    visibility: visible;
+  }
+  #print-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}

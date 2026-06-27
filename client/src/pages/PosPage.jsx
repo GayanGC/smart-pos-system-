@@ -329,6 +329,8 @@ export default function PosPage() {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         grandTotal={cart.grandTotal}
+        subTotal={cart.subTotal}
+        totalDiscount={cart.totalDiscount}
         lineItems={cart.items}
         onConfirm={handleCheckout}
         loading={checkoutLoading}
