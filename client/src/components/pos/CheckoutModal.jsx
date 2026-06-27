@@ -83,15 +83,28 @@ export default function CheckoutModal({
 
   const triggerSequentialPrint = () => {
     setPrintSequence('receipt')
-    setTimeout(() => {
-      window.print()
-      // window.print() blocks until dialog closes/prints
-      setPrintSequence('kot')
-      setTimeout(() => {
-        window.print()
-        setPrintSequence('idle')
-      }, 300) // Wait for KOT DOM render
-    }, 300) // Wait for Receipt DOM render
+    
+    // Double requestAnimationFrame + timeout to ensure Receipt DOM is fully painted
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          window.print() // Blocks until print dialog is closed
+          
+          // Switch to KOT
+          setPrintSequence('kot')
+          
+          // Double requestAnimationFrame + longer timeout buffer to ensure KOT DOM is fully painted
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              setTimeout(() => {
+                window.print() // Blocks until print dialog is closed
+                setPrintSequence('idle')
+              }, 500) // Longer 500ms safety buffer to guarantee full document paint
+            })
+          })
+        }, 300)
+      })
+    })
   }
 
   // Auto-trigger print when successful
@@ -323,10 +336,12 @@ export default function CheckoutModal({
               {numericPaid > 0 && (
                 <div className={`
                   flex items-center justify-between p-3 rounded-xl border
-                  ${changeDue > 0 ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-slate-800/50 border-slate-700/40'}
+                  ${changeDue > 0 
+                    ? 'bg-emerald-600 border-emerald-500 shadow-md' 
+                    : 'bg-slate-800/50 border-slate-700/40'}
                 `}>
-                  <span className="text-sm font-medium text-slate-300">Change Due</span>
-                  <span className={`text-lg font-bold tabular-nums ${changeDue > 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                  <span className="text-sm font-bold" style={{ color: changeDue > 0 ? '#ffffff' : '#64748b', fontWeight: 900 }}>Change Due</span>
+                  <span className="text-xl font-bold tabular-nums" style={{ color: changeDue > 0 ? '#ffffff' : '#64748b', fontWeight: 900 }}>
                     {fmt(changeDue)}
                   </span>
                 </div>
