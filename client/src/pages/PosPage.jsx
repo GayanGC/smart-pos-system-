@@ -317,7 +317,7 @@ export default function PosPage() {
       </div>
 
       {/* ── Right: Cart panel ────────────────────────────────────────── */}
-      <div className="w-80 xl:w-96 flex-shrink-0 overflow-hidden">
+      <div className="w-72 xl:w-80 flex-shrink-0 overflow-hidden">
         <CartPanel
           items={cart.items}
           subTotal={cart.subTotal}

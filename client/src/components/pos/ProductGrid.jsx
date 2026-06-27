@@ -22,12 +22,50 @@ const CARD_GRADIENTS = [
   'from-fuchsia-600/20 to-fuchsia-900/5',
 ]
 
+const SINHALA_TRANSLATIONS = {
+  "Bite Rice Chicken": "බයිට් රයිස් චිකන්",
+  "Bite Rice Mix": "බයිට් රයිස් මික්ස්",
+  "Bite Rice Seafood": "බයිට් රයිස් සීෆුඩ්",
+  "Cheese Kottu Chicken": "චීස් කොත්තු චිකන්",
+  "Cheese Kottu Egg": "චීස් කොත්තු බිත්තර",
+  "Cheese Kottu Vegetable": "චීස් කොත්තු එළවළු",
+  "Chicken Dolphin Kottu": "චිකන් ඩොල්ෆින් කොත්තු",
+  "Chicken Fried Rice": "චිකන් ෆ්රයිඩ් රයිස්"
+}
+
+function getProductName(name) {
+  return SINHALA_TRANSLATIONS[name] || name;
+}
+
+function getFallbackImage(name = '', category = '') {
+  const n = name.toLowerCase()
+  const c = category.toLowerCase()
+  
+  if (n.includes('rice') || c.includes('rice')) {
+    return 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&auto=format&fit=crop&q=80'
+  }
+  if (n.includes('kottu') || c.includes('kottu')) {
+    return 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=300&auto=format&fit=crop&q=80'
+  }
+  if (n.includes('noodles') || c.includes('noodles')) {
+    return 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=300&auto=format&fit=crop&q=80'
+  }
+  if (n.includes('bakery') || n.includes('bread') || c.includes('bakery') || c.includes('bread')) {
+    return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=80'
+  }
+  if (n.includes('cake') || c.includes('cake')) {
+    return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&auto=format&fit=crop&q=80'
+  }
+  return 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=300&auto=format&fit=crop&q=80'
+}
+
 function ProductCard({ product, onAdd }) {
   const isOutOfStock = product.quantityInStock <= 0
   const isLowStock   = !isOutOfStock && product.quantityInStock <= product.lowStockThreshold
   const gradient     = CARD_GRADIENTS[product.name.charCodeAt(0) % CARD_GRADIENTS.length]
-  const placeholderImage = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&auto=format&fit=crop&q=80'
+  const placeholderImage = getFallbackImage(product.name, product.category)
   const imageSrc = product.imageUrl || placeholderImage
+  const displayName = getProductName(product.name)
 
   return (
     <button
@@ -46,7 +84,7 @@ function ProductCard({ product, onAdd }) {
       <div className="relative w-full h-24 sm:h-28 overflow-hidden bg-slate-950 flex-shrink-0">
         <img
           src={imageSrc}
-          alt={product.name}
+          alt={displayName}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {/* Stock overlays */}
@@ -65,7 +103,7 @@ function ProductCard({ product, onAdd }) {
 
         {/* Product name (supports Sinhala Unicode cleanly with break-words) */}
         <p className="relative z-10 font-bold text-slate-100 text-xs sm:text-sm leading-snug line-clamp-2 w-full break-words">
-          {product.name}
+          {displayName}
         </p>
 
         {/* Price */}
@@ -290,8 +328,8 @@ export default function ProductGrid({ onAddToCart }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-7 gap-2">
-            {Array.from({ length: 14 }).map((_, i) => <SkeletonCard key={i} />)}
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2">
+            {Array.from({ length: 20 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-slate-500 gap-2">
@@ -301,7 +339,7 @@ export default function ProductGrid({ onAddToCart }) {
             <p className="text-sm">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-7 gap-2 pb-4">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2 pb-4">
             {[...products].sort((a, b) => {
               const freqA = clickFreq[a._id] || 0;
               const freqB = clickFreq[b._id] || 0;
