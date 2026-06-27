@@ -74,8 +74,6 @@ function ProductCard({ product, onAdd }) {
   const isOutOfStock = product.quantityInStock <= 0
   const isLowStock   = !isOutOfStock && product.quantityInStock <= product.lowStockThreshold
   const gradient     = CARD_GRADIENTS[product.name.charCodeAt(0) % CARD_GRADIENTS.length]
-  const placeholderImage = getFallbackImage(product.name, product.category)
-  const imageSrc = product.imageUrl || placeholderImage
   const displayName = getProductName(product.name)
 
   return (
@@ -83,49 +81,34 @@ function ProductCard({ product, onAdd }) {
       onClick={() => !isOutOfStock && onAdd(product)}
       disabled={isOutOfStock}
       className={`
-        group relative flex flex-col items-stretch rounded-2xl border text-center
-        transition-all duration-200 overflow-hidden h-full
+        group relative flex flex-col justify-center items-center rounded-2xl border px-3 py-4 h-20 text-center
+        transition-all duration-200 overflow-hidden
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
           ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-900/40'
           : 'border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg'}
       `}
     >
-      {/* Product Image Header */}
-      <div className="relative w-full h-24 sm:h-28 overflow-hidden bg-slate-950 flex-shrink-0">
-        <img
-          src={imageSrc}
-          alt={displayName}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = GLOBAL_FALLBACK;
-          }}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        {/* Stock overlays */}
-        {isLowStock && (
-          <span className="absolute top-1.5 left-1.5 badge-amber text-[8px] px-1 py-0.5 shadow-md">Low</span>
-        )}
-        {isOutOfStock && (
-          <span className="absolute top-1.5 left-1.5 badge-red text-[8px] px-1 py-0.5 shadow-md">Out</span>
-        )}
-      </div>
+      {/* Gradient overlay inside button on hover */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
 
-      {/* Dark high-contrast footer pad */}
-      <div className="relative z-10 flex flex-col justify-between items-center flex-1 gap-1 p-2 bg-slate-950/90 border-t border-slate-800 w-full min-h-[4.5rem]">
-        {/* Gradient overlay inside footer on hover */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+      {/* Stock indicators */}
+      {isLowStock && (
+        <span className="absolute top-1 right-2 badge-amber text-[8px] px-1 py-0 shadow-md">Low</span>
+      )}
+      {isOutOfStock && (
+        <span className="absolute top-1 right-2 badge-red text-[8px] px-1 py-0 shadow-md">Out</span>
+      )}
 
-        {/* Product name (supports Sinhala Unicode cleanly with break-words) */}
-        <p className="relative z-10 font-bold text-slate-100 text-xs sm:text-sm leading-snug line-clamp-2 w-full break-words">
-          {displayName}
-        </p>
+      {/* Product name (supports Sinhala Unicode cleanly) */}
+      <p className="relative z-10 font-bold text-slate-100 text-xs sm:text-sm leading-snug line-clamp-1 w-full break-words">
+        {displayName}
+      </p>
 
-        {/* Price */}
-        <p className="relative z-10 text-sm sm:text-base font-black text-violet-400 mt-auto w-full">
-          Rs. {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </p>
-      </div>
+      {/* Price */}
+      <p className="relative z-10 text-xs sm:text-sm font-bold text-violet-400 mt-1 w-full">
+        Rs. {product.sellingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </p>
     </button>
   )
 }
@@ -133,14 +116,9 @@ function ProductCard({ product, onAdd }) {
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden flex flex-col items-stretch animate-pulse">
-      {/* Image skeleton */}
-      <div className="w-full h-24 sm:h-28 bg-slate-800" />
-      {/* Footer skeleton */}
-      <div className="p-2 bg-slate-950/95 space-y-2 flex flex-col items-center justify-center min-h-[4.5rem]">
-        <div className="skeleton h-3.5 w-3/4 rounded-full" />
-        <div className="skeleton h-4 w-1/2 rounded mt-auto" />
-      </div>
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-3 py-4 h-20 flex flex-col justify-center items-center animate-pulse">
+      <div className="skeleton h-3 w-3/4 rounded" />
+      <div className="skeleton h-3.5 w-1/2 rounded mt-2" />
     </div>
   )
 }
@@ -418,9 +396,9 @@ export default function ProductGrid({ onAddToCart }) {
 
             {loading ? (
               <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9 2xl:grid-cols-10 gap-2">
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-2 flex flex-col items-center justify-center h-full animate-pulse min-h-[7.5rem]">
-                  <div className="text-3xl mb-1">⬅️</div>
-                  <div className="skeleton h-3 w-3/4 rounded" />
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-2 flex flex-col items-center justify-center h-20 animate-pulse">
+                  <div className="text-xl mb-0.5">⬅️</div>
+                  <div className="skeleton h-2 w-3/4 rounded" />
                 </div>
                 {Array.from({ length: 19 }).map((_, i) => <SkeletonCard key={i} />)}
               </div>
@@ -444,10 +422,10 @@ export default function ProductGrid({ onAddToCart }) {
                 {/* Back button chip inside product grid */}
                 <button
                   onClick={() => setViewLevel('categories')}
-                  className="group relative flex flex-col items-center justify-center rounded-2xl border p-2 text-center transition-all duration-200 h-full border-violet-500/40 bg-violet-600/10 hover:bg-violet-600 text-violet-400 hover:text-white cursor-pointer shadow-sm min-h-[7.5rem]"
+                  className="group relative flex flex-col items-center justify-center rounded-2xl border p-2 text-center transition-all duration-200 h-20 border-violet-500/40 bg-violet-600/10 hover:bg-violet-600 text-violet-400 hover:text-white cursor-pointer shadow-sm"
                 >
-                  <div className="text-3xl mb-1 group-hover:scale-110 transition-transform">⬅️</div>
-                  <span className="text-xs font-bold leading-tight">Back to<br/>Categories</span>
+                  <div className="text-xl mb-0.5 group-hover:scale-110 transition-transform">⬅️</div>
+                  <span className="text-[10px] font-bold leading-none">Back to Categories</span>
                 </button>
                 
                 {[...products].sort((a, b) => {

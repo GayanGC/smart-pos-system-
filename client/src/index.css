@@ -132,16 +132,18 @@
   body * {
     visibility: hidden;
   }
-  #print-receipt, #print-receipt * {
-    visibility: visible;
+  #print-receipt, #print-receipt *,
+  #print-kot, #print-kot * {
+    visibility: visible !important;
   }
-  #print-receipt {
+  #print-receipt, #print-kot {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     margin: 0;
     padding: 0;
+    display: block !important;
   }
   @page {
     margin: 0;

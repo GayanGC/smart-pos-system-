@@ -213,7 +213,7 @@ export default function CheckoutModal({
                 </div>
               )}
               {printSequence === 'kot' && (
-                <div className="kot-section">
+                <div className="kot-section" id="print-kot">
                   <KitchenPrint 
                     invoiceNumber="NEW"
                     lineItems={(lineItems || []).filter(item => {
