@@ -98,8 +98,15 @@ function SkeletonCard() {
 
 /* ── Main Component ────────────────────────────────────────────────────── */
 const POS_CATEGORIES = [
-  'All', 'RICE', 'KOTTU', 'NOODLES', 
-  'BAKERY', 'BREAD', 'CAKES', 'MEALS', 'HOT_DRINKS'
+  { id: 'All', icon: '🍱', label: 'All Items' },
+  { id: 'RICE', icon: '🍚', label: 'Rice' },
+  { id: 'KOTTU', icon: '🍛', label: 'Kottu' },
+  { id: 'NOODLES', icon: '🍜', label: 'Noodles' },
+  { id: 'BAKERY', icon: '🥐', label: 'Bakery' },
+  { id: 'BREAD', icon: '🍞', label: 'Bread' },
+  { id: 'CAKES', icon: '🍰', label: 'Cakes' },
+  { id: 'MEALS', icon: '🥘', label: 'Meals' },
+  { id: 'HOT_DRINKS', icon: '☕', label: 'Drinks' }
 ]
 
 export default function ProductGrid({ onAddToCart }) {
@@ -234,21 +241,27 @@ export default function ProductGrid({ onAddToCart }) {
         )}
       </div>
 
-      {/* ── Category chips ────────────────────────────────────────── */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none flex-shrink-0">
+      {/* ── Category Tiles ────────────────────────────────────────── */}
+      <div className="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-none flex-shrink-0 snap-x">
         {categories.map((cat) => (
           <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
             className={`
-              flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold
-              border transition-all duration-150
-              ${activeCategory === cat
-                ? 'bg-violet-600 border-violet-500 text-white shadow-md shadow-violet-900/40'
-                : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:text-white hover:border-slate-600'}
+              flex-shrink-0 w-[72px] h-[72px] flex flex-col items-center justify-center gap-1.5 rounded-2xl
+              border transition-all duration-200 snap-center
+              focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer
+              ${activeCategory === cat.id
+                ? 'bg-gradient-to-b from-violet-500 to-violet-700 border-violet-400/50 text-white shadow-lg shadow-violet-900/40 scale-105'
+                : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:border-violet-500/30 hover:bg-slate-800'}
             `}
           >
-            {cat}
+            <span className={`text-2xl drop-shadow-md transition-transform duration-200 ${activeCategory === cat.id ? 'scale-110' : 'grayscale-[20%]'}`}>
+              {cat.icon}
+            </span>
+            <span className="text-[10px] font-bold tracking-wide uppercase">
+              {cat.label}
+            </span>
           </button>
         ))}
       </div>
