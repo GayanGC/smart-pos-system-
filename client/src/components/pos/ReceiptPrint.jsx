@@ -11,12 +11,13 @@ export default function ReceiptPrint({
   amountPaid,
   changeDue,
   cashierName = 'Admin',
+  isLivePreview = false,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
 
   return (
-    <div className="hidden print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto p-4 text-sm" id="print-receipt">
+    <div className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto p-4 text-sm ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} id="print-receipt">
       {/* ── Header ── */}
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold tracking-widest mb-1">C CAFE</h1>

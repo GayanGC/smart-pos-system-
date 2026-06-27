@@ -47,6 +47,7 @@ const fmt = (n) =>
 export default function CheckoutModal({
   isOpen,
   onClose,
+  onSuccessReset,
   grandTotal,
   subTotal,
   totalDiscount,
@@ -74,6 +75,16 @@ export default function CheckoutModal({
       setTimeout(() => amountRef.current?.select(), 50)
     }
   }, [isOpen, grandTotal])
+
+  // Auto-trigger print when successful
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        window.print()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [success])
 
   const numericPaid = parseFloat(amountPaid) || 0
   const changeDue   = Math.max(0, numericPaid - grandTotal)
@@ -110,29 +121,35 @@ export default function CheckoutModal({
 
         {/* Success overlay */}
         {success && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/95 gap-4 animate-fade-in">
-            <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center animate-pulse-ring">
-              <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/95 p-4 animate-fade-in overflow-y-auto">
+            <h2 className="text-xl font-bold text-emerald-400 mb-2 print:hidden flex items-center gap-2">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              Payment Complete!
+            </h2>
+            
+            <div className="flex-1 w-full flex items-center justify-center overflow-y-auto print:overflow-visible">
+              <ReceiptPrint 
+                lineItems={lineItems} 
+                grandTotal={grandTotal}
+                subTotal={subTotal}
+                totalDiscount={totalDiscount}
+                paymentMethod={method}
+                amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                changeDue={changeDue}
+                cashierName={user?.name || user?.username || 'Admin'}
+                isLivePreview={true}
+              />
             </div>
-            <p className="text-xl font-bold text-slate-100">Payment Complete!</p>
-            {!isOnline && <p className="text-xs text-amber-400">Saved offline — will sync when connected</p>}
-            <div className="flex gap-3 mt-2 print:hidden">
-              <button onClick={() => window.print()} className="btn-ghost px-6 border border-slate-700 bg-slate-800">Print Receipt</button>
-              <button onClick={onClose} className="btn-primary px-8">New Sale</button>
+
+            <div className="mt-4 shrink-0 print:hidden text-center w-full max-w-sm">
+              {!isOnline && <p className="text-xs text-amber-400 mb-3">Saved offline — will sync when connected</p>}
+              <button 
+                onClick={onSuccessReset} 
+                className="btn-primary w-full py-3.5 text-lg font-bold tracking-wide"
+              >
+                OK / New Sale
+              </button>
             </div>
-            {/* Hidden printable receipt structure */}
-            <ReceiptPrint 
-              lineItems={lineItems} 
-              grandTotal={grandTotal}
-              subTotal={subTotal}
-              totalDiscount={totalDiscount}
-              paymentMethod={method}
-              amountPaid={method === 'cash' ? numericPaid : grandTotal}
-              changeDue={changeDue}
-              cashierName={user?.name || user?.username || 'Admin'}
-            />
           </div>
         )}
 

@@ -328,6 +328,10 @@ export default function PosPage() {
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
+        onSuccessReset={() => {
+          handleClear();
+          setIsCheckoutOpen(false);
+        }}
         grandTotal={cart.grandTotal}
         subTotal={cart.subTotal}
         totalDiscount={cart.totalDiscount}
