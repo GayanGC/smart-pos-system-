@@ -263,7 +263,8 @@ export default function PosPage() {
         })
       }
 
-      dispatch({ type: 'CLEAR' })
+      // DO NOT clear cart here. Wait for onSuccessReset to clear the cart
+      // so the success modal can display the correct receipt payload.
     } finally {
       setCheckoutLoading(false)
     }
@@ -280,7 +281,7 @@ export default function PosPage() {
           <div>
             <h1 className="text-xl font-bold text-slate-100">POS Terminal</h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Hi, {user?.name?.split(' ')[0]} — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              Hi, {(user?.name || user?.username || 'Admin').split(' ')[0]} — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
           <div className="flex items-center gap-2">

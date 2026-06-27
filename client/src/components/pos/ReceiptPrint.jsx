@@ -41,16 +41,16 @@ export default function ReceiptPrint({
           </tr>
         </thead>
         <tbody>
-          {lineItems?.map((item, i) => (
+          {(lineItems || []).map((item, i) => (
             <tr key={i} className="border-b border-gray-100 last:border-0">
               <td className="py-2 pr-2 font-medium">
-                {item.name}
-                {(item.discount > 0 || item.flatDiscount > 0) && (
+                {item?.name || 'Unknown Item'}
+                {(item?.discount > 0 || item?.flatDiscount > 0) && (
                   <div className="text-[10px] text-gray-500 italic">Discounted</div>
                 )}
               </td>
-              <td className="py-2 text-center align-top">{item.quantity}</td>
-              <td className="py-2 text-right align-top">Rs. {fmt(item.lineTotal || (item.unitPrice * item.quantity))}</td>
+              <td className="py-2 text-center align-top">{item?.quantity || 1}</td>
+              <td className="py-2 text-right align-top">Rs. {fmt(item?.lineTotal || ((item?.unitPrice || 0) * (item?.quantity || 1)))}</td>
             </tr>
           ))}
         </tbody>
