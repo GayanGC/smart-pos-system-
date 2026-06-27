@@ -106,6 +106,43 @@ export default function EmployeesPage() {
         </ErrorBoundary>
       </div>
 
+      {/* ── Welcome & Workload Modal (In-App Overlay) ── */}
+      {welcomeModal.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-slate-950 border border-violet-500/50 shadow-[0_0_50px_-12px_rgba(139,92,246,0.5)] rounded-2xl p-8 w-full max-w-lg animate-fade-up">
+            <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-2">
+              Good Morning, {welcomeModal.data?.employee?.firstName}!
+            </h2>
+            <p className="text-slate-400 mb-6 font-medium">Your Assigned Tasks for Today ({new Date().toLocaleDateString()})</p>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-none">
+              {(!welcomeModal.data?.tasks || welcomeModal.data?.tasks?.length === 0) ? (
+                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-center text-slate-500">
+                  You have no specific tasks assigned for today. Have a great shift!
+                </div>
+              ) : (
+                (welcomeModal.data?.tasks || []).map(t => (
+                  <div key={t?._id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl flex items-start gap-4 shadow-sm shadow-black/40">
+                    <div className="w-2 h-2 mt-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                    <div>
+                      <p className="text-slate-200 font-medium">{t?.taskDescription}</p>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide font-bold">{t?.status}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <button 
+              onClick={() => setWelcomeModal({ isOpen: false, data: null })}
+              className="mt-8 w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors border border-slate-700"
+            >
+              Start Shift
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
@@ -193,42 +230,6 @@ function DirectoryTab({ employees, onRefresh }) {
         <QrCodeModal employee={selectedQrEmployee} onClose={() => setSelectedQrEmployee(null)} />
       )}
 
-      {/* ── Welcome & Workload Modal (In-App Overlay) ── */}
-      {welcomeModal.isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in">
-          <div className="bg-slate-950 border border-violet-500/50 shadow-[0_0_50px_-12px_rgba(139,92,246,0.5)] rounded-2xl p-8 w-full max-w-lg animate-fade-up">
-            <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-2">
-              Good Morning, {welcomeModal.data?.employee?.firstName}!
-            </h2>
-            <p className="text-slate-400 mb-6 font-medium">Your Assigned Tasks for Today ({new Date().toLocaleDateString()})</p>
-            
-            <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-none">
-              {(!welcomeModal.data?.tasks || welcomeModal.data?.tasks?.length === 0) ? (
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-center text-slate-500">
-                  You have no specific tasks assigned for today. Have a great shift!
-                </div>
-              ) : (
-                (welcomeModal.data?.tasks || []).map(t => (
-                  <div key={t?._id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl flex items-start gap-4 shadow-sm shadow-black/40">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
-                    <div>
-                      <p className="text-slate-200 font-medium">{t?.taskDescription}</p>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide font-bold">{t?.status}</span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            <button 
-              onClick={() => setWelcomeModal({ isOpen: false, data: null })}
-              className="mt-8 w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors border border-slate-700"
-            >
-              Start Shift
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
