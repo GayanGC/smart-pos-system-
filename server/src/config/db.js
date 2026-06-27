@@ -18,14 +18,15 @@ const logger   = require('../utils/logger');
  */
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const mongoString = process.env.MONGODB_URI || process.env.MONGO_URI;
+    const conn = await mongoose.connect(mongoString, {
       // These options are the defaults in Mongoose 7+ but are listed
       // explicitly for clarity and forward compatibility.
       autoIndex: process.env.NODE_ENV !== 'production', // disable in prod for perf
     });
 
     logger.info(`✅  MongoDB connected: ${conn.connection.host}`);
-    const uri = process.env.MONGO_URI || '';
+    const uri = mongoString || '';
     if (uri.includes('mongodb+srv') || uri.includes('cluster')) {
       logger.info('🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)');
     } else {

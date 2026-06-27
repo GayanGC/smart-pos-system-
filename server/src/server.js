@@ -81,4 +81,13 @@ process.on('uncaughtException', (err) => {
 });
 
 // ─── Run ───────────────────────────────────────────────────────────────────
-startServer();
+if (process.env.VERCEL || process.env.VERCEL_ENV) {
+  // 1. Connect to MongoDB without blocking so Mongoose buffers queries
+  connectDB().catch(err => logger.error('Vercel DB Connect Error:', err));
+  
+  // 2. Export the app for Vercel serverless environment
+  module.exports = app;
+} else {
+  // Standard local/PM2 execution
+  startServer();
+}

@@ -93,7 +93,7 @@ app.use('/api', globalLimiter);
 // ─── Health check ─────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
   const mongoose = require('mongoose');
-  const rawUri = process.env.MONGO_URI || '';
+  const rawUri = process.env.MONGODB_URI || process.env.MONGO_URI || '';
   const obfuscatedUri = rawUri.replace(/:([^@]+)@/, ':******@');
   const apiKey = process.env.AI_CHAT_API_KEY || '';
   const isKeyConfigured = apiKey && apiKey !== 'your_openai_or_openrouter_api_key_here';

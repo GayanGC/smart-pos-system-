@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+
+// Load environment variables from the server root .env file
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const Product = require('./modules/inventory/product.model');
 
+// Helper function to generate a randomized SKU string
 const generateSKU = (name, cat, size = '') => {
   return `${cat.substring(0, 3).toUpperCase()}-${name.substring(0, 4).toUpperCase()}${size ? '-' + size : ''}-${Math.floor(Math.random() * 10000)}`;
 };
@@ -57,7 +60,7 @@ const itemsData = [
     { name: 'සොසේජ් බනිස්', price: 100 }, { name: 'ප්රෙසිඩන්ට්', price: 120 }, { name: 'සීනිසම්බල් බනිස්', price: 80 },
     { name: 'Egg Hoppy', price: 100 }, { name: 'සොසේජ් පීසා', price: 120 }, { name: 'චිකන් පීසා', price: 150 },
     { name: 'බිත්තර බනිස්', price: 100 }, { name: 'ජෑම් බනිස්', price: 80 }, { name: 'කිඹුලා බනිස්', price: 70 },
-    { name: 'ක්රීම් බනිස්', price: 100 }, { name: 'චොකලට් ක්රීම් බනිස්', price: 120 }, { name: 'මැල්ට් බනිස්', price: 80 },
+    { name: 'ക്രීම් බනිස්', price: 100 }, { name: 'චොකලට් ක්රීම් බනිස්', price: 120 }, { name: 'මැල්ට් බනිස්', price: 80 },
     { name: 'සීනි බනිස්', price: 70 }, { name: 'ටී බනිස්', price: 60 }, { name: 'අලබොන්ඩා', price: 60 },
     { name: 'අලවඩේ', price: 80 }, { name: 'වැනිලා ස්පොන්ජ්', price: 80 }, { name: 'චොකලට් ස්පොන්ජ්', price: 100 },
     { name: 'ඩෝනට්', price: 100 }, { name: 'බටර් කේක් කෑල්ල', price: 100 }, { name: 'විස්කිලිඤ්ඤා', price: 100 },
@@ -89,7 +92,7 @@ const itemsData = [
     { name: 'මාළු කෑම (S)', price: 350 }, { name: 'මාළු කෑම (L)', price: 480 },
     { name: 'චිකන් කෑම (S)', price: 400 }, { name: 'චිකන් කෑම (L)', price: 500 },
     { name: 'වැව් මාළු කෑම (S)', price: 450 }, { name: 'වැව් මාළු කෑම (L)', price: 550 },
-    { name: 'ආප්ප', price: 25 }, { name: 'බිත්තර ආප්ප', price: 100 }, { name: 'බිත්තර හා චීස් ආප්ප', price: 160 },
+    { name: 'ආප්ප', price: 25 }, { name: 'බිත්තර ආප්ප', price: 100 }, { name: 'බිත්තර හා ჩීස් ආප්ප', price: 160 },
     { name: 'චීස් චිකන් ආප්ප', price: 250 }, { name: 'ඉඳිආප්ප 1ක්', price: 10 }
   ].map(i => ({ ...i, category: 'MEALS' })),
 
@@ -103,7 +106,11 @@ const itemsData = [
 
 async function seed() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/pos_system');
+    // Dynamic URI detection: Fallback to local MongoDB if cloud variable is undefined
+    const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/pos_system';
+    
+    console.log(`Connecting to: ${dbUri.includes('mongodb+srv') ? 'MongoDB Atlas (Cloud)' : 'Local MongoDB'}`);
+    await mongoose.connect(dbUri);
     console.log('--- DB Connected ---');
     
     console.log('Wiping out existing products...');
@@ -115,8 +122,8 @@ async function seed() {
       sku: generateSKU(item.name, item.category),
       category: item.category,
       sellingPrice: item.price,
-      costPrice: item.price * 0.7, // 30% margin approx
-      quantityInStock: 9999, // Unbounded/bulk item
+      costPrice: item.price * 0.7, // Calculates an approximate 30% profit margin
+      quantityInStock: 9999, // Unbounded bulk item value for immediate deployment
       isActive: true,
       supplier: {
         name: 'Internal Kitchen'
@@ -129,8 +136,11 @@ async function seed() {
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {
+    // Safely close the database connection upon completion
+    mongoose.connection.close();
     process.exit(0);
   }
 }
 
 seed();
+
