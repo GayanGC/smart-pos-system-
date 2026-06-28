@@ -187,7 +187,9 @@ export default function PosPage() {
     openingFloat, 
     totalCashSalesToday, 
     showFloatModal, 
-    recordOpeningFloat 
+    recordOpeningFloatAndBakery,
+    bakeryProducts,
+    bakeryTracking
   } = usePos()
 
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
@@ -201,6 +203,7 @@ export default function PosPage() {
   const [floatVal, setFloatVal] = useState('5000.00')
   const [floatSubmitLoading, setFloatSubmitLoading] = useState(false)
   const [floatSubmitError, setFloatSubmitError] = useState(null)
+  const [initBakeryQtys, setInitBakeryQtys] = useState({})
 
   // Track network status
   useEffect(() => {
@@ -224,6 +227,7 @@ export default function PosPage() {
         unitPrice: product?.sellingPrice || 0,
         taxRate:   product?.taxRate || 0,
         quantityInStock: product?.quantityInStock || 0,
+        category:  product?.category || '',
       },
     })
   }, [])
@@ -348,6 +352,52 @@ export default function PosPage() {
                         <span>Total Expected:</span>
                         <span className="text-emerald-300 font-black">Rs. {(openingFloat + totalCashSalesToday).toFixed(2)}</span>
                       </div>
+                      
+                      {/* Bakery Leftover tracking statistics */}
+                      {(() => {
+                        const openingBakeryValue = bakeryTracking.reduce((sum, item) => sum + ((item.openingQty || 0) * (item.price || 0)), 0);
+                        const bakerySalesValue = bakeryTracking.reduce((sum, item) => sum + ((item.salesQty || 0) * (item.price || 0)), 0);
+                        const remainingBakeryValue = Math.max(0, openingBakeryValue - bakerySalesValue);
+                        const remainingBakeryItems = bakeryTracking.filter(item => item.openingQty > 0);
+
+                        return (
+                          <>
+                            <div className="border-t border-slate-805 my-2 pt-2 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500 font-medium">Opening Bakery Value:</span>
+                                <span className="font-bold text-slate-200">Rs. {openingBakeryValue.toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-500 font-medium">Bakery Sales (Today):</span>
+                                <span className="font-bold text-emerald-400 font-black">Rs. {bakerySalesValue.toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between font-bold text-slate-100">
+                                <span>Bakery Leftover Value:</span>
+                                <span className="text-amber-400 font-black">Rs. {remainingBakeryValue.toFixed(2)}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="border-t border-slate-800 pt-2">
+                              <span className="font-bold text-[10px] text-slate-400 uppercase tracking-wide">Bakery Remaining Stock</span>
+                              <div className="max-h-24 overflow-y-auto mt-1.5 space-y-1 pr-1 scrollbar-none">
+                                {remainingBakeryItems.length === 0 ? (
+                                  <p className="text-[10px] text-slate-500 italic">No bakery items initialized.</p>
+                                ) : (
+                                  remainingBakeryItems.map(item => {
+                                    const remaining = Math.max(0, item.openingQty - item.salesQty);
+                                    return (
+                                      <div key={item.productId} className="flex justify-between items-center text-[10px] text-slate-400">
+                                        <span className="truncate max-w-[180px]">{item.name}</span>
+                                        <span className={`font-bold ${remaining === 0 ? 'text-rose-400' : 'text-slate-350'}`}>{remaining} left</span>
+                                      </div>
+                                    );
+                                  })
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </>
@@ -417,11 +467,11 @@ export default function PosPage() {
         onClose={() => setIsCashDrawerOpen(false)} 
       />
 
-      {/* Opening Float Overlay Modal */}
+      {/* Opening Float & Bakery Stock Overlay Modal */}
       {showFloatModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md" />
-          <div className="relative bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl shadow-2xl animate-scale-in z-10">
+          <div className="relative bg-slate-900 border border-slate-700 w-full max-w-md p-6 rounded-2xl shadow-2xl animate-scale-in z-10">
             <h3 className="text-lg font-bold text-slate-100 mb-2 flex items-center gap-2">
               <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -429,7 +479,7 @@ export default function PosPage() {
               Shift Initialization
             </h3>
             <p className="text-xs text-slate-400 mb-4">
-              Please record today's opening cash float to initialize the POS terminal.
+              Please record today's opening cash float and bakery stock levels to initialize the POS terminal.
             </p>
             
             <form onSubmit={async (e) => {
@@ -437,9 +487,9 @@ export default function PosPage() {
               setFloatSubmitLoading(true);
               setFloatSubmitError(null);
               try {
-                await recordOpeningFloat(floatVal);
+                await recordOpeningFloatAndBakery(floatVal, initBakeryQtys);
               } catch (err) {
-                setFloatSubmitError(err.response?.data?.message || 'Failed to record float.');
+                setFloatSubmitError(err.response?.data?.message || 'Failed to record initialization data.');
               } finally {
                 setFloatSubmitLoading(false);
               }
@@ -453,10 +503,38 @@ export default function PosPage() {
                   step="0.01"
                   value={floatVal}
                   onChange={(e) => setFloatVal(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xl font-bold text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 transition-colors"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-lg font-bold text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 transition-colors"
                   placeholder="5000.00"
                   autoFocus
                 />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">Daily Bakery Opening Stock</label>
+                <div className="max-h-48 overflow-y-auto border border-slate-800 rounded-xl bg-slate-950 p-2 space-y-2">
+                  {bakeryProducts.length === 0 ? (
+                    <p className="text-[10px] text-slate-500 italic p-2">Loading bakery products...</p>
+                  ) : (
+                    bakeryProducts.map(p => (
+                      <div key={p._id} className="flex items-center justify-between gap-2 p-1.5 bg-slate-900/50 rounded-lg border border-slate-800/40">
+                        <span className="text-xs text-slate-300 truncate max-w-[200px]" title={p.name}>
+                          {p.name}
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={initBakeryQtys[p._id] || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setInitBakeryQtys(prev => ({ ...prev, [p._id]: val }));
+                          }}
+                          placeholder="0"
+                          className="w-16 bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-right font-bold text-slate-200 focus:outline-none focus:border-violet-500"
+                        />
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
 
               {floatSubmitError && (

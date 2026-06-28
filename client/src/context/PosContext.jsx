@@ -16,6 +16,35 @@ export function PosProvider({ children }) {
   const [totalCashSalesToday, setTotalCashSalesToday] = useState(0)
   const [showFloatModal, setShowFloatModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [bakeryProducts, setBakeryProducts] = useState([])
+  
+  const [bakeryTracking, setBakeryTracking] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('pos_shift_bakery_tracking')) || []
+    } catch {
+      return []
+    }
+  })
+
+  // Persist bakery tracking
+  useEffect(() => {
+    localStorage.setItem('pos_shift_bakery_tracking', JSON.stringify(bakeryTracking))
+  }, [bakeryTracking])
+
+  // Load bakery products on mount
+  useEffect(() => {
+    const fetchBakeryProducts = async () => {
+      try {
+        const res = await api.get('/inventory/products', { params: { category: 'BAKERY', limit: 100 } })
+        setBakeryProducts(res.data.data || [])
+      } catch (err) {
+        console.error('Failed to load bakery products for init:', err)
+      }
+    }
+    if (user) {
+      fetchBakeryProducts()
+    }
+  }, [user])
 
   const fetchCashSummary = useCallback(async () => {
     if (!user) return
@@ -46,23 +75,50 @@ export function PosProvider({ children }) {
     }
   }, [user, fetchCashSummary])
 
-  const recordOpeningFloat = async (amount) => {
+  const recordOpeningFloatAndBakery = async (floatAmount, bakeryQtys) => {
     try {
+      // 1. Record float
       await api.post('/billing/cash', {
-        amount: Number(amount),
+        amount: Number(floatAmount),
         reason: 'Opening Shift Float',
         type: 'starting_drawer'
       })
-      setOpeningFloat(Number(amount))
+      setOpeningFloat(Number(floatAmount))
+      
+      // 2. Initialize bakery tracking
+      const tracking = bakeryProducts.map(p => ({
+        productId: p._id,
+        name: p.name,
+        price: p.sellingPrice,
+        openingQty: Number(bakeryQtys[p._id]) || 0,
+        salesQty: 0
+      }))
+      setBakeryTracking(tracking)
+      
       setShowFloatModal(false)
     } catch (err) {
-      console.error('Failed to log opening cash float:', err)
+      console.error('Failed to initialize shift:', err)
       throw err
     }
   }
 
   const addCashSale = (amount) => {
     setTotalCashSalesToday(prev => prev + Number(amount))
+  }
+
+  const recordBakerySales = (soldItems) => {
+    setBakeryTracking(prev => {
+      return prev.map(tracked => {
+        const match = soldItems.find(s => s.productId === tracked.productId)
+        if (match) {
+          return {
+            ...tracked,
+            salesQty: tracked.salesQty + (Number(match.quantity) || 0)
+          }
+        }
+        return tracked
+      })
+    })
   }
 
   return (
@@ -75,8 +131,11 @@ export function PosProvider({ children }) {
       setShowFloatModal,
       isLoading,
       fetchCashSummary,
-      recordOpeningFloat,
-      addCashSale
+      addCashSale,
+      bakeryProducts,
+      bakeryTracking,
+      recordOpeningFloatAndBakery,
+      recordBakerySales
     }}>
       {children}
     </PosContext.Provider>

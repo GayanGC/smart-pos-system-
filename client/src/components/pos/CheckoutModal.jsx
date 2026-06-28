@@ -69,7 +69,7 @@ export default function CheckoutModal({
   const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
-  const { addCashSale } = usePos()
+  const { addCashSale, recordBakerySales } = usePos()
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
@@ -149,6 +149,7 @@ export default function CheckoutModal({
       if (method === 'cash') {
         addCashSale(grandTotal)
       }
+      recordBakerySales(lineItems)
       setSuccess(true)
     } catch (err) {
       setError(err.response?.data?.message || 'Payment failed. Please try again.')
