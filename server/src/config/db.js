@@ -26,6 +26,32 @@ const connectDB = async () => {
     });
 
     logger.info(`✅  MongoDB connected: ${conn.connection.host}`);
+    
+    // ─── Programmatic Auto-Seed Admin User ──────────────────────────────
+    try {
+      const User = require('../modules/auth/auth.model');
+      const { USER_ROLES } = require('./constants');
+      const adminEmail = 'admin@example.com';
+      
+      let admin = await User.findOne({ email: adminEmail });
+      if (!admin) {
+        await User.create({
+          name: 'Admin Owner',
+          email: adminEmail,
+          password: 'password123',
+          role: USER_ROLES.SUPER_ADMIN || 'super_admin',
+        });
+        logger.info(`🌱 [AUTO-SEED] Created default admin user: ${adminEmail}`);
+      } else {
+        // Force update to password123 to ensure sync
+        admin.password = 'password123';
+        await admin.save();
+        logger.info(`🌱 [AUTO-SEED] Synchronized admin user password: ${adminEmail}`);
+      }
+    } catch (seedErr) {
+      logger.error(`🔴 [AUTO-SEED] Programmatic seed error: ${seedErr.message}`);
+    }
+
     const uri = mongoString || '';
     if (uri.includes('mongodb+srv') || uri.includes('cluster')) {
       logger.info('🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)');

@@ -526,7 +526,7 @@ export default function CheckoutModal({
                   onClick={async () => {
                     setCardStatus('processing')
                     await new Promise(resolve => setTimeout(resolve, 1500))
-                    const mockCode = `AUTH-${Math.floor(100000 + Math.random() * 900000)}`
+                    const mockCode = `TXN-SMP-${Math.floor(100000 + Math.random() * 900000)}`
                     setCardRef(mockCode)
                     setCardStatus('approved')
                   }}
