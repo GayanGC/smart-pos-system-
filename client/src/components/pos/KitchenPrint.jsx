@@ -36,7 +36,7 @@ export default function KitchenPrint({
             padding-bottom: 0mm !important;
             margin-bottom: 0mm !important;
           }
-          html, body, div, svg {
+          html, body, div, svg, img, table, tr, td, th {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;

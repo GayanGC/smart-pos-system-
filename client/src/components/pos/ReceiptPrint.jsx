@@ -41,7 +41,7 @@ export default function ReceiptPrint({
     >
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
-          html, body, div, svg {
+          html, body, div, svg, img, table, tr, td, th {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;

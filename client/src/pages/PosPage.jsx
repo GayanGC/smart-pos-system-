@@ -355,10 +355,10 @@ export default function PosPage() {
                       
                       {/* Bakery Leftover tracking statistics */}
                       {(() => {
-                        const openingBakeryValue = bakeryTracking.reduce((sum, item) => sum + ((item.openingQty || 0) * (item.price || 0)), 0);
-                        const bakerySalesValue = bakeryTracking.reduce((sum, item) => sum + ((item.salesQty || 0) * (item.price || 0)), 0);
+                        const openingBakeryValue = (bakeryTracking || []).reduce((sum, item) => sum + (Number(item?.openingQty || 0) * Number(item?.price || 0)), 0);
+                        const bakerySalesValue = (bakeryTracking || []).reduce((sum, item) => sum + (Number(item?.salesQty || 0) * Number(item?.price || 0)), 0);
                         const remainingBakeryValue = Math.max(0, openingBakeryValue - bakerySalesValue);
-                        const remainingBakeryItems = bakeryTracking.filter(item => item.openingQty > 0);
+                        const remainingBakeryItems = (bakeryTracking || []).filter(item => Number(item?.openingQty || 0) > 0);
 
                         return (
                           <>
@@ -384,10 +384,10 @@ export default function PosPage() {
                                   <p className="text-[10px] text-slate-500 italic">No bakery items initialized.</p>
                                 ) : (
                                   remainingBakeryItems.map(item => {
-                                    const remaining = Math.max(0, item.openingQty - item.salesQty);
+                                    const remaining = Math.max(0, Number(item?.openingQty || 0) - Number(item?.salesQty || 0));
                                     return (
-                                      <div key={item.productId} className="flex justify-between items-center text-[10px] text-slate-400">
-                                        <span className="truncate max-w-[180px]">{item.name}</span>
+                                      <div key={item?.productId} className="flex justify-between items-center text-[10px] text-slate-400">
+                                        <span className="truncate max-w-[180px]">{item?.name || 'Unnamed Item'}</span>
                                         <span className={`font-bold ${remaining === 0 ? 'text-rose-400' : 'text-slate-350'}`}>{remaining} left</span>
                                       </div>
                                     );

@@ -86,11 +86,11 @@ export function PosProvider({ children }) {
       setOpeningFloat(Number(floatAmount))
       
       // 2. Initialize bakery tracking
-      const tracking = bakeryProducts.map(p => ({
-        productId: p._id,
-        name: p.name,
-        price: p.sellingPrice,
-        openingQty: Number(bakeryQtys[p._id]) || 0,
+      const tracking = (bakeryProducts || []).map(p => ({
+        productId: p?._id,
+        name: p?.name || 'Unnamed Bakery Item',
+        price: Number(p?.sellingPrice || 0),
+        openingQty: Number(bakeryQtys?.[p?._id]) || 0,
         salesQty: 0
       }))
       setBakeryTracking(tracking)
@@ -103,17 +103,18 @@ export function PosProvider({ children }) {
   }
 
   const addCashSale = (amount) => {
-    setTotalCashSalesToday(prev => prev + Number(amount))
+    setTotalCashSalesToday(prev => prev + Number(amount || 0))
   }
 
   const recordBakerySales = (soldItems) => {
     setBakeryTracking(prev => {
-      return prev.map(tracked => {
-        const match = soldItems.find(s => s.productId === tracked.productId)
+      const itemsArr = Array.isArray(soldItems) ? soldItems : []
+      return (prev || []).map(tracked => {
+        const match = itemsArr.find(s => s?.productId === tracked?.productId)
         if (match) {
           return {
             ...tracked,
-            salesQty: tracked.salesQty + (Number(match.quantity) || 0)
+            salesQty: Number(tracked.salesQty || 0) + Number(match.quantity || 0)
           }
         }
         return tracked
