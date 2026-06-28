@@ -114,6 +114,9 @@ const seedDB = async () => {
       { name: 'Laundry Detergent 64oz', sku: 'DET-01', barcode: '1000000013', costPrice: 600.0, sellingPrice: 1200.0, qty: 20, category: 'Household', supp: supplier1 },
       { name: 'Avocados (Bag of 4)', sku: 'AVO-01', barcode: '1000000014', costPrice: 300.0, sellingPrice: 550.0, qty: 12, category: 'Produce', supp: supplier2 },
       { name: 'Free-Range Eggs 1 Dozen', sku: 'EGG-01', barcode: '1000000015', costPrice: 250.0, sellingPrice: 500.0, qty: 30, category: 'Dairy', supp: supplier2, expiry: expiryLater },
+      { name: 'Cigarette 105', sku: 'CIG-105', barcode: '2000000105', costPrice: 105.0 * 0.7, sellingPrice: 105.0, qty: 500, category: 'CIGARETTES', supp: supplier1 },
+      { name: 'Cigarette 160', sku: 'CIG-160', barcode: '2000000160', costPrice: 160.0 * 0.7, sellingPrice: 160.0, qty: 500, category: 'CIGARETTES', supp: supplier1 },
+      { name: 'Dunhill 170', sku: 'DUN-170', barcode: '2000000170', costPrice: 170.0 * 0.7, sellingPrice: 170.0, qty: 500, category: 'CIGARETTES', supp: supplier1 },
     ];
 
     const products = [];

@@ -76,6 +76,12 @@ function getFallbackImage(name = '', category = '') {
   ) {
     return 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80'
   }
+  if (
+    n.includes('cigarette') || n.includes('dunhill') ||
+    c.includes('cigarettes') || c.includes('cigarette')
+  ) {
+    return 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80'
+  }
   return GLOBAL_FALLBACK
 }
 
@@ -142,7 +148,8 @@ const CATEGORY_IMAGES = {
   BREAD: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80',
   CAKES: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
   MEALS: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80',
-  HOT_DRINKS: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'
+  HOT_DRINKS: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80',
+  CIGARETTES: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80'
 }
 
 const CATEGORY_SINHALA = {
@@ -154,7 +161,8 @@ const CATEGORY_SINHALA = {
   BREAD: 'පාන්',
   CAKES: 'කේක්',
   MEALS: 'ආහාර',
-  HOT_DRINKS: 'බීම'
+  HOT_DRINKS: 'බීම',
+  CIGARETTES: 'සිගරට්'
 }
 
 const CATEGORY_BG_COLORS = {
@@ -166,7 +174,8 @@ const CATEGORY_BG_COLORS = {
   BREAD: 'bg-[#f7ece1]',
   CAKES: 'bg-[#f9ebec]',
   MEALS: 'bg-[#ebf5ee]',
-  HOT_DRINKS: 'bg-[#ebf4f6]'
+  HOT_DRINKS: 'bg-[#ebf4f6]',
+  CIGARETTES: 'bg-[#f1f3f5]'
 }
 
 /* ── Main Component ────────────────────────────────────────────────────── */
@@ -179,7 +188,8 @@ const POS_CATEGORIES = [
   { id: 'BREAD', icon: '🍞', label: 'Bread' },
   { id: 'CAKES', icon: '🍰', label: 'Cakes' },
   { id: 'MEALS', icon: '🥘', label: 'Meals' },
-  { id: 'HOT_DRINKS', icon: '☕', label: 'Drinks' }
+  { id: 'HOT_DRINKS', icon: '☕', label: 'Drinks' },
+  { id: 'CIGARETTES', icon: '🚬', label: 'Cigarettes' }
 ]
 
 export default function ProductGrid({ onAddToCart }) {

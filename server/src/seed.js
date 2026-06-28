@@ -101,13 +101,20 @@ const itemsData = [
     { name: 'RR Café', price: 100 }, { name: 'RR Tea', price: 100 }, { name: 'Nestomalt', price: 120 },
     { name: 'ප්ලේන් ටී', price: 50 }, { name: 'කිරි තේ', price: 120 }, { name: 'කෝපි', price: 70 },
     { name: 'කිරි කෝපි', price: 140 }
-  ].map(i => ({ ...i, category: 'HOT_DRINKS' }))
+  ].map(i => ({ ...i, category: 'HOT_DRINKS' })),
+
+  // CIGARETTES
+  ...[
+    { name: 'Cigarette 105', price: 105, sku: 'CIG-105' },
+    { name: 'Cigarette 160', price: 160, sku: 'CIG-160' },
+    { name: 'Dunhill 170', price: 170, sku: 'DUN-170' }
+  ].map(i => ({ ...i, category: 'CIGARETTES' }))
 ];
 
 async function seed() {
   try {
     // Dynamic URI detection: Fallback to local MongoDB if cloud variable is undefined
-    const dbUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/pos_system';
+    const dbUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/pos_system';
     
     console.log(`Connecting to: ${dbUri.includes('mongodb+srv') ? 'MongoDB Atlas (Cloud)' : 'Local MongoDB'}`);
     await mongoose.connect(dbUri);
@@ -119,11 +126,11 @@ async function seed() {
     console.log('Seeding new menu products...');
     const productsToInsert = itemsData.map(item => ({
       name: item.name,
-      sku: generateSKU(item.name, item.category),
+      sku: item.sku || generateSKU(item.name, item.category),
       category: item.category,
       sellingPrice: item.price,
       costPrice: item.price * 0.7, // Calculates an approximate 30% profit margin
-      quantityInStock: 9999, // Unbounded bulk item value for immediate deployment
+      quantityInStock: item.category === 'CIGARETTES' ? 500 : 9999, // 500 stock for cigarettes
       isActive: true,
       supplier: {
         name: 'Internal Kitchen'
