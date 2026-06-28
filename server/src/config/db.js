@@ -38,13 +38,13 @@ const connectDB = async () => {
         await User.create({
           name: 'Admin Owner',
           email: adminEmail,
-          password: 'password123',
+          password: 'admin1234',
           role: USER_ROLES.SUPER_ADMIN || 'super_admin',
         });
         logger.info(`🌱 [AUTO-SEED] Created default admin user: ${adminEmail}`);
       } else {
-        // Force update to password123 to ensure sync
-        admin.password = 'password123';
+        // Force update to admin1234 to ensure sync
+        admin.password = 'admin1234';
         await admin.save();
         logger.info(`🌱 [AUTO-SEED] Synchronized admin user password: ${adminEmail}`);
       }
