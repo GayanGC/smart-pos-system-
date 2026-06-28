@@ -148,6 +148,18 @@ const CATEGORY_SINHALA = {
   HOT_DRINKS: 'බීම'
 }
 
+const CATEGORY_BG_COLORS = {
+  All: 'bg-[#f4f2ee]',
+  RICE: 'bg-[#f9f5eb]',
+  KOTTU: 'bg-[#f3ebf9]',
+  NOODLES: 'bg-[#f1f6eb]',
+  BAKERY: 'bg-[#fbf2eb]',
+  BREAD: 'bg-[#f7ece1]',
+  CAKES: 'bg-[#f9ebec]',
+  MEALS: 'bg-[#ebf5ee]',
+  HOT_DRINKS: 'bg-[#ebf4f6]'
+}
+
 /* ── Main Component ────────────────────────────────────────────────────── */
 const POS_CATEGORIES = [
   { id: 'All', icon: '🍱', label: 'All Items' },
@@ -360,22 +372,24 @@ export default function ProductGrid({ onAddToCart }) {
                   setActiveCategory(cat?.id)
                   setViewLevel('products')
                 }}
-                className="group relative flex flex-col items-stretch rounded-2xl border text-center transition-all duration-200 overflow-hidden h-full border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg"
+                className={`
+                  group relative flex flex-col items-stretch rounded-2xl text-center
+                  overflow-hidden h-full cursor-pointer
+                  shadow-sm hover:shadow-md transition-shadow duration-200 hover:-translate-y-1 active:translate-y-0
+                  ${CATEGORY_BG_COLORS[cat?.id] || 'bg-[#f4f2ee]'}
+                `}
               >
                 {/* Category Image */}
-                <div className="relative w-full h-32 overflow-hidden bg-slate-950 flex-shrink-0">
+                <div className="relative w-full h-36 overflow-hidden rounded-t-2xl flex-shrink-0">
                   <img
                     src={CATEGORY_IMAGES[cat?.id]}
                     alt={cat?.label}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-36 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-4xl drop-shadow-md">{cat?.icon}</span>
-                  </div>
                 </div>
                 {/* Category Text (Sinhala & English) */}
-                <div className="relative z-10 flex flex-col justify-center items-center flex-1 gap-0.5 p-3 bg-slate-950/90 border-t border-slate-800 w-full min-h-[4.5rem]">
-                  <p className="font-bold text-slate-100 text-sm leading-snug w-full">
+                <div className="relative z-10 flex flex-col justify-center items-center flex-1 gap-1 py-4 px-2 text-center w-full">
+                  <p className="font-bold text-slate-900 text-sm leading-snug w-full">
                     {CATEGORY_SINHALA[cat?.id]}
                   </p>
                   <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
