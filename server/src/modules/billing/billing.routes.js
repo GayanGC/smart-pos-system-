@@ -19,7 +19,8 @@ const router = require('express').Router();
 const {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
-  triggerDailyReportEmail, createCashTransaction, getCashSummary
+  triggerDailyReportEmail, createCashTransaction, getCashSummary,
+  masterReset
 } = require('./billing.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
@@ -65,6 +66,12 @@ router.patch(
   '/invoices/:id/void',
   authorize('super_admin', 'admin', 'manager'),
   voidInvoice
+);
+
+router.post(
+  '/master-reset',
+  authorize('super_admin', 'admin'),
+  masterReset
 );
 
 module.exports = router;

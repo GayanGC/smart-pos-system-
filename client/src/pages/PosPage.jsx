@@ -367,6 +367,31 @@ export default function PosPage() {
           
           {/* Right: Actions */}
           <div className="flex-1 flex items-center justify-end gap-2">
+            {['admin', 'super_admin'].includes(user?.role) && (
+              <button
+                onClick={async () => {
+                  const firstConfirm = window.confirm("Are you absolutely sure you want to delete all test data and reset charts for tomorrow's live launch?");
+                  if (!firstConfirm) return;
+                  const secondConfirm = window.confirm("WARNING: This will permanently wipe all sales history, transactions, and cash ledger records from the database. Proceed?");
+                  if (!secondConfirm) return;
+                  
+                  try {
+                    await api.post('/billing/master-reset');
+                    localStorage.removeItem('pos_shift_bakery_tracking');
+                    alert("Master system reset completed successfully.");
+                    window.location.reload();
+                  } catch (err) {
+                    alert(err.response?.data?.message || "Failed to perform master reset.");
+                  }
+                }}
+                className="px-3 py-1.5 rounded-full text-xs font-bold bg-rose-600/10 border border-rose-500/30 text-rose-450 hover:bg-rose-600 hover:text-white transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Master Reset</span>
+              </button>
+            )}
             <div className="relative">
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}

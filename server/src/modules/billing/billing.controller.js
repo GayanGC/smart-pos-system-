@@ -822,8 +822,23 @@ const getCashSummary = asyncHandler(async (req, res) => {
   });
 });
 
+const masterReset = asyncHandler(async (req, res) => {
+  if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+    return sendError(res, 'Unauthorized system reset.', 403);
+  }
+
+  await Promise.all([
+    Invoice.deleteMany({}),
+    CashTransaction.deleteMany({}),
+    Payment.deleteMany({})
+  ]);
+
+  return sendSuccess(res, null, 'Master system reset completed successfully.');
+});
+
 module.exports = {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
-  triggerDailyReportEmail, createCashTransaction, getCashSummary
+  triggerDailyReportEmail, createCashTransaction, getCashSummary,
+  masterReset
 };
