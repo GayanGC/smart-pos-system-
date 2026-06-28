@@ -42,6 +42,9 @@ export default function ReceiptPrint({
     >
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
+          * {
+            font-family: 'Noto Sans Sinhala', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
           html, body, div, svg, img, table, tr, td, th {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
