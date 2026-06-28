@@ -72,6 +72,7 @@ export default function CheckoutModal({
   const [cardRef,     setCardRef]     = useState('')
   const [success,     setSuccess]     = useState(false)
   const [localSubmitting, setLocalSubmitting] = useState(false)
+  const [cardStatus,  setCardStatus]  = useState('idle') // 'idle' | 'processing' | 'approved'
   const [printView,   setPrintView]   = useState('receipt') // 'receipt' or 'kot'
   const [printSequence, setPrintSequence] = useState('idle') // 'idle' | 'receipt' | 'kot'
   const [error,       setError]       = useState(null)
@@ -103,6 +104,7 @@ export default function CheckoutModal({
       setCustomerSearch('Regular Customer')
       setSelectedCustomer('Regular Customer')
       setDropdownOpen(false)
+      setCardStatus('idle')
       
       const today = new Date();
       const datePart = today.getFullYear().toString() + 
@@ -154,7 +156,7 @@ export default function CheckoutModal({
   const changeDue   = method === 'credit' ? 0 : Math.max(0, numericPaid - grandTotal)
   const canSubmit   = method === 'cash'
     ? numericPaid >= grandTotal
-    : (method === 'credit' ? !!selectedCustomer.trim() : true)
+    : (method === 'credit' ? !!selectedCustomer.trim() : (method === 'card' ? cardStatus === 'approved' : true))
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
@@ -193,6 +195,7 @@ export default function CheckoutModal({
     setCustomerSearch('Regular Customer')
     setSelectedCustomer('Regular Customer')
     setDropdownOpen(false)
+    setCardStatus('idle')
     if (onSuccessReset) {
       onSuccessReset()
     }
@@ -492,17 +495,51 @@ export default function CheckoutModal({
             </div>
           )}
 
-          {/* ── Card reference ────────────────────────────────────── */}
+          {/* ── Card Terminal Simulator ───────────────────────────── */}
           {method === 'card' && (
-            <div className="animate-fade-up">
-              <label className="text-xs font-medium text-slate-400 block mb-1.5">Card Auth / Reference No. (optional)</label>
-              <input
-                type="text"
-                value={cardRef}
-                onChange={(e) => setCardRef(e.target.value)}
-                className="input-field"
-                placeholder="e.g. AUTH-123456"
-              />
+            <div className="space-y-4 animate-fade-up bg-slate-950/60 p-4 border border-slate-800 rounded-2xl">
+              <div className="bg-slate-900 border border-slate-750 p-4 rounded-xl text-center font-mono">
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Bank Terminal Simulator</p>
+                <div className="my-3 h-10 flex items-center justify-center">
+                  {cardStatus === 'idle' && (
+                    <span className="text-amber-400 font-bold text-sm animate-pulse">INSERT / SWIPE / TAP CARD</span>
+                  )}
+                  {cardStatus === 'processing' && (
+                    <div className="flex items-center gap-2 text-violet-400 text-sm">
+                      <div className="w-4 h-4 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
+                      <span>PROCESSING TRANSACTION...</span>
+                    </div>
+                  )}
+                  {cardStatus === 'approved' && (
+                    <div className="flex flex-col items-center text-emerald-400">
+                      <span className="font-bold text-sm">✓ TRANSACTION APPROVED</span>
+                      <span className="text-[10px] text-slate-400 mt-1">Ref: {cardRef}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="text-lg font-black text-slate-100">{fmt(grandTotal)}</div>
+              </div>
+
+              {cardStatus !== 'approved' ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setCardStatus('processing')
+                    await new Promise(resolve => setTimeout(resolve, 1500))
+                    const mockCode = `AUTH-${Math.floor(100000 + Math.random() * 900000)}`
+                    setCardRef(mockCode)
+                    setCardStatus('approved')
+                  }}
+                  disabled={cardStatus === 'processing'}
+                  className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-all text-xs active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-violet-950/30"
+                >
+                  {cardStatus === 'processing' ? 'Communicating with IPG...' : 'Simulate Card Tap'}
+                </button>
+              ) : (
+                <div className="text-center text-[10px] text-slate-500 italic">
+                  Simulator approved. Click Confirm Payment below to complete.
+                </div>
+              )}
             </div>
           )}
 

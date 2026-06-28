@@ -15,6 +15,7 @@ export default function ReceiptPrint({
   invoiceId,
   orderNo: propOrderNo,
   customerName,
+  referenceNumber,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -167,6 +168,12 @@ export default function ReceiptPrint({
           <div className="flex justify-between font-bold text-gray-700">
             <span>Customer:</span>
             <span className="uppercase">{customerName}</span>
+          </div>
+        )}
+        {paymentMethod === 'card' && referenceNumber && (
+          <div className="flex justify-between font-bold text-gray-750">
+            <span>Auth Ref:</span>
+            <span>{referenceNumber}</span>
           </div>
         )}
         {paymentMethod === 'cash' && (
