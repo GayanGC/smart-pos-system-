@@ -20,6 +20,7 @@ import CheckoutModal  from '../components/pos/CheckoutModal'
 import api            from '../api/axios'
 import { saveInvoiceOffline } from '../utils/offlineSync'
 import { useAuth } from '../context/AuthContext'
+import { usePos } from '../context/PosContext'
 import CashDrawerModal from '../components/pos/CashDrawerModal'
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -182,12 +183,24 @@ function cartReducer(state, action) {
 
 export default function PosPage() {
   const { user } = useAuth()
+  const { 
+    openingFloat, 
+    totalCashSalesToday, 
+    showFloatModal, 
+    recordOpeningFloat 
+  } = usePos()
+
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
   const [isCheckoutOpen,  setIsCheckoutOpen]  = useState(false)
   const [isCashDrawerOpen, setIsCashDrawerOpen] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [gridResetKey, setGridResetKey] = useState(0)
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [floatVal, setFloatVal] = useState('5000.00')
+  const [floatSubmitLoading, setFloatSubmitLoading] = useState(false)
+  const [floatSubmitError, setFloatSubmitError] = useState(null)
 
   // Track network status
   useEffect(() => {
@@ -292,15 +305,54 @@ export default function PosPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setIsCashDrawerOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Cash Drawer
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-750 transition-colors shadow-sm"
+              >
+                <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Cash Drawer</span>
+                <span className="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-black">
+                  Expected: Rs. {(openingFloat + totalCashSalesToday).toFixed(2)}
+                </span>
+              </button>
+
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 z-50 animate-fade-in">
+                    <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                      <h4 className="font-bold text-xs text-slate-400 uppercase tracking-wide">Cash Drawer Breakdown</h4>
+                      <button 
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          setIsCashDrawerOpen(true);
+                        }}
+                        className="text-[10px] text-violet-400 hover:text-violet-300 font-bold hover:underline"
+                      >
+                        Manage Drawer →
+                      </button>
+                    </div>
+                    <div className="space-y-2.5 text-xs text-slate-300">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 font-medium">Opening Float:</span>
+                        <span className="font-bold text-slate-200">Rs. {openingFloat.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 font-medium">Cash Sales (Today):</span>
+                        <span className="font-bold text-emerald-400 font-black">Rs. {totalCashSalesToday.toFixed(2)}</span>
+                      </div>
+                      <div className="border-t border-slate-800 pt-2 flex justify-between font-bold text-slate-100">
+                        <span>Total Expected:</span>
+                        <span className="text-emerald-300 font-black">Rs. {(openingFloat + totalCashSalesToday).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
             {/* Network indicator */}
             <div
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border
@@ -364,6 +416,64 @@ export default function PosPage() {
         isOpen={isCashDrawerOpen} 
         onClose={() => setIsCashDrawerOpen(false)} 
       />
+
+      {/* Opening Float Overlay Modal */}
+      {showFloatModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md" />
+          <div className="relative bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl shadow-2xl animate-scale-in z-10">
+            <h3 className="text-lg font-bold text-slate-100 mb-2 flex items-center gap-2">
+              <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Shift Initialization
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Please record today's opening cash float to initialize the POS terminal.
+            </p>
+            
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              setFloatSubmitLoading(true);
+              setFloatSubmitError(null);
+              try {
+                await recordOpeningFloat(floatVal);
+              } catch (err) {
+                setFloatSubmitError(err.response?.data?.message || 'Failed to record float.');
+              } finally {
+                setFloatSubmitLoading(false);
+              }
+            }}>
+              <div className="mb-4">
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">Opening Float Amount (Rs.)</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={floatVal}
+                  onChange={(e) => setFloatVal(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xl font-bold text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 transition-colors"
+                  placeholder="5000.00"
+                  autoFocus
+                />
+              </div>
+
+              {floatSubmitError && (
+                <p className="text-xs text-rose-400 font-medium mb-3">{floatSubmitError}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={floatSubmitLoading}
+                className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-violet-900/30 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {floatSubmitLoading ? 'Saving...' : 'Start Shift'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

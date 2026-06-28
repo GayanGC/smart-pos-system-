@@ -757,12 +757,22 @@ const getCashSummary = asyncHandler(async (req, res) => {
   const filter = { createdAt: { $gte: startOfDay, $lte: endOfDay } };
   if (cashierId) filter.cashierId = cashierId;
   
-  // 1. Get cash sales total
-  const cashPayments = await Payment.aggregate([
-    { $match: { ...filter, paymentMethod: 'cash' } },
-    { $group: { _id: null, total: { $sum: '$amount' } } }
+  const aggFilter = { 
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+    paymentMethod: 'cash',
+    isVoided: false
+  };
+  if (cashierId) {
+    const mongoose = require('mongoose');
+    aggFilter.cashierId = new mongoose.Types.ObjectId(cashierId);
+  }
+
+  // 1. Get cash sales total from non-voided invoices
+  const cashInvoices = await Invoice.aggregate([
+    { $match: aggFilter },
+    { $group: { _id: null, total: { $sum: '$grandTotal' } } }
   ]);
-  const cashSalesTotal = cashPayments.length > 0 ? cashPayments[0].total : 0;
+  const cashSalesTotal = cashInvoices.length > 0 ? cashInvoices[0].total : 0;
 
   // 2. Get petty cash payouts and starting cash
   const transactions = await CashTransaction.find(filter).sort({ createdAt: -1 });

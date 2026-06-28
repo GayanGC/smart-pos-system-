@@ -12,6 +12,7 @@ import AppLayout     from './components/layout/AppLayout'
 import LoginPage     from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import PosPage       from './pages/PosPage'
+import { PosProvider } from './context/PosContext'
 import EmployeesPage from './pages/EmployeesPage'
 import InventoryPage from './pages/InventoryPage'
 import EmployeePortalPage from './pages/EmployeePortalPage'
@@ -46,7 +47,7 @@ export default function App() {
                 />
               }
             >
-              <Route path="/pos" element={<PosPage />} />
+              <Route path="/pos" element={<PosProvider><PosPage /></PosProvider>} />
             </Route>
           </Route>
 

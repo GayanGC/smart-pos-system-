@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { usePos } from '../../context/PosContext'
 import ReceiptPrint from './ReceiptPrint'
 import KitchenPrint from './KitchenPrint'
 
@@ -68,6 +69,7 @@ export default function CheckoutModal({
   const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
+  const { addCashSale } = usePos()
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
@@ -144,6 +146,9 @@ export default function CheckoutModal({
         amountPaid:    method === 'cash' ? numericPaid : grandTotal,
         referenceNumber: method === 'card' ? cardRef : undefined,
       })
+      if (method === 'cash') {
+        addCashSale(grandTotal)
+      }
       setSuccess(true)
     } catch (err) {
       setError(err.response?.data?.message || 'Payment failed. Please try again.')
