@@ -62,6 +62,7 @@ export default function CheckoutModal({
   const [amountPaid,  setAmountPaid]  = useState('')
   const [cardRef,     setCardRef]     = useState('')
   const [success,     setSuccess]     = useState(false)
+  const [localSubmitting, setLocalSubmitting] = useState(false)
   const [printView,   setPrintView]   = useState('receipt') // 'receipt' or 'kot'
   const [printSequence, setPrintSequence] = useState('idle') // 'idle' | 'receipt' | 'kot'
   const [error,       setError]       = useState(null)
@@ -139,6 +140,8 @@ export default function CheckoutModal({
     : true
 
   const handleConfirm = async () => {
+    if (localSubmitting || loading) return
+    setLocalSubmitting(true)
     setError(null)
     try {
       await onConfirm({
@@ -153,6 +156,22 @@ export default function CheckoutModal({
       setSuccess(true)
     } catch (err) {
       setError(err.response?.data?.message || 'Payment failed. Please try again.')
+    } finally {
+      setLocalSubmitting(false)
+    }
+  }
+
+  const handleSuccessReset = () => {
+    setMethod('cash')
+    setAmountPaid('')
+    setCardRef('')
+    setSuccess(false)
+    setPrintView('receipt')
+    setPrintSequence('idle')
+    setError(null)
+    setLocalSubmitting(false)
+    if (onSuccessReset) {
+      onSuccessReset()
     }
   }
 
@@ -294,7 +313,7 @@ export default function CheckoutModal({
                   Print Receipt & KOT
                 </button>
                 <button 
-                  onClick={onSuccessReset} 
+                  onClick={handleSuccessReset} 
                   className="flex-1 btn-primary py-3.5 text-lg font-bold tracking-wide"
                 >
                   New Sale
@@ -442,7 +461,7 @@ export default function CheckoutModal({
           {/* ── Confirm button ────────────────────────────────────── */}
           <button
             onClick={handleConfirm}
-            disabled={!canSubmit || loading}
+            disabled={!canSubmit || loading || localSubmitting}
             id="confirm-payment-btn"
             className="btn-success w-full h-20 text-xl font-bold flex items-center justify-center gap-2.5 rounded-2xl"
           >
