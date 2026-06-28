@@ -39,6 +39,15 @@ export default function ReceiptPrint({
       className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto px-8 py-6 relative ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} 
       id="print-receipt"
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          html, body, div, svg {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+        }
+      `}} />
       {/* Illustrative Food Doodle Borders */}
       {/* Top Doodle Border */}
       <div 
