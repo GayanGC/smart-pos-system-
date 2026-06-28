@@ -16,10 +16,28 @@ export default function KitchenPrint({
   if (kotItems.length === 0) return null
 
   return (
-    <div className={`
-      font-mono bg-white text-black text-sm px-8 py-6 relative w-full mx-auto
-      ${isLivePreview ? 'rounded-lg shadow-xl max-w-[320px]' : 'max-w-[80mm]'}
-    `}>
+    <div 
+      id="kot-print-root"
+      className={`
+        kot-print-container font-mono bg-white text-black text-sm px-8 pt-6 pb-2 relative w-full mx-auto
+        ${isLivePreview ? 'rounded-lg shadow-xl max-w-[320px] pb-6' : 'max-w-[80mm] pb-0'}
+      `}
+    >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          @page {
+            size: auto;
+            margin: 0mm;
+          }
+          html, body, #kot-print-root, #print-kot, .kot-print-container {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            padding-bottom: 0mm !important;
+            margin-bottom: 0mm !important;
+          }
+        }
+      `}} />
       {/* Illustrative Food Doodle Borders */}
       {/* Top Doodle Border */}
       <div 
