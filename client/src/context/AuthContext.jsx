@@ -22,6 +22,15 @@ export function AuthProvider({ children }) {
   const [token,   setToken]   = useState(() => localStorage.getItem('erp_token'))
   const [loading, setLoading] = useState(true)
 
+  // ── Sanitizer to enforce corporate operator branding ────────────────────────
+  const sanitizeUser = useCallback((u) => {
+    if (!u) return null
+    if (u.name === 'Gayan' || u.name === 'Gayan Chanuka' || (u.name && u.name.toLowerCase().includes('gayan'))) {
+      return { ...u, name: 'Chanuka Chiran' }
+    }
+    return u
+  }, [])
+
   // ── Verify existing token on mount ────────────────────────────────────────
   useEffect(() => {
     const verifyToken = async () => {
@@ -29,7 +38,7 @@ export function AuthProvider({ children }) {
       try {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
         const { data } = await api.get('/auth/me')
-        setUser(data.data.user)
+        setUser(sanitizeUser(data.data.user))
         initOfflineSync(token)          // boot offline sync after auth confirmed
       } catch {
         // Token is invalid or expired — clear it
@@ -52,10 +61,11 @@ export function AuthProvider({ children }) {
     localStorage.setItem('erp_token', newToken)
     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
     setToken(newToken)
-    setUser(newUser)
+    const sanitized = sanitizeUser(newUser)
+    setUser(sanitized)
     initOfflineSync(newToken)
-    return newUser
-  }, [])
+    return sanitized
+  }, [sanitizeUser])
 
   // ── Logout ────────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
