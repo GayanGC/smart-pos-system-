@@ -39,23 +39,35 @@ export default function ReceiptPrint({
       className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto px-8 py-6 relative ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} 
       id="print-receipt"
     >
-      {/* Decorative Illustrative Zig-Zag Borders */}
+      {/* Illustrative Food Doodle Borders */}
+      {/* Top Doodle Border */}
       <div 
-        className="absolute top-0 bottom-0 left-1.5 w-2 bg-repeat-y" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='16' viewBox='0 0 8 16'%3E%3Cpath d='M8 0 L0 8 L8 16' fill='none' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E")` }} 
+        className="absolute top-1.5 left-3 right-3 h-3 bg-repeat-x opacity-80" 
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1' transform='rotate(-90 5 5)'/%3E%3Cpath d='M15 6.5c0-1.5 5-1.5 5 0h-5z M15 7.5h5 M15 8.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M27.5 5.5h4l0.4 3h-4.8z M29.5 5.5v-2.5 M28.5 3l2-0.5'/%3E%3Cpath d='M39 3h5l-2.5 4.5z'/%3E%3C/g%3E%3C/svg%3E")` }} 
       />
+      {/* Bottom Doodle Border */}
       <div 
-        className="absolute top-0 bottom-0 right-1.5 w-2 bg-repeat-y" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='16' viewBox='0 0 8 16'%3E%3Cpath d='M0 0 L8 8 L0 16' fill='none' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E")` }} 
+        className="absolute bottom-1.5 left-3 right-3 h-3 bg-repeat-x opacity-80" 
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1' transform='rotate(-90 5 5)'/%3E%3Cpath d='M15 6.5c0-1.5 5-1.5 5 0h-5z M15 7.5h5 M15 8.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M27.5 5.5h4l0.4 3h-4.8z M29.5 5.5v-2.5 M28.5 3l2-0.5'/%3E%3Cpath d='M39 3h5l-2.5 4.5z'/%3E%3C/g%3E%3C/svg%3E")` }} 
+      />
+      {/* Left Doodle Border */}
+      <div 
+        className="absolute top-3 bottom-3 left-1.5 w-3 bg-repeat-y opacity-80" 
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='48' viewBox='0 0 12 48'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1'/%3E%3Cpath d='M3 13.5c0-1.5 5-1.5 5 0h-5z M3 14.5h5 M3 15.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M3.5 23.5h4l0.4 3h-4.8z M5.5 23.5v-2.5 M4.5 21l2-0.5'/%3E%3Cpath d='M3 33h5l-2.5 4.5z'/%3E%3Cpath d='M4 42.5h3 M3.5 44.5h4 M3 42.5c0-2.5 5-2.5 5 0z'/%3E%3C/g%3E%3C/svg%3E")` }} 
+      />
+      {/* Right Doodle Border */}
+      <div 
+        className="absolute top-3 bottom-3 right-1.5 w-3 bg-repeat-y opacity-80" 
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='48' viewBox='0 0 12 48'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1'/%3E%3Cpath d='M3 13.5c0-1.5 5-1.5 5 0h-5z M3 14.5h5 M3 15.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M3.5 23.5h4l0.4 3h-4.8z M5.5 23.5v-2.5 M4.5 21l2-0.5'/%3E%3Cpath d='M3 33h5l-2.5 4.5z'/%3E%3Cpath d='M4 42.5h3 M3.5 44.5h4 M3 42.5c0-2.5 5-2.5 5 0z'/%3E%3C/g%3E%3C/svg%3E")` }} 
       />
 
       {/* ── Header ── */}
-      <div className="flex flex-col items-center text-center mb-4">
+      <div className="flex flex-col items-center text-center mb-4 mt-1">
         {/* Solid Black Logo */}
-        <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mb-2 shadow-md">
-          <span className="font-black text-3xl text-white font-sans">C</span>
+        <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mb-1.5 shadow-md flex-shrink-0">
+          <span className="font-black text-2xl text-white font-sans">C</span>
         </div>
-        <h1 className="text-2xl font-black tracking-widest mb-0.5">C CAFE</h1>
+        <h1 className="text-xl font-black tracking-widest mb-0.5">C CAFE</h1>
         <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>
         <p className="text-[10px] font-bold text-gray-700">Tel: 025 70 29 500</p>
         
