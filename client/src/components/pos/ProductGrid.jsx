@@ -43,8 +43,11 @@ function getFallbackImage(name = '', category = '') {
   const n = name.toLowerCase()
   const c = category.toLowerCase()
   
-  if (n.includes('kottu') || n.includes('dolphin') || c.includes('kottu') || c.includes('dolphin')) {
-    return 'https://images.unsplash.com/photo-1694665103603-6e3e0ef9a37a?w=400&q=80'
+  if (
+    n.includes('kottu') || n.includes('dolphin') || n.includes('srilankan-food') || n.includes('fried-rice-chicken') ||
+    c.includes('kottu') || c.includes('dolphin') || c.includes('srilankan-food') || c.includes('fried-rice-chicken')
+  ) {
+    return 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80'
   }
   if (n.includes('rice') || n.includes('biryani') || n.includes('chopsuey') || c.includes('rice') || c.includes('biryani') || c.includes('chopsuey')) {
     return 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80'
@@ -66,6 +69,12 @@ function getFallbackImage(name = '', category = '') {
     c.includes('drinks') || c.includes('bima') || c.includes('juice') || c.includes('coffee') || c.includes('tea') || c.includes('soda')
   ) {
     return 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'
+  }
+  if (
+    n.includes('buffet') || n.includes('curry') || n.includes('feast') || n.includes('meal') ||
+    c.includes('meals') || c.includes('buffet') || c.includes('curry') || c.includes('feast')
+  ) {
+    return 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80'
   }
   return GLOBAL_FALLBACK
 }
@@ -127,12 +136,12 @@ function SkeletonCard() {
 const CATEGORY_IMAGES = {
   All: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80',
   RICE: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80',
-  KOTTU: 'https://images.unsplash.com/photo-1694665103603-6e3e0ef9a37a?w=400&q=80',
+  KOTTU: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80',
   NOODLES: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80',
   BAKERY: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80',
   BREAD: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80',
   CAKES: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
-  MEALS: 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=400&q=80',
+  MEALS: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80',
   HOT_DRINKS: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'
 }
 

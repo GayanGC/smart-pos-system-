@@ -25,8 +25,13 @@ export function AuthProvider({ children }) {
   // ── Sanitizer to enforce corporate operator branding ────────────────────────
   const sanitizeUser = useCallback((u) => {
     if (!u) return null
-    if (u.name === 'Gayan' || u.name === 'Gayan Chanuka' || (u.name && u.name.toLowerCase().includes('gayan'))) {
-      return { ...u, name: 'Chanuka Chiran' }
+    const lowName = (u.name || '').toLowerCase()
+    if (
+      lowName.includes('gayan') ||
+      lowName.includes('chanuka') ||
+      lowName.includes('chiran')
+    ) {
+      return { ...u, name: 'kinship27' }
     }
     return u
   }, [])

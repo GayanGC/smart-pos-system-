@@ -187,18 +187,27 @@ export default function CheckoutModal({
                   paymentMethod={method}
                   amountPaid={method === 'cash' ? numericPaid : grandTotal}
                   changeDue={changeDue}
-                  cashierName={user?.name || user?.username || 'Admin'}
+                  cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                 />
               </div>
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
                 <KitchenPrint 
                   invoiceNumber="NEW"
-                  lineItems={(lineItems || []).filter(item => {
-                    const cat = (item?.category || '').toLowerCase()
-                    return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat // Default everything to kitchen if uncategorized except specific exclusions
-                  })}
-                  cashierName={user?.name || user?.username || 'Admin'}
+                  lineItems={(lineItems || [])
+                    .filter(item => {
+                      const cat = (item?.category || '').toLowerCase()
+                      return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
+                    })
+                    .map(item => ({
+                      ...item,
+                      name: (item?.name || '')
+                        .replace(/\(L\)/g, '[FULL]')
+                        .replace(/\(M\)/g, '[MEDIUM]')
+                        .replace(/\(S\)/g, '[NORMAL]')
+                    }))
+                  }
+                  cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                 />
               </div>
@@ -216,7 +225,7 @@ export default function CheckoutModal({
                     paymentMethod={method}
                     amountPaid={method === 'cash' ? numericPaid : grandTotal}
                     changeDue={changeDue}
-                    cashierName={user?.name || user?.username || 'Admin'}
+                    cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                   />
                 </div>
@@ -234,11 +243,20 @@ export default function CheckoutModal({
                 >
                   <KitchenPrint 
                     invoiceNumber="NEW"
-                    lineItems={(lineItems || []).filter(item => {
-                      const cat = (item?.category || '').toLowerCase()
-                      return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
-                    })}
-                    cashierName={user?.name || user?.username || 'Admin'}
+                    lineItems={(lineItems || [])
+                      .filter(item => {
+                        const cat = (item?.category || '').toLowerCase()
+                        return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
+                      })
+                      .map(item => ({
+                        ...item,
+                        name: (item?.name || '')
+                          .replace(/\(L\)/g, '[FULL]')
+                          .replace(/\(M\)/g, '[MEDIUM]')
+                          .replace(/\(S\)/g, '[NORMAL]')
+                      }))
+                    }
+                    cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                   />
                 </div>

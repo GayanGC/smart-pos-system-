@@ -148,7 +148,7 @@ export default function ReceiptPrint({
         <div className="border-b border-dashed border-gray-300 w-full my-3"></div>
         
         <p className="text-[9px] font-bold text-gray-700 uppercase tracking-tight leading-normal">
-          POS System Developed by: CHANUKA CHIRAN 078-7327640
+          POS System Developed by: kinship27
         </p>
 
         {/* Bottom Right AI Manager Logo */}
