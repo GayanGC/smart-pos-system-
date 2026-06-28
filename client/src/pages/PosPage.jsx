@@ -186,6 +186,7 @@ export default function PosPage() {
   const { 
     openingFloat, 
     totalCashSalesToday, 
+    totalCreditSalesToday,
     totalCashInToday,
     totalCashOutToday,
     showFloatModal, 
@@ -262,7 +263,7 @@ export default function PosPage() {
   const handleClear         = useCallback(()          => dispatch({ type: 'CLEAR' }),                                [])
 
   // ── Checkout ───────────────────────────────────────────────────────────
-  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber }) => {
+  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName }) => {
     setCheckoutLoading(true)
     try {
       const lineItems = cart.items.map((item) => {
@@ -293,6 +294,7 @@ export default function PosPage() {
         paymentMethod,
         amountPaid,
         referenceNumber,
+        customerName: customerName || undefined,
         promoDiscount: cart.promoDiscount,
         offlineRef: uuidv4(), // always generated; used by /sync if later needed
       }
@@ -404,8 +406,12 @@ export default function PosPage() {
                         <span className="text-slate-500 font-medium">Cash Sales (Today):</span>
                         <span className="font-bold text-emerald-400 font-black">Rs. {totalCashSalesToday.toFixed(2)}</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 font-medium">Credit Sales (ණය):</span>
+                        <span className="font-bold text-violet-400 font-black">Rs. {totalCreditSalesToday.toFixed(2)}</span>
+                      </div>
                       <div className="border-t border-slate-800 pt-2 flex justify-between font-bold text-slate-100">
-                        <span>Total Expected:</span>
+                        <span>Total Expected Cash:</span>
                         <span className="text-emerald-300 font-black">Rs. {(openingFloat + totalCashSalesToday).toFixed(2)}</span>
                       </div>
                       

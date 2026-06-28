@@ -41,6 +41,15 @@ const METHODS = [
       </svg>
     ),
   },
+  {
+    id: 'credit',
+    label: 'CREDIT (ණය)',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    ),
+  },
 ]
 
 const fmt = (n) =>
@@ -70,7 +79,12 @@ export default function CheckoutModal({
   const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
-  const { addCashSale, recordBakerySales } = usePos()
+  const { addCashSale, addCreditSale, recordBakerySales } = usePos()
+
+  // Credit Customer states
+  const [customerSearch, setCustomerSearch] = useState('Regular Customer')
+  const [selectedCustomer, setSelectedCustomer] = useState('Regular Customer')
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
@@ -86,6 +100,9 @@ export default function CheckoutModal({
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
+      setCustomerSearch('Regular Customer')
+      setSelectedCustomer('Regular Customer')
+      setDropdownOpen(false)
       
       const today = new Date();
       const datePart = today.getFullYear().toString() + 
@@ -134,10 +151,10 @@ export default function CheckoutModal({
   }, [success])
 
   const numericPaid = parseFloat(amountPaid) || 0
-  const changeDue   = Math.max(0, numericPaid - grandTotal)
+  const changeDue   = method === 'credit' ? 0 : Math.max(0, numericPaid - grandTotal)
   const canSubmit   = method === 'cash'
     ? numericPaid >= grandTotal
-    : true
+    : (method === 'credit' ? !!selectedCustomer.trim() : true)
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
@@ -146,11 +163,14 @@ export default function CheckoutModal({
     try {
       await onConfirm({
         paymentMethod: method,
-        amountPaid:    method === 'cash' ? numericPaid : grandTotal,
+        amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal),
         referenceNumber: method === 'card' ? cardRef : undefined,
+        customerName:  method === 'credit' ? selectedCustomer : undefined,
       })
       if (method === 'cash') {
         addCashSale(grandTotal)
+      } else if (method === 'credit') {
+        addCreditSale(grandTotal)
       }
       recordBakerySales(lineItems)
       setSuccess(true)
@@ -170,6 +190,9 @@ export default function CheckoutModal({
     setPrintSequence('idle')
     setError(null)
     setLocalSubmitting(false)
+    setCustomerSearch('Regular Customer')
+    setSelectedCustomer('Regular Customer')
+    setDropdownOpen(false)
     if (onSuccessReset) {
       onSuccessReset()
     }
@@ -221,12 +244,13 @@ export default function CheckoutModal({
                   subTotal={subTotal}
                   totalDiscount={totalDiscount}
                   paymentMethod={method}
-                  amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                  amountPaid={method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal)}
                   changeDue={changeDue}
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                   invoiceId={invoiceId}
                   orderNo={orderNo}
+                  customerName={selectedCustomer}
                 />
               </div>
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
@@ -261,12 +285,13 @@ export default function CheckoutModal({
                     subTotal={subTotal}
                     totalDiscount={totalDiscount}
                     paymentMethod={method}
-                    amountPaid={method === 'cash' ? numericPaid : grandTotal}
+                    amountPaid={method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal)}
                     changeDue={changeDue}
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                     invoiceId={invoiceId}
                     orderNo={orderNo}
+                    customerName={selectedCustomer}
                   />
                 </div>
               )}
@@ -352,14 +377,14 @@ export default function CheckoutModal({
           {/* ── Payment method selector ───────────────────────────── */}
           <div>
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Payment Method</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {METHODS.map((m) => (
                 <button
                   key={m.id}
                   onClick={() => setMethod(m.id)}
                   id={`pay-method-${m.id}`}
                   className={`
-                    flex flex-col items-center gap-1.5 py-3 rounded-xl border font-medium text-sm
+                    flex flex-col items-center gap-1.5 py-3 rounded-xl border font-medium text-xs
                     transition-all duration-150
                     ${method === m.id
                       ? 'bg-violet-600/20 border-violet-500/60 text-violet-300 shadow-md shadow-violet-900/20'
@@ -372,6 +397,52 @@ export default function CheckoutModal({
               ))}
             </div>
           </div>
+
+          {/* ── Credit inputs ─────────────────────────────────────── */}
+          {method === 'credit' && (
+            <div className="space-y-3 animate-fade-up">
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">CREDIT CUSTOMER LEDGER (ණය පොත)</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={customerSearch}
+                    onChange={(e) => {
+                      setCustomerSearch(e.target.value)
+                      setSelectedCustomer(e.target.value) // allows custom/new names too
+                      setDropdownOpen(true)
+                    }}
+                    onFocus={() => setDropdownOpen(true)}
+                    placeholder="Search or type customer name..."
+                    className="input-field text-left font-bold text-slate-250 focus:outline-none focus:border-violet-500"
+                  />
+                  {dropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+                      <div className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-20">
+                        {['Regular Customer', 'Staff Ledger', 'Suresh (Book #12)', 'Kamal (Book #04)', 'Ajith Perera', 'Nimal Silva']
+                          .filter(c => c.toLowerCase().includes(customerSearch.toLowerCase()))
+                          .map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCustomer(c)
+                                setCustomerSearch(c)
+                                setDropdownOpen(false)
+                              }}
+                              className="w-full text-left px-4 py-2 text-xs text-slate-300 hover:bg-violet-600 hover:text-white transition-colors border-b border-slate-800/40 last:border-0"
+                            >
+                              {c}
+                            </button>
+                          ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ── Cash inputs ───────────────────────────────────────── */}
           {method === 'cash' && (

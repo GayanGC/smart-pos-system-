@@ -14,6 +14,7 @@ export function PosProvider({ children }) {
   const { user } = useAuth()
   const [openingFloat, setOpeningFloat] = useState(0)
   const [totalCashSalesToday, setTotalCashSalesToday] = useState(0)
+  const [totalCreditSalesToday, setTotalCreditSalesToday] = useState(0)
   const [totalCashInToday, setTotalCashInToday] = useState(0)
   const [totalCashOutToday, setTotalCashOutToday] = useState(0)
   const [showFloatModal, setShowFloatModal] = useState(false)
@@ -56,6 +57,7 @@ export function PosProvider({ children }) {
       const data = res.data.data
       setOpeningFloat(data.startingCash || 0)
       setTotalCashSalesToday(data.cashSalesTotal || 0)
+      setTotalCreditSalesToday(data.creditSalesTotal || 0)
 
       let cashIn = Number(data.customerDebtCollections || 0)
       let cashOut = Number(data.totalPayouts || 0) + Number(data.supplierDebtPayments || 0)
@@ -123,6 +125,10 @@ export function PosProvider({ children }) {
     setTotalCashSalesToday(prev => prev + Number(amount || 0))
   }
 
+  const addCreditSale = (amount) => {
+    setTotalCreditSalesToday(prev => prev + Number(amount || 0))
+  }
+
   const recordBakerySales = (soldItems) => {
     setBakeryTracking(prev => {
       const itemsArr = Array.isArray(soldItems) ? soldItems : []
@@ -145,6 +151,8 @@ export function PosProvider({ children }) {
       setOpeningFloat,
       totalCashSalesToday,
       setTotalCashSalesToday,
+      totalCreditSalesToday,
+      setTotalCreditSalesToday,
       totalCashInToday,
       totalCashOutToday,
       showFloatModal,
@@ -152,6 +160,7 @@ export function PosProvider({ children }) {
       isLoading,
       fetchCashSummary,
       addCashSale,
+      addCreditSale,
       bakeryProducts,
       bakeryTracking,
       recordOpeningFloatAndBakery,

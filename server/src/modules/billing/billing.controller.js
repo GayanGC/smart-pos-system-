@@ -774,6 +774,22 @@ const getCashSummary = asyncHandler(async (req, res) => {
   ]);
   const cashSalesTotal = cashInvoices.length > 0 ? cashInvoices[0].total : 0;
 
+  // 1b. Get credit sales total from non-voided invoices today
+  const creditFilter = { 
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+    paymentMethod: 'credit',
+    isVoided: false
+  };
+  if (cashierId) {
+    const mongoose = require('mongoose');
+    creditFilter.cashierId = new mongoose.Types.ObjectId(cashierId);
+  }
+  const creditInvoices = await Invoice.aggregate([
+    { $match: creditFilter },
+    { $group: { _id: null, total: { $sum: '$grandTotal' } } }
+  ]);
+  const creditSalesTotal = creditInvoices.length > 0 ? creditInvoices[0].total : 0;
+
   // 2. Get petty cash payouts and starting cash
   const transactions = await CashTransaction.find(filter).sort({ createdAt: -1 });
   let startingCash = 0;
@@ -795,6 +811,7 @@ const getCashSummary = asyncHandler(async (req, res) => {
     data: {
       startingCash,
       cashSalesTotal,
+      creditSalesTotal,
       totalPayouts,
       customerDebtCollections,
       supplierDebtPayments,

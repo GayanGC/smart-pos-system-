@@ -14,6 +14,7 @@ export default function ReceiptPrint({
   isLivePreview = false,
   invoiceId,
   orderNo: propOrderNo,
+  customerName,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -155,8 +156,16 @@ export default function ReceiptPrint({
       <div className="border-t-2 border-dashed border-gray-400 pt-3 mb-6 space-y-1.5 text-[11px]">
         <div className="flex justify-between font-bold">
           <span>Payment Mode:</span>
-          <span className="uppercase font-black">{paymentMethod === 'mobile_pay' ? 'QR PAY' : paymentMethod}</span>
+          <span className="uppercase font-black">
+            {paymentMethod === 'mobile_pay' ? 'QR PAY' : (paymentMethod === 'credit' ? 'CREDIT (ණය)' : paymentMethod)}
+          </span>
         </div>
+        {paymentMethod === 'credit' && customerName && (
+          <div className="flex justify-between font-bold text-gray-700">
+            <span>Customer:</span>
+            <span className="uppercase">{customerName}</span>
+          </div>
+        )}
         {paymentMethod === 'cash' && (
           <>
             <div className="flex justify-between">
