@@ -9,7 +9,7 @@
  * - Out-of-stock dimming
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import api from '../../api/axios'
 
 /* ── Product Card ─────────────────────────────────────────────────────── */
@@ -79,7 +79,7 @@ function getFallbackImage(name = '', category = '') {
   return GLOBAL_FALLBACK
 }
 
-function ProductCard({ product, onAdd }) {
+const ProductCard = memo(function ProductCard({ product, onAdd }) {
   const isOutOfStock = (product?.quantityInStock || 0) <= 0
   const isLowStock   = !isOutOfStock && (product?.quantityInStock || 0) <= (product?.lowStockThreshold || 0)
   const nameCode = product?.name ? product.name.charCodeAt(0) : 0
@@ -121,7 +121,7 @@ function ProductCard({ product, onAdd }) {
       </p>
     </button>
   )
-}
+})
 
 /* ── Skeleton card ────────────────────────────────────────────────────── */
 function SkeletonCard() {
@@ -188,6 +188,7 @@ export default function ProductGrid({ onAddToCart }) {
   const [categories,     setCategories]     = useState(POS_CATEGORIES)
   const [activeCategory, setActiveCategory] = useState('All')
   const [search,         setSearch]         = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [loading,        setLoading]        = useState(true)
   const [error,          setError]          = useState(null)
   const searchRef = useRef(null)
@@ -257,7 +258,16 @@ export default function ProductGrid({ onAddToCart }) {
     }
   }, [])
 
-  useEffect(() => { fetchProducts(search, activeCategory) }, [search, activeCategory])
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 200)
+    return () => clearTimeout(handler)
+  }, [search])
+
+  useEffect(() => {
+    fetchProducts(debouncedSearch, activeCategory)
+  }, [debouncedSearch, activeCategory, fetchProducts])
 
   // Handle barcode / SKU scan: lookup exact match, add to cart immediately
   const handleSearchKeyDown = async (e) => {
