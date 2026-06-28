@@ -14,6 +14,8 @@ export function PosProvider({ children }) {
   const { user } = useAuth()
   const [openingFloat, setOpeningFloat] = useState(0)
   const [totalCashSalesToday, setTotalCashSalesToday] = useState(0)
+  const [totalCashInToday, setTotalCashInToday] = useState(0)
+  const [totalCashOutToday, setTotalCashOutToday] = useState(0)
   const [showFloatModal, setShowFloatModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [bakeryProducts, setBakeryProducts] = useState([])
@@ -54,6 +56,21 @@ export function PosProvider({ children }) {
       const data = res.data.data
       setOpeningFloat(data.startingCash || 0)
       setTotalCashSalesToday(data.cashSalesTotal || 0)
+
+      let cashIn = Number(data.customerDebtCollections || 0)
+      let cashOut = Number(data.totalPayouts || 0) + Number(data.supplierDebtPayments || 0)
+      
+      // Look up any generic payins in transactions
+      if (data.transactions) {
+        data.transactions.forEach(t => {
+          if (t.type === 'payin') {
+            cashIn += Number(t.amount || 0)
+          }
+        })
+      }
+      
+      setTotalCashInToday(cashIn)
+      setTotalCashOutToday(cashOut)
 
       // Check if starting_drawer transaction exists
       const hasStartingDrawer = data.transactions && data.transactions.some(tx => tx.type === 'starting_drawer')
@@ -128,6 +145,8 @@ export function PosProvider({ children }) {
       setOpeningFloat,
       totalCashSalesToday,
       setTotalCashSalesToday,
+      totalCashInToday,
+      totalCashOutToday,
       showFloatModal,
       setShowFloatModal,
       isLoading,

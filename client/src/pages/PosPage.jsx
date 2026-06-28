@@ -186,10 +186,13 @@ export default function PosPage() {
   const { 
     openingFloat, 
     totalCashSalesToday, 
+    totalCashInToday,
+    totalCashOutToday,
     showFloatModal, 
     recordOpeningFloatAndBakery,
     bakeryProducts,
-    bakeryTracking
+    bakeryTracking,
+    fetchCashSummary
   } = usePos()
 
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
@@ -204,6 +207,27 @@ export default function PosPage() {
   const [floatSubmitLoading, setFloatSubmitLoading] = useState(false)
   const [floatSubmitError, setFloatSubmitError] = useState(null)
   const [initBakeryQtys, setInitBakeryQtys] = useState({})
+
+  // Live running clock
+  const [liveTime, setLiveTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const liveTimeStr = liveTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + 
+                      ' — ' + 
+                      liveTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })
+
+  // Micro flow ledger states
+  const [microFlowType, setMicroFlowType] = useState(null) // 'payin' or 'payout'
+  const [microAmount, setMicroAmount] = useState('')
+  const [microReason, setMicroReason] = useState('')
+  const [microSubmitting, setMicroSubmitting] = useState(false)
+  const [microError, setMicroError] = useState(null)
 
   // Track network status
   useEffect(() => {
@@ -298,17 +322,49 @@ export default function PosPage() {
       <div className="flex-1 min-w-0 flex flex-col overflow-hidden p-5 gap-4">
 
         {/* Page header */}
-        <div className="flex items-center justify-between flex-shrink-0">
-          <div>
+        <div className="flex items-center justify-between flex-shrink-0 relative py-1 border-b border-slate-800/40 pb-3">
+          {/* Left: greeting with Live Clock */}
+          <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold text-slate-100">POS Terminal</h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5 font-mono">
               Hi, {(() => {
                 const name = user?.name || user?.username || 'kinship27';
                 return (name.toLowerCase().includes('gayan') || name.toLowerCase().includes('chanuka') || name.toLowerCase().includes('chiran')) ? 'kinship27' : name.split(' ')[0];
-              })()} — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              })()} — {liveTimeStr}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          
+          {/* Center: Live Drawer Cash Widget */}
+          <div className="hidden lg:flex flex-1 justify-center items-center">
+            <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800/80 px-3.5 py-1.5 rounded-full shadow-lg">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1" />
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Drawer Cash:</span>
+              <span className="text-xs font-black text-emerald-400 tabular-nums">
+                Rs. {(openingFloat + totalCashSalesToday + totalCashInToday - totalCashOutToday).toFixed(2)}
+              </span>
+              
+              {/* Micro-actions */}
+              <div className="flex items-center gap-1 ml-2.5 border-l border-slate-800 pl-2">
+                <button
+                  onClick={() => setMicroFlowType('payin')}
+                  title="Cash In (Deposit)"
+                  className="w-5 h-5 flex items-center justify-center bg-emerald-500/10 text-emerald-450 hover:bg-emerald-500 hover:text-white rounded transition-all text-xs font-bold active:scale-90"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => setMicroFlowType('payout')}
+                  title="Cash Out (Expense)"
+                  className="w-5 h-5 flex items-center justify-center bg-rose-500/10 text-rose-450 hover:bg-rose-500 hover:text-white rounded transition-all text-xs font-bold active:scale-90"
+                >
+                  -
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Right: Actions */}
+          <div className="flex-1 flex items-center justify-end gap-2">
             <div className="relative">
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -548,6 +604,88 @@ export default function PosPage() {
               >
                 {floatSubmitLoading ? 'Saving...' : 'Start Shift'}
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Dynamic Impromptu Petty Cash Modal Ledger */}
+      {microFlowType && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm" onClick={() => setMicroFlowType(null)} />
+          <div className="relative bg-slate-900 border border-slate-750 w-full max-w-sm p-5 rounded-2xl shadow-2xl animate-scale-in z-10">
+            <h3 className="text-sm font-bold text-slate-100 mb-3 uppercase tracking-wider flex items-center gap-2">
+              <span className={`w-2.5 h-2.5 rounded-full ${microFlowType === 'payin' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+              Record Cash {microFlowType === 'payin' ? 'In (Pay-in)' : 'Out (Payout)'}
+            </h3>
+            
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!microAmount || !microReason) return;
+              setMicroSubmitting(true);
+              setMicroError(null);
+              try {
+                await api.post('/billing/cash', {
+                  amount: Number(microAmount),
+                  reason: microReason,
+                  type: microFlowType
+                });
+                await fetchCashSummary(); // Refresh the context values automatically
+                setMicroAmount('');
+                setMicroReason('');
+                setMicroFlowType(null);
+              } catch (err) {
+                setMicroError(err.response?.data?.message || 'Failed to record transaction.');
+              } finally {
+                setMicroSubmitting(false);
+              }
+            }}>
+              <div className="space-y-3 mb-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Amount (Rs.)</label>
+                  <input
+                    type="number"
+                    required
+                    min="0.01"
+                    step="0.01"
+                    value={microAmount}
+                    onChange={(e) => setMicroAmount(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm font-bold text-slate-200 focus:outline-none focus:border-violet-500"
+                    placeholder="0.00"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Reason / Description</label>
+                  <input
+                    type="text"
+                    required
+                    value={microReason}
+                    onChange={(e) => setMicroReason(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-violet-500"
+                    placeholder={microFlowType === 'payin' ? 'e.g. Added extra loose coins' : 'e.g. Bought raw ingredients'}
+                  />
+                </div>
+              </div>
+
+              {microError && <p className="text-xs text-rose-400 mb-3">{microError}</p>}
+
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setMicroFlowType(null)}
+                  disabled={microSubmitting}
+                  className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-350 font-bold rounded-xl text-xs transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={microSubmitting || !microAmount || !microReason}
+                  className={`flex-1 py-2 text-white font-bold rounded-xl text-xs transition-colors shadow-lg ${microFlowType === 'payin' ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950/20' : 'bg-rose-600 hover:bg-rose-500 shadow-rose-950/20'}`}
+                >
+                  {microSubmitting ? 'Logging...' : 'Confirm'}
+                </button>
+              </div>
             </form>
           </div>
         </div>
