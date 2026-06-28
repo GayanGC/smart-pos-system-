@@ -285,7 +285,10 @@ export default function PosPage() {
           <div>
             <h1 className="text-xl font-bold text-slate-100">POS Terminal</h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Hi, {(user?.name || user?.username || 'kinship27').split(' ')[0]} — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              Hi, {(() => {
+                const name = user?.name || user?.username || 'kinship27';
+                return (name.toLowerCase().includes('gayan') || name.toLowerCase().includes('chanuka') || name.toLowerCase().includes('chiran')) ? 'kinship27' : name.split(' ')[0];
+              })()} — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
           <div className="flex items-center gap-2">

@@ -186,10 +186,12 @@ export default function Sidebar({ collapsed, onToggle }) {
         {!collapsed && user && (
           <div className="flex items-center gap-3 px-2 py-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              A
+              {((user?.name || 'kinship27')[0] || 'K').toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-slate-200 truncate">AI Manager</p>
+              <p className="text-xs font-semibold text-slate-200 truncate">
+                {user?.name && !(user.name.toLowerCase().includes('gayan') || user.name.toLowerCase().includes('chanuka') || user.name.toLowerCase().includes('chiran')) ? user.name : 'kinship27'}
+              </p>
               <p className="text-[10px] text-slate-500 capitalize truncate">{user.role?.replace('_', ' ')}</p>
             </div>
           </div>

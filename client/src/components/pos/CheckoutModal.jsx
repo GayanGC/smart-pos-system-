@@ -64,6 +64,8 @@ export default function CheckoutModal({
   const [printView,   setPrintView]   = useState('receipt') // 'receipt' or 'kot'
   const [printSequence, setPrintSequence] = useState('idle') // 'idle' | 'receipt' | 'kot'
   const [error,       setError]       = useState(null)
+  const [invoiceId,   setInvoiceId]   = useState('')
+  const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
 
@@ -81,6 +83,15 @@ export default function CheckoutModal({
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
+      
+      const today = new Date();
+      const datePart = today.getFullYear().toString() + 
+                       (today.getMonth() + 1).toString().padStart(2, '0') + 
+                       today.getDate().toString().padStart(2, '0');
+      const randPart = Math.floor(1000 + Math.random() * 9000);
+      setInvoiceId(`REC-${datePart}-${randPart}`);
+      setOrderNo(Math.floor(100 + Math.random() * 900).toString());
+
       selectTimerRef.current = setTimeout(() => amountRef.current?.select(), 50)
     }
     return () => {
@@ -189,11 +200,13 @@ export default function CheckoutModal({
                   changeDue={changeDue}
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
+                  invoiceId={invoiceId}
+                  orderNo={orderNo}
                 />
               </div>
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
                 <KitchenPrint 
-                  invoiceNumber="NEW"
+                  invoiceNumber={orderNo}
                   lineItems={(lineItems || [])
                     .filter(item => {
                       const cat = (item?.category || '').toLowerCase()
@@ -227,6 +240,8 @@ export default function CheckoutModal({
                     changeDue={changeDue}
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
+                    invoiceId={invoiceId}
+                    orderNo={orderNo}
                   />
                 </div>
               )}
@@ -242,7 +257,7 @@ export default function CheckoutModal({
                   }}
                 >
                   <KitchenPrint 
-                    invoiceNumber="NEW"
+                    invoiceNumber={orderNo}
                     lineItems={(lineItems || [])
                       .filter(item => {
                         const cat = (item?.category || '').toLowerCase()

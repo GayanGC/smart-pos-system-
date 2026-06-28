@@ -10,8 +10,10 @@ export default function ReceiptPrint({
   paymentMethod,
   amountPaid,
   changeDue,
-  cashierName = 'Admin',
+  cashierName = 'kinship27',
   isLivePreview = false,
+  invoiceId,
+  orderNo: propOrderNo,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -25,9 +27,12 @@ export default function ReceiptPrint({
     return `REC-${datePart}-${randPart}`;
   }, []);
 
-  const orderNo = React.useMemo(() => {
+  const orderNoGenerated = React.useMemo(() => {
     return Math.floor(100 + Math.random() * 900);
   }, []);
+
+  const finalInvoiceId = invoiceId || receiptNo;
+  const finalOrderNo = propOrderNo || orderNoGenerated;
 
   return (
     <div 
@@ -54,16 +59,21 @@ export default function ReceiptPrint({
         <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>
         <p className="text-[10px] font-bold text-gray-700">Tel: 025 70 29 500</p>
         
+        {/* Bold Order ID at top header */}
+        <div className="text-sm font-black tracking-wider uppercase mt-2 px-3 py-1 bg-black text-white rounded">
+          ORDER NO: #{finalOrderNo}
+        </div>
+        
         {/* Metadata Details with Clean Dividers */}
         <div className="border-b-2 border-dashed border-gray-400 w-full my-3"></div>
         <div className="flex flex-col gap-1 text-[11px] text-left w-full">
           <div className="flex justify-between">
             <span className="text-gray-650 font-bold">RECEIPT NO:</span>
-            <span className="font-extrabold">{receiptNo}</span>
+            <span className="font-extrabold">{finalInvoiceId}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-650 font-bold">ORDER NO:</span>
-            <span className="font-extrabold">#{orderNo}</span>
+            <span className="font-extrabold">#{finalOrderNo}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-650 font-bold">DATE & TIME:</span>

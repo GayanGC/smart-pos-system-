@@ -21,9 +21,12 @@ export default function KitchenPrint({
       ${isLivePreview ? 'rounded-lg shadow-xl max-w-[320px]' : 'max-w-[80mm]'}
     `}>
       {/* ── KOT Header ────────────────────────────────────────────── */}
-      <div className="text-center mb-4 border-b-2 border-black pb-2">
+      <div className="text-center mb-4 border-b-2 border-black pb-2 flex flex-col items-center">
         <h2 className="text-xl font-black uppercase tracking-widest">KOT</h2>
-        <p className="text-xs font-bold uppercase tracking-wider mt-1">Kitchen Order Ticket</p>
+        <p className="text-xs font-bold uppercase tracking-wider mt-0.5">Kitchen Order Ticket</p>
+        <div className="text-base font-black tracking-wider uppercase mt-2 px-4 py-1.5 bg-black text-white rounded">
+          ORDER NO: #{invoiceNumber || 'NEW'}
+        </div>
       </div>
 
       {/* ── Meta ────────────────────────────────────────────────── */}
