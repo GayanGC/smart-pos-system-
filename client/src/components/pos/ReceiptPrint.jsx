@@ -97,8 +97,8 @@ export default function ReceiptPrint({
           <img 
             src="/logo.png" 
             alt="C Cafe Logo"
-            width="48px"
-            height="48px"
+            width="64px"
+            height="64px"
             className="mx-auto block mb-1 rounded-full object-cover flex-shrink-0 shadow-md print:contrast-125 print:brightness-95"
             style={{ imageRendering: 'pixelated' }}
           />
@@ -238,6 +238,9 @@ export default function ReceiptPrint({
           
           <p className="text-[8px] font-bold text-gray-750 uppercase tracking-tight leading-normal">
             POS System Developed by: kinship27
+          </p>
+          <p className="text-[8px] font-bold text-gray-750 tracking-tight leading-normal mt-0.5">
+            Tel: 0760126663
           </p>
 
           {/* Bottom Right AI Manager Logo */}
