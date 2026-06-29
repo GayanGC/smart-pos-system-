@@ -40,7 +40,7 @@ export default function ReceiptPrint({
 
   return (
     <div 
-      className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto px-8 py-6 relative ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} 
+      className={`print:block font-mono text-black bg-white w-[80mm] max-w-full mx-auto px-4 py-2 relative ${isLivePreview ? 'block rounded-xl shadow-2xl' : 'hidden'}`} 
       id="print-receipt"
     >
       <style dangerouslySetInnerHTML={{ __html: `
@@ -92,28 +92,28 @@ export default function ReceiptPrint({
 
       <div className="relative z-10 flex flex-col h-full">
         {/* ── Header ── */}
-        <div className="flex flex-col items-center text-center mb-4 mt-1">
+        <div className="flex flex-col items-center text-center mb-1 mt-0.5">
           {/* Brand Logo */}
           <img 
             src="/logo.png" 
             alt="C Cafe Logo"
-            width="64px"
-            height="64px"
-            className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md print:contrast-125 print:brightness-95"
+            width="48px"
+            height="48px"
+            className="mx-auto block mb-1 rounded-full object-cover flex-shrink-0 shadow-md print:contrast-125 print:brightness-95"
             style={{ imageRendering: 'pixelated' }}
           />
-          <h1 className="text-xl font-black tracking-widest mb-0.5">C CAFE</h1>
+          <h1 className="text-lg font-black tracking-widest mb-0.5">C CAFE</h1>
           <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>
           <p className="text-[10px] font-bold text-gray-700">Tel: 025 70 29 500</p>
           
           {/* Bold Order ID at top header */}
-          <div className="text-sm font-black tracking-wider uppercase mt-2 px-3 py-1 bg-black text-white rounded">
+          <div className="text-xs font-black tracking-wider uppercase mt-1 px-2 py-0.5 bg-black text-white rounded">
             ORDER NO: #{finalOrderNo}
           </div>
           
           {/* Metadata Details with Clean Dividers */}
-          <div className="border-b-2 border-dashed border-gray-400 w-full my-3"></div>
-          <div className="flex flex-col gap-1 text-[11px] text-left w-full">
+          <div className="border-b-2 border-dashed border-gray-400 w-full my-1"></div>
+          <div className="flex flex-col gap-0.5 text-[10px] text-left w-full">
             <div className="flex justify-between">
               <span className="text-gray-650 font-bold">RECEIPT NO:</span>
               <span className="font-extrabold">{finalInvoiceId}</span>
@@ -131,36 +131,36 @@ export default function ReceiptPrint({
               <span>{cashierName}</span>
             </div>
           </div>
-          <div className="border-b-2 border-dashed border-gray-400 w-full my-3"></div>
+          <div className="border-b-2 border-dashed border-gray-400 w-full my-1"></div>
         </div>
 
         {/* ── Item Table ── */}
-        <table className="w-full text-[11px] mb-4">
+        <table className="w-full text-[10px] mb-1">
           <thead>
-            <tr className="border-b-2 border-black">
-              <th className="text-left py-1 w-1/2 font-bold">Item</th>
-              <th className="text-center py-1 w-1/6 font-bold">Qty</th>
-              <th className="text-right py-1 w-1/3 font-bold">Amount</th>
+            <tr className="border-b border-black">
+              <th className="text-left py-0.5 w-1/2 font-bold">Item</th>
+              <th className="text-center py-0.5 w-1/6 font-bold">Qty</th>
+              <th className="text-right py-0.5 w-1/3 font-bold">Amount</th>
             </tr>
           </thead>
           <tbody>
             {(lineItems || []).map((item, i) => (
-              <tr key={i} className="border-b border-gray-200 last:border-0">
-                <td className="py-2.5 pr-2 font-medium">
+              <tr key={i} className="border-b border-gray-100 last:border-0">
+                <td className="py-1 pr-2 font-medium">
                   {item?.name || 'Unknown Item'}
                   {(item?.discount > 0 || item?.flatDiscount > 0) && (
-                    <div className="text-[9px] text-gray-500 italic">Discounted</div>
+                    <div className="text-[8px] text-gray-500 italic leading-none">Discounted</div>
                   )}
                 </td>
-                <td className="py-2.5 text-center align-top">{item?.quantity || 1}</td>
-                <td className="py-2.5 text-right align-top">Rs. {fmt(item?.lineTotal || ((item?.unitPrice || 0) * (item?.quantity || 1)))}</td>
+                <td className="py-1 text-center align-top">{item?.quantity || 1}</td>
+                <td className="py-1 text-right align-top">Rs. {fmt(item?.lineTotal || ((item?.unitPrice || 0) * (item?.quantity || 1)))}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         {/* ── Summary ── */}
-        <div className="border-t-2 border-dashed border-gray-400 pt-3 mb-4 space-y-1.5 text-[11px]">
+        <div className="border-t border-dashed border-gray-450 pt-1 mb-1 space-y-0.5 text-[10px]">
           <div className="flex justify-between font-bold">
             <span>Subtotal:</span>
             <span>Rs. {fmt(subTotal)}</span>
@@ -171,14 +171,14 @@ export default function ReceiptPrint({
               <span>- Rs. {fmt(totalDiscount)}</span>
             </div>
           )}
-          <div className="flex justify-between font-black text-sm mt-1 pt-1.5 border-t-2 border-black">
+          <div className="flex justify-between font-black text-xs mt-0.5 pt-0.5 border-t border-black">
             <span>GRAND TOTAL:</span>
             <span>Rs. {fmt(grandTotal)}</span>
           </div>
         </div>
 
         {/* ── Payment Details ── */}
-        <div className="border-t-2 border-dashed border-gray-400 pt-3 mb-6 space-y-1.5 text-[11px]">
+        <div className="border-t border-dashed border-gray-450 pt-1 mb-1 space-y-0.5 text-[10px]">
           <div className="flex justify-between font-bold">
             <span>Payment Mode:</span>
             <span className="uppercase font-black">
@@ -230,27 +230,27 @@ export default function ReceiptPrint({
         </div>
 
         {/* ── Footer ── */}
-        <div className="text-center mt-6 flex flex-col items-center">
-          <p className="font-bold text-xs">Thank You for Dining with Us!</p>
-          <p className="italic text-[10px] mt-0.5">Please Come Again</p>
+        <div className="text-center mt-2 flex flex-col items-center">
+          <p className="font-bold text-[10px]">Thank You for Dining with Us!</p>
+          <p className="italic text-[9px] mt-0.5">Please Come Again</p>
           
-          <div className="border-b border-dashed border-gray-300 w-full my-3"></div>
+          <div className="border-b border-dashed border-gray-300 w-full my-1"></div>
           
-          <p className="text-[9px] font-bold text-gray-700 uppercase tracking-tight leading-normal">
+          <p className="text-[8px] font-bold text-gray-750 uppercase tracking-tight leading-normal">
             POS System Developed by: kinship27
           </p>
 
           {/* Bottom Right AI Manager Logo */}
-          <div className="w-full flex justify-end mt-4">
-            <div className="flex items-center gap-1.5">
-              <div className="bg-black text-white p-1 rounded flex items-center justify-center">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+          <div className="w-full flex justify-end mt-1">
+            <div className="flex items-center gap-1">
+              <div className="bg-black text-white p-0.5 rounded flex items-center justify-center">
+                <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8L6 21" />
                 </svg>
               </div>
               <div className="flex flex-col items-start leading-none">
-                <span className="text-[6px] text-gray-500 font-sans tracking-widest font-black">OFFICIAL ENGINE</span>
-                <span className="text-[9px] font-black font-sans tracking-wide">AI MANAGER</span>
+                <span className="text-[5px] text-gray-500 font-sans tracking-widest font-black">OFFICIAL ENGINE</span>
+                <span className="text-[8px] font-black font-sans tracking-wide">AI MANAGER</span>
               </div>
             </div>
           </div>

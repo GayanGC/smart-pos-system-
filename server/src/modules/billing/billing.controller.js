@@ -829,7 +829,7 @@ const masterReset = asyncHandler(async (req, res) => {
 
   await Promise.all([
     Invoice.deleteMany({}),
-    CashTransaction.deleteMany({}),
+    CashTransaction.deleteMany({ type: { $ne: 'starting_drawer' } }),
     Payment.deleteMany({})
   ]);
 

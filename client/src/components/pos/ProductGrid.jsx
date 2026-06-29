@@ -528,7 +528,7 @@ export default function ProductGrid({ onAddToCart }) {
               {products.length} product{products.length !== 1 ? 's' : ''}
               {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
             </p>
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.role === 'super_admin' || user?.role?.toLowerCase().includes('admin')) && (
               <button
                 onClick={async () => {
                   const firstConfirm = window.confirm("Are you absolutely sure you want to delete all test data and reset charts for tomorrow's live launch?");
@@ -538,7 +538,6 @@ export default function ProductGrid({ onAddToCart }) {
                   
                   try {
                     await api.post('/billing/master-reset');
-                    localStorage.removeItem('pos_shift_bakery_tracking');
                     alert("Master system reset completed successfully.");
                     window.location.reload();
                   } catch (err) {
