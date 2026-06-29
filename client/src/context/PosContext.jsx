@@ -51,6 +51,61 @@ export function PosProvider({ children }) {
     }
   }, [user])
 
+  // Sync products cache to c_cafe_local_db on boot
+  useEffect(() => {
+    const syncProductsCache = async () => {
+      try {
+        const { writeToStore, clearStore } = await import('../utils/localDb')
+        const res = await api.get('/inventory/products', { params: { limit: 1000 } })
+        const prods = res.data?.data || []
+        if (prods.length > 0) {
+          await clearStore('products_cache')
+          await writeToStore('products_cache', prods)
+          console.info('[PosContext] Cached products to products_cache in c_cafe_local_db.')
+        }
+      } catch (err) {
+        console.warn('[PosContext] Offline or failed to sync products to c_cafe_local_db:', err)
+      }
+    }
+    if (user) {
+      syncProductsCache()
+    }
+  }, [user])
+
+  // Background Sync Engine for offline_sales_queue
+  useEffect(() => {
+    const syncOfflineQueue = async () => {
+      if (!navigator.onLine) return;
+      try {
+        const { readFromStore, deleteFromStore } = await import('../utils/localDb')
+        const pending = await readFromStore('offline_sales_queue')
+        if (pending.length === 0) return
+
+        console.info(`[PosContext] Found ${pending.length} offline invoices. Syncing...`)
+        for (const invoice of pending) {
+          const { offlineRef, syncStatus, ...payload } = invoice
+          await api.post('/billing/invoices', payload)
+          await deleteFromStore('offline_sales_queue', offlineRef)
+          console.info(`[PosContext] Synced offline invoice: ${offlineRef}`)
+        }
+      } catch (err) {
+        console.error('[PosContext] Error syncing offline sales queue:', err)
+      }
+    }
+
+    const handleOnline = () => {
+      console.info('[PosContext] Network restored — syncing offline sales queue...')
+      syncOfflineQueue()
+    }
+
+    window.addEventListener('online', handleOnline)
+    if (navigator.onLine) {
+      syncOfflineQueue()
+    }
+
+    return () => window.removeEventListener('online', handleOnline)
+  }, [user])
+
   const fetchCashSummary = useCallback(async () => {
     if (!user) return
     setIsLoading(true)

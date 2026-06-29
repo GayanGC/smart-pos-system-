@@ -258,7 +258,7 @@ export default function PosPage() {
   const handleClear         = useCallback(()          => dispatch({ type: 'CLEAR' }),                                [])
 
   // ── Checkout ───────────────────────────────────────────────────────────
-  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName }) => {
+  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo }) => {
     setCheckoutLoading(true)
     try {
       const lineItems = cart.items.map((item) => {
@@ -291,17 +291,24 @@ export default function PosPage() {
         referenceNumber,
         customerName: customerName || undefined,
         promoDiscount: cart.promoDiscount,
-        offlineRef: uuidv4(), // always generated; used by /sync if later needed
+        offlineRef: invoiceId || uuidv4(),
+        orderNo: orderNo,
       }
 
-      if (isOnline) {
-        // ── Online path: POST to API ──────────────────────────────────
-        await api.post('/billing/invoices', invoicePayload)
-      } else {
-        // ── Offline path: save to IndexedDB ──────────────────────────
-        await saveInvoiceOffline({
+      try {
+        if (isOnline) {
+          // ── Online path: POST to API ──────────────────────────────────
+          await api.post('/billing/invoices', invoicePayload)
+        } else {
+          throw new Error('Offline mode active')
+        }
+      } catch (err) {
+        console.warn('[PosPage] Network request failed. Falling back to c_cafe_local_db offline_sales_queue...', err)
+        const { writeToStore } = await import('../utils/localDb')
+        await writeToStore('offline_sales_queue', {
           ...invoicePayload,
           createdAt: new Date().toISOString(),
+          syncStatus: 'pending'
         })
       }
 

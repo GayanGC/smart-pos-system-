@@ -186,6 +186,8 @@ export default function CheckoutModal({
         amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal),
         referenceNumber: method === 'card' ? cardRef : undefined,
         customerName:  method === 'credit' ? selectedCustomer : undefined,
+        invoiceId:     invoiceId,
+        orderNo:       orderNo,
       })
       if (method === 'cash') {
         addCashSale(grandTotal)

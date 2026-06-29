@@ -233,31 +233,44 @@ export default function ProductGrid({ onAddToCart }) {
     try {
       let items = []
       if (!navigator.onLine) {
-        const { db } = await import('../../utils/db')
-        let collection = db.products
-        
+        const { readFromStore } = await import('../../utils/localDb')
+        let allItems = await readFromStore('products_cache')
         if (category && category !== 'All') {
-          collection = collection.where('category').equals(category)
-        } else {
-          collection = collection.toCollection()
+          allItems = allItems.filter(p => p.category === category)
         }
-        
-        let allItems = await collection.toArray()
         if (q) {
           const lowerQ = q.toLowerCase()
           allItems = allItems.filter(p => 
-            p.name.toLowerCase().includes(lowerQ) || 
+            (p.name || '').toLowerCase().includes(lowerQ) || 
             (p.sku && p.sku.toLowerCase().includes(lowerQ)) ||
             (p.barcode && p.barcode.includes(q))
           )
         }
         items = allItems.slice(0, 60)
       } else {
-        const params = { limit: 100 } // increase to 100 to show more grid items
-        if (q)        params.search   = q
-        if (category && category !== 'All') params.category = category
-        const { data } = await api.get('/inventory/products', { params })
-        items = data.data || []
+        try {
+          const params = { limit: 100 } // increase to 100 to show more grid items
+          if (q)        params.search   = q
+          if (category && category !== 'All') params.category = category
+          const { data } = await api.get('/inventory/products', { params })
+          items = data.data || []
+        } catch (netErr) {
+          console.warn('[ProductGrid] Network fetch failed, falling back to products_cache', netErr)
+          const { readFromStore } = await import('../../utils/localDb')
+          let allItems = await readFromStore('products_cache')
+          if (category && category !== 'All') {
+            allItems = allItems.filter(p => p.category === category)
+          }
+          if (q) {
+            const lowerQ = q.toLowerCase()
+            allItems = allItems.filter(p => 
+              (p.name || '').toLowerCase().includes(lowerQ) || 
+              (p.sku && p.sku.toLowerCase().includes(lowerQ)) ||
+              (p.barcode && p.barcode.includes(q))
+            )
+          }
+          items = allItems.slice(0, 60)
+        }
       }
 
       setProducts(items)
@@ -288,16 +301,15 @@ export default function ProductGrid({ onAddToCart }) {
     if (!query) return
 
     if (!navigator.onLine) {
-      const { db } = await import('../../utils/db')
-      // Try exact barcode
-      let match = await db.products.where('barcode').equals(query).first()
+      const { readFromStore } = await import('../../utils/localDb')
+      const allItems = await readFromStore('products_cache')
+      let match = allItems.find(p => p.barcode === query)
       if (match) {
         handleProductClick(match)
         setSearch('')
         return
       }
-      // Try exact SKU
-      match = await db.products.where('sku').equals(query.toUpperCase()).first()
+      match = allItems.find(p => p.sku && p.sku.toUpperCase() === query.toUpperCase())
       if (match) {
         handleProductClick(match)
         setSearch('')
