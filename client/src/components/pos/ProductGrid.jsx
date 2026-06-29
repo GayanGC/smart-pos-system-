@@ -541,7 +541,7 @@ export default function ProductGrid({ onAddToCart }) {
                     alert("Master system reset completed successfully.");
                     window.location.reload();
                   } catch (err) {
-                    alert(err.response?.data?.message || "Failed to perform master reset.");
+                    alert(err?.response?.data?.message || err?.message || "An unexpected error occurred during reset.");
                   }
                 }}
                 className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-600/10 border border-rose-500/30 text-rose-450 hover:bg-rose-600 hover:text-white transition-all shadow-sm active:scale-95 flex items-center gap-1.5"

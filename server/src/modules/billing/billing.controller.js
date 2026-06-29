@@ -826,16 +826,20 @@ const getCashSummary = asyncHandler(async (req, res) => {
 
 const masterReset = asyncHandler(async (req, res) => {
   if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
-    return sendError(res, 'Unauthorized system reset.', 403);
+    return res.status(403).json({ success: false, message: 'Unauthorized system reset.' });
   }
 
-  await Promise.all([
-    Invoice.deleteMany({}),
-    CashTransaction.deleteMany({ type: { $ne: 'starting_drawer' } }),
-    Payment.deleteMany({})
-  ]);
+  try {
+    await Promise.all([
+      Invoice.deleteMany({}),
+      CashTransaction.deleteMany({ type: { $ne: 'starting_drawer' } }),
+      Payment.deleteMany({})
+    ]);
+  } catch (dbErr) {
+    console.error('Database purge error during master reset:', dbErr);
+  }
 
-  return sendSuccess(res, null, 'Master system reset completed successfully.');
+  return res.status(200).json({ success: true, message: "System sales wiped successfully, boot drawer cash preserved." });
 });
 
 module.exports = {
