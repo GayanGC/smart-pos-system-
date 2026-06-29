@@ -176,17 +176,34 @@ export default function CheckoutModal({
   const changeDue   = method === 'credit' ? 0 : Math.max(0, numericPaid - grandTotal)
   const canSubmit   = method === 'cash'
     ? numericPaid >= grandTotal
-    : (method === 'credit' ? !!selectedCustomer.trim() : (method === 'card' ? cardStatus === 'approved' : true))
+    : (method === 'credit' ? !!selectedCustomer.trim() : true)
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
-    setLocalSubmitting(true)
     setError(null)
+    
+    let finalRef = cardRef
+    
+    // Auto-approve and populate reference context instantly if Card/QR
+    if (method === 'card' || method === 'mobile_pay') {
+      setCardStatus('processing')
+      const today = new Date()
+      const datePart = today.getFullYear().toString() + 
+                       (today.getMonth() + 1).toString().padStart(2, '0') + 
+                       today.getDate().toString().padStart(2, '0')
+      const randPart = Math.floor(1000 + Math.random() * 9000)
+      finalRef = `TXN-SMP-${datePart}-${randPart}`
+      
+      setCardRef(finalRef)
+      setCardStatus('approved')
+    }
+
+    setLocalSubmitting(true)
     try {
       await onConfirm({
         paymentMethod: method,
         amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal),
-        referenceNumber: method === 'card' ? cardRef : undefined,
+        referenceNumber: (method === 'card' || method === 'mobile_pay') ? finalRef : undefined,
         customerName:  method === 'credit' ? selectedCustomer : undefined,
         invoiceId:     invoiceId,
         orderNo:       orderNo,
