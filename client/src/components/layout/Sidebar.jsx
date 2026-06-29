@@ -78,6 +78,32 @@ export default function Sidebar({ collapsed, onToggle }) {
   const navigate = useNavigate()
   const navItems = isAdmin ? adminNavItems : cashierNavItems
 
+  const [liveTime, setLiveTime] = useState('')
+
+  useEffect(() => {
+    const updateTime = () => {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      const d = new Date()
+      const dayName = days[d.getDay()]
+      const monthName = months[d.getMonth()]
+      const dateNum = d.getDate()
+      
+      let hrs = d.getHours()
+      const mins = d.getMinutes().toString().padStart(2, '0')
+      const secs = d.getSeconds().toString().padStart(2, '0')
+      const ampm = hrs >= 12 ? 'PM' : 'AM'
+      hrs = hrs % 12
+      hrs = hrs ? hrs : 12
+      const hrsStr = hrs.toString().padStart(2, '0')
+      
+      setLiveTime(`${dayName}, ${monthName} ${dateNum} — ${hrsStr}:${mins}:${secs} ${ampm}`)
+    }
+    updateTime()
+    const timer = setInterval(updateTime, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   const [isLight, setIsLight] = useState(() => {
     return localStorage.getItem('theme') === 'light'
   })
@@ -182,6 +208,13 @@ export default function Sidebar({ collapsed, onToggle }) {
 
       {/* ── User info + logout ───────────────────────────────────────── */}
       <div className="p-3 border-t border-slate-800/80 space-y-2">
+        {/* Live Running Clock */}
+        {!collapsed && liveTime && (
+          <div className="px-2 pt-1 pb-2 text-[10px] font-mono text-slate-500/80 tracking-wide select-none">
+            {liveTime}
+          </div>
+        )}
+
         {/* Avatar + name */}
         {!collapsed && user && (
           <div className="flex items-center gap-3 px-2 py-2">

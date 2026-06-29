@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import api from '../../api/axios'
+import { useAuth } from '../../context/AuthContext'
 
 /* ── Product Card ─────────────────────────────────────────────────────── */
 const CARD_GRADIENTS = [
@@ -193,6 +194,7 @@ const POS_CATEGORIES = [
 ]
 
 export default function ProductGrid({ onAddToCart }) {
+  const { user } = useAuth()
   const [viewLevel, setViewLevel] = useState('categories')
   const [products,       setProducts]       = useState([])
   const [categories,     setCategories]     = useState(POS_CATEGORIES)
@@ -486,12 +488,42 @@ export default function ProductGrid({ onAddToCart }) {
         )}
       </div>
 
-      {/* ── Product count ─────────────────────────────────────────── */}
+      {/* ── Product count & Master Reset ──────────────────────────── */}
       {!loading && !error && (
-        <p className="text-[10px] text-slate-600 text-right flex-shrink-0">
-          {products.length} product{products.length !== 1 ? 's' : ''}
-          {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
-        </p>
+        <div className="flex items-center justify-between mt-1 flex-shrink-0">
+          <div /> {/* Spacer */}
+          <div className="flex items-center gap-3">
+            <p className="text-[10px] text-slate-600 font-medium select-none">
+              {products.length} product{products.length !== 1 ? 's' : ''}
+              {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
+            </p>
+            {user?.role === 'admin' && (
+              <button
+                onClick={async () => {
+                  const firstConfirm = window.confirm("Are you absolutely sure you want to delete all test data and reset charts for tomorrow's live launch?");
+                  if (!firstConfirm) return;
+                  const secondConfirm = window.confirm("WARNING: This will permanently wipe all sales history, transactions, and cash ledger records from the database. Proceed?");
+                  if (!secondConfirm) return;
+                  
+                  try {
+                    await api.post('/billing/master-reset');
+                    localStorage.removeItem('pos_shift_bakery_tracking');
+                    alert("Master system reset completed successfully.");
+                    window.location.reload();
+                  } catch (err) {
+                    alert(err.response?.data?.message || "Failed to perform master reset.");
+                  }
+                }}
+                className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-600/10 border border-rose-500/30 text-rose-450 hover:bg-rose-600 hover:text-white transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Master Reset</span>
+              </button>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )
