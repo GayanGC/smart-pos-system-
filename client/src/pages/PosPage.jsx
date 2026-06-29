@@ -22,6 +22,7 @@ import { saveInvoiceOffline } from '../utils/offlineSync'
 import { useAuth } from '../context/AuthContext'
 import { usePos } from '../context/PosContext'
 import CashDrawerModal from '../components/pos/CashDrawerModal'
+import CreditLedgerModal from '../components/pos/CreditLedgerModal'
 
 /* ══════════════════════════════════════════════════════════════════════════
    Cart Reducer
@@ -206,6 +207,7 @@ export default function PosPage() {
 
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
   const [isCheckoutOpen,  setIsCheckoutOpen]  = useState(false)
+  const [showCreditLedger, setShowCreditLedger] = useState(false)
   const [isCashDrawerOpen, setIsCashDrawerOpen] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -409,9 +411,17 @@ export default function PosPage() {
                         <span className="text-slate-500 font-medium">Cash Sales (Today):</span>
                         <span className="font-bold text-emerald-400 font-black">Rs. {totalCashSalesToday.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-slate-500 font-medium">Credit Sales (ණය):</span>
-                        <span className="font-bold text-violet-400 font-black">Rs. {totalCreditSalesToday.toFixed(2)}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-violet-400 font-black">Rs. {totalCreditSalesToday.toFixed(2)}</span>
+                          <button
+                            onClick={() => setShowCreditLedger(true)}
+                            className="px-2 py-0.5 rounded bg-violet-600/20 hover:bg-violet-650 text-[9px] font-black text-violet-300 border border-violet-500/20 hover:text-white transition-all cursor-pointer"
+                          >
+                            ණය පොත
+                          </button>
+                        </div>
                       </div>
                       <div className="border-t border-slate-800 pt-2 flex justify-between font-bold text-slate-100">
                         <span>Total Expected Cash:</span>
@@ -551,6 +561,13 @@ export default function PosPage() {
         isOpen={isCashDrawerOpen} 
         onClose={() => setIsCashDrawerOpen(false)} 
       />
+
+      {showCreditLedger && (
+        <CreditLedgerModal 
+          onClose={() => setShowCreditLedger(false)} 
+          onSettleSuccess={fetchCashSummary} 
+        />
+      )}
 
       {/* Opening Float & Bakery Stock Overlay Modal */}
       {showFloatModal && (

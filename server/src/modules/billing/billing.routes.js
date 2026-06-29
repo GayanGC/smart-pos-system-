@@ -20,7 +20,7 @@ const {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
   triggerDailyReportEmail, createCashTransaction, getCashSummary,
-  masterReset
+  masterReset, settleInvoice
 } = require('./billing.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
@@ -66,6 +66,12 @@ router.patch(
   '/invoices/:id/void',
   authorize('super_admin', 'admin', 'manager'),
   voidInvoice
+);
+
+router.patch(
+  '/invoices/:id/settle',
+  authorize('super_admin', 'admin', 'manager', 'cashier'),
+  settleInvoice
 );
 
 router.post(

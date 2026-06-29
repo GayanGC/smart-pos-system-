@@ -842,9 +842,59 @@ const masterReset = asyncHandler(async (req, res) => {
   return res.status(200).json({ success: true, message: "System sales wiped successfully, boot drawer cash preserved." });
 });
 
+/**
+ * @desc  Settle a credit / unpaid invoice
+ * @route PATCH /api/billing/invoices/:id/settle
+ * @access Private (cashier/admin/manager)
+ */
+const settleInvoice = asyncHandler(async (req, res) => {
+  const { paymentMethod, amountPaid } = req.body;
+  const invoice = await Invoice.findById(req.params.id);
+
+  if (!invoice) {
+    return sendError(res, { statusCode: 404, message: 'Invoice not found.' });
+  }
+
+  if (invoice.status === 'paid') {
+    return sendError(res, { statusCode: 400, message: 'Invoice is already fully paid.' });
+  }
+
+  const payAmount = amountPaid || invoice.grandTotal;
+
+  // Update invoice status and amount paid
+  invoice.amountPaid = payAmount;
+  invoice.status = 'paid';
+  await invoice.save();
+
+  // If paid by cash, log a CashTransaction of type 'customer_debt_collection' so it balances the drawer
+  if (paymentMethod === 'cash') {
+    await CashTransaction.create({
+      cashierId: req.user._id,
+      amount: payAmount,
+      reason: `Debt Settle: ${invoice.customerName || 'Customer'} (Inv #${invoice.invoiceNumber})`,
+      type: 'customer_debt_collection'
+    });
+  }
+
+  // Create payment record
+  await Payment.create({
+    invoiceId: invoice._id,
+    amount: payAmount,
+    paymentMethod: paymentMethod || 'cash',
+    processedBy: req.user._id,
+    status: 'completed'
+  });
+
+  return sendSuccess(res, {
+    statusCode: 200,
+    data: invoice,
+    message: 'Invoice settled successfully.'
+  });
+});
+
 module.exports = {
   createInvoice, getInvoices, getInvoiceById,
   voidInvoice, syncOfflineInvoices, getDashboard,
   triggerDailyReportEmail, createCashTransaction, getCashSummary,
-  masterReset
+  masterReset, settleInvoice
 };
