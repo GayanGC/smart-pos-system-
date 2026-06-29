@@ -82,6 +82,8 @@ const InvoiceSchema = new mongoose.Schema(
     finalTotal:    { type: Number, required: true, min: 0 },
     amountPaid:    { type: Number, default: 0,     min: 0 },
     changeDue:     { type: Number, default: 0,     min: 0 }, // cash change returned
+    splitCashAmount: { type: Number, min: 0 },
+    splitCardAmount: { type: Number, min: 0 },
 
     // ── Payment ───────────────────────────────────────────────────────────────
     paymentMethod: {

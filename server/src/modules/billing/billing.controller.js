@@ -66,7 +66,7 @@ const deductStock = async (lineItems, session) => {
 //  @access  Private (cashier / admin)
 // ═══════════════════════════════════════════════════════════════════════════
 const createInvoice = asyncHandler(async (req, res) => {
-  const { lineItems, paymentMethod, amountPaid, promoDiscount, customer, notes } = req.body;
+  const { lineItems, paymentMethod, amountPaid, promoDiscount, customer, notes, splitCashAmount, splitCardAmount } = req.body;
 
   if (!lineItems || lineItems.length === 0) {
     return sendError(res, { statusCode: 400, message: 'At least one line item is required.' });
@@ -156,6 +156,8 @@ const createInvoice = asyncHandler(async (req, res) => {
       paymentMethod,
       status:           amountPaidNum >= grandTotal ? INVOICE_STATUS.PAID : INVOICE_STATUS.PARTIALLY_PAID,
       isOfflineCreated: false,
+      splitCashAmount:  splitCashAmount ? Number(splitCashAmount) : undefined,
+      splitCardAmount:  splitCardAmount ? Number(splitCardAmount) : undefined,
     }], { session });
 
     // ── Create payment record ─────────────────────────────────────────────────
