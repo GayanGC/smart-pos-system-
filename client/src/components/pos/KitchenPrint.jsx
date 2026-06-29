@@ -20,10 +20,7 @@ export default function KitchenPrint({
   return (
     <div 
       id="kot-print-root"
-      className={`
-        kot-print-container font-mono bg-white text-black text-sm px-8 pt-6 pb-2 relative w-full mx-auto
-        ${isLivePreview ? 'rounded-lg shadow-xl max-w-[320px] pb-6' : 'max-w-[80mm] pb-0'}
-      `}
+      className={`font-mono bg-white text-black text-xs p-3 w-full mx-auto ${isLivePreview ? 'rounded-lg shadow-md max-w-[300px]' : 'max-w-[80mm]'}`}
     >
       <style dangerouslySetInnerHTML={{ __html: `
         * {
@@ -44,6 +41,8 @@ export default function KitchenPrint({
             overflow: hidden !important;
             padding-bottom: 0mm !important;
             margin-bottom: 0mm !important;
+            background: white !important;
+            color: black !important;
           }
           * {
             font-family: 'Noto Sans Sinhala', -apple-system, sans-serif !important;
@@ -59,88 +58,48 @@ export default function KitchenPrint({
           }
         }
       `}} />
-      {/* Illustrative Food Doodle Borders */}
-      {/* Top Doodle Border */}
-      <div 
-        className="absolute top-1.5 left-3 right-3 h-3 bg-repeat-x opacity-80" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1' transform='rotate(-90 5 5)'/%3E%3Cpath d='M15 6.5c0-1.5 5-1.5 5 0h-5z M15 7.5h5 M15 8.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M27.5 5.5h4l0.4 3h-4.8z M29.5 5.5v-2.5 M28.5 3l2-0.5'/%3E%3Cpath d='M39 3h5l-2.5 4.5z'/%3E%3C/g%3E%3C/svg%3E")` }} 
-      />
-      {/* Bottom Doodle Border */}
-      <div 
-        className="absolute bottom-1.5 left-3 right-3 h-3 bg-repeat-x opacity-80" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1' transform='rotate(-90 5 5)'/%3E%3Cpath d='M15 6.5c0-1.5 5-1.5 5 0h-5z M15 7.5h5 M15 8.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M27.5 5.5h4l0.4 3h-4.8z M29.5 5.5v-2.5 M28.5 3l2-0.5'/%3E%3Cpath d='M39 3h5l-2.5 4.5z'/%3E%3C/g%3E%3C/svg%3E")` }} 
-      />
-      {/* Left Doodle Border */}
-      <div 
-        className="absolute top-3 bottom-3 left-1.5 w-3 bg-repeat-y opacity-80" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='48' viewBox='0 0 12 48'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1'/%3E%3Cpath d='M3 13.5c0-1.5 5-1.5 5 0h-5z M3 14.5h5 M3 15.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M3.5 23.5h4l0.4 3h-4.8z M5.5 23.5v-2.5 M4.5 21l2-0.5'/%3E%3Cpath d='M3 33h5l-2.5 4.5z'/%3E%3Cpath d='M4 42.5h3 M3.5 44.5h4 M3 42.5c0-2.5 5-2.5 5 0z'/%3E%3C/g%3E%3C/svg%3E")` }} 
-      />
-      {/* Right Doodle Border */}
-      <div 
-        className="absolute top-3 bottom-3 right-1.5 w-3 bg-repeat-y opacity-80" 
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='48' viewBox='0 0 12 48'%3E%3Cg stroke='%231a1a1a' fill='none' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h5v3.5a2.5 2.5 0 0 1-5 0V3z M8 4.2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1'/%3E%3Cpath d='M3 13.5c0-1.5 5-1.5 5 0h-5z M3 14.5h5 M3 15.5c0 0.8 5 0.8 5 0h-5z'/%3E%3Cpath d='M3.5 23.5h4l0.4 3h-4.8z M5.5 23.5v-2.5 M4.5 21l2-0.5'/%3E%3Cpath d='M3 33h5l-2.5 4.5z'/%3E%3Cpath d='M4 42.5h3 M3.5 44.5h4 M3 42.5c0-2.5 5-2.5 5 0z'/%3E%3C/g%3E%3C/svg%3E")` }} 
-      />
-      {/* ── KOT Header ────────────────────────────────────────────── */}
-      <div className="text-center mb-4 border-b-2 border-black pb-2 flex flex-col items-center">
-        {/* Brand Logo */}
-        <img 
-          src="/logo.png" 
-          alt="C Cafe Logo"
-          width="64px"
-          height="64px"
-          className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md"
-        />
-        <h2 className="text-xl font-black uppercase tracking-widest">KOT</h2>
-        <p className="text-xs font-bold uppercase tracking-wider mt-0.5">Kitchen Order Ticket</p>
-        <div className="text-base font-black tracking-wider uppercase mt-2 px-4 py-1.5 bg-black text-white rounded">
+
+      {/* ── KOT Header ── */}
+      <div className="text-center mb-2">
+        <h2 className="text-base font-black tracking-widest uppercase">KOT</h2>
+        <div className="text-sm font-black tracking-wider uppercase bg-black text-white px-2 py-0.5 rounded inline-block mt-0.5">
           ORDER NO: #{invoiceNumber || 'NEW'}
         </div>
       </div>
 
-      {/* ── Meta ────────────────────────────────────────────────── */}
-      <div className="text-xs space-y-1 mb-4">
+      {/* ── Meta info block ── */}
+      <div className="text-[10px] font-bold leading-tight mb-2 border-b border-black pb-1.5 space-y-0.5">
         <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Order ID:</span>
-          <span className="font-bold">{invoiceNumber || 'NEW'}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Date:</span>
+          <span>DATE & TIME:</span>
           <span>{dateStr} {timeStr}</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Cashier:</span>
+          <span>CASHIER:</span>
           <span className="uppercase">{cashierName}</span>
         </div>
         {paymentMethod === 'credit' && (
-          <div className="flex justify-between font-black text-black border-t border-dashed border-black pt-1 mt-1">
-            <span>Payment Mode:</span>
-            <span>CREDIT (ණය)</span>
-          </div>
-        )}
-        {paymentMethod === 'credit' && customerName && (
-          <div className="flex justify-between font-black text-black">
-            <span>Customer:</span>
-            <span className="uppercase">{customerName}</span>
+          <div className="flex justify-between text-black">
+            <span>MODE:</span>
+            <span>CREDIT (ණය) {customerName && `[${customerName}]`}</span>
           </div>
         )}
       </div>
 
-      {/* ── Items Matrix ────────────────────────────────────────── */}
-      <div className="border-t border-b border-black py-3 mb-4">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-black text-xs">
-              <th className="pb-1 font-bold">ITEM</th>
-              <th className="pb-1 text-center font-bold w-12">QTY</th>
-            </tr>
-          </thead>
+      {/* ── Kitchen Items List ── */}
+      <div className="mb-2">
+        <table className="w-full text-left border-collapse">
           <tbody>
             {kotItems.map((item, i) => (
-              <tr key={i} className="border-b border-gray-200 border-dashed last:border-0">
-                <td className="py-2 pr-2 font-bold text-sm uppercase">
+              <tr key={i} className="border-b border-gray-300 border-dashed last:border-0">
+                <td className="py-1.5 pr-2 font-black text-sm uppercase leading-tight">
                   {item?.name || 'Unknown Item'}
+                  {item?.notes && (
+                    <div className="text-[10px] font-bold text-gray-800 normal-case italic mt-0.5">
+                      * Notes: {item.notes}
+                    </div>
+                  )}
                 </td>
-                <td className="py-2 text-center align-top font-black text-lg">
+                <td className="py-1.5 text-right align-middle font-black text-xl w-12">
                   {item?.quantity || 1}
                 </td>
               </tr>
@@ -149,9 +108,9 @@ export default function KitchenPrint({
         </table>
       </div>
 
-      {/* ── Footer ──────────────────────────────────────────────── */}
-      <div className="text-center text-xs font-semibold italic text-gray-500">
-        End of Ticket
+      {/* ── Kitchen Footer ── */}
+      <div className="text-center text-[10px] font-black tracking-widest border-t border-black pt-1.5">
+        * KITCHEN COPY *
       </div>
     </div>
   )

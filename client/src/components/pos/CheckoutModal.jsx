@@ -144,22 +144,24 @@ export default function CheckoutModal({
   const triggerSequentialPrint = () => {
     setPrintSequence('receipt')
     
-    // Structured timeout to paint Receipt layout
     printTimer1Ref.current = setTimeout(() => {
-      window.print() // Blocks until print dialog is closed
-      
-      // Once receipt dialog closes, mount KOT
-      setPrintSequence('kot')
-      
-      // Nested double requestAnimationFrame + structured 500ms timeout to guarantee full layout paint
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          printTimer2Ref.current = setTimeout(() => {
-            window.print() // Blocks until print dialog is closed
+      const handleAfterReceiptPrint = () => {
+        window.removeEventListener('afterprint', handleAfterReceiptPrint)
+        
+        setPrintSequence('kot')
+        
+        printTimer2Ref.current = setTimeout(() => {
+          const handleAfterKotPrint = () => {
+            window.removeEventListener('afterprint', handleAfterKotPrint)
             setPrintSequence('idle')
-          }, 500) // 500ms safety buffer
-        })
-      })
+          }
+          window.addEventListener('afterprint', handleAfterKotPrint)
+          window.print()
+        }, 300)
+      }
+      
+      window.addEventListener('afterprint', handleAfterReceiptPrint)
+      window.print()
     }, 400)
   }
 
