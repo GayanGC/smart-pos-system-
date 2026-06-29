@@ -411,17 +411,9 @@ export default function PosPage() {
                         <span className="text-slate-500 font-medium">Cash Sales (Today):</span>
                         <span className="font-bold text-emerald-400 font-black">Rs. {totalCashSalesToday.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between">
                         <span className="text-slate-500 font-medium">Credit Sales (ණය):</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-violet-400 font-black">Rs. {totalCreditSalesToday.toFixed(2)}</span>
-                          <button
-                            onClick={() => setShowCreditLedger(true)}
-                            className="px-2 py-0.5 rounded bg-violet-600/20 hover:bg-violet-650 text-[9px] font-black text-violet-300 border border-violet-500/20 hover:text-white transition-all cursor-pointer"
-                          >
-                            ණය පොත
-                          </button>
-                        </div>
+                        <span className="font-bold text-violet-400 font-black">Rs. {totalCreditSalesToday.toFixed(2)}</span>
                       </div>
                       <div className="border-t border-slate-800 pt-2 flex justify-between font-bold text-slate-100">
                         <span>Total Expected Cash:</span>
@@ -478,6 +470,13 @@ export default function PosPage() {
                 </>
               )}
             </div>
+
+            <button 
+              onClick={() => setShowCreditLedger(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm rounded-lg transition-colors shadow-sm cursor-pointer"
+            >
+              📘 ණය පොත (Ledger)
+            </button>
 
             {/* Network indicator */}
             <div
