@@ -95,6 +95,7 @@ export default function CheckoutModal({
   const [customerSearch, setCustomerSearch] = useState('Regular Customer')
   const [selectedCustomer, setSelectedCustomer] = useState('Regular Customer')
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [creditCustomerName, setCreditCustomerName] = useState('')
   const [kotToast, setKotToast] = useState(false)
   const [splitCashAmount, setSplitCashAmount] = useState('')
   const [splitCardAmount, setSplitCardAmount] = useState('')
@@ -136,6 +137,7 @@ export default function CheckoutModal({
       setCustomerSearch(initialCust)
       setSelectedCustomer(initialCust)
       setDropdownOpen(false)
+      setCreditCustomerName('')
       setCardStatus('idle')
       setKotToast(false)
       
@@ -206,9 +208,9 @@ export default function CheckoutModal({
     ? 0 
     : (method === 'split' ? Math.max(0, splitTotal - grandTotal) : Math.max(0, numericPaid - grandTotal))
 
-  const canSubmit   = method === 'cash'
+  const canSubmit = method === 'cash'
     ? numericPaid >= grandTotal
-    : (method === 'credit' ? !!selectedCustomer.trim() : (method === 'split' ? splitTotal >= grandTotal : true))
+    : (method === 'credit' ? (!!selectedCustomer.trim() || !!creditCustomerName.trim()) : (method === 'split' ? splitTotal >= grandTotal : true))
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
@@ -236,7 +238,7 @@ export default function CheckoutModal({
         paymentMethod: method,
         amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : (method === 'split' ? splitTotal : grandTotal)),
         referenceNumber: (method === 'card' || method === 'mobile_pay' || method === 'split') ? finalRef : undefined,
-        customerName:  method === 'credit' ? selectedCustomer : undefined,
+        customerName:  method === 'credit' ? (creditCustomerName.trim() || selectedCustomer) : undefined,
         invoiceId:     invoiceId,
         orderNo:       orderNo,
         splitCashAmount: method === 'split' ? numSplitCash : undefined,
@@ -276,6 +278,7 @@ export default function CheckoutModal({
     setLocalSubmitting(false)
     setCustomerSearch('Regular Customer')
     setSelectedCustomer('Regular Customer')
+    setCreditCustomerName('')
     setDropdownOpen(false)
     setCardStatus('idle')
     setSplitCashAmount('')
@@ -355,7 +358,7 @@ export default function CheckoutModal({
                   isLivePreview={true}
                   invoiceId={invoiceId}
                   orderNo={orderNo}
-                  customerName={selectedCustomer}
+                  customerName={creditCustomerName.trim() || selectedCustomer}
                   splitCashAmount={splitCashAmount}
                   splitCardAmount={splitCardAmount}
                 />
@@ -379,7 +382,7 @@ export default function CheckoutModal({
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                   paymentMethod={method}
-                  customerName={selectedCustomer}
+                  customerName={creditCustomerName.trim() || selectedCustomer}
                 />
               </div>
             </div>
@@ -400,7 +403,7 @@ export default function CheckoutModal({
                     isLivePreview={false}
                     invoiceId={invoiceId}
                     orderNo={orderNo}
-                    customerName={selectedCustomer}
+                    customerName={creditCustomerName.trim() || selectedCustomer}
                     splitCashAmount={splitCashAmount}
                     splitCardAmount={splitCardAmount}
                   />
@@ -435,7 +438,7 @@ export default function CheckoutModal({
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                     paymentMethod={method}
-                    customerName={selectedCustomer}
+                    customerName={creditCustomerName.trim() || selectedCustomer}
                   />
                 </div>
               )}
@@ -553,6 +556,17 @@ export default function CheckoutModal({
                     </>
                   )}
                 </div>
+              </div>
+              
+              <div className="mt-3">
+                <label className="text-xs text-slate-400 block mb-1 font-bold uppercase">CUSTOMER NAME / කස්ටමර්ගේ නම</label>
+                <input 
+                  type="text"
+                  placeholder="Enter customer name..."
+                  value={creditCustomerName}
+                  onChange={(e) => setCreditCustomerName(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-950 text-white border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-violet-500 font-bold"
+                />
               </div>
             </div>
           )}
