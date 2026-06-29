@@ -97,6 +97,16 @@ export default function CheckoutModal({
     setActiveCustomer(selectedCustomer)
   }, [selectedCustomer, setActiveCustomer])
 
+  // Adjust states dynamically when payment method changes to credit
+  useEffect(() => {
+    if (method === 'credit') {
+      const initialCust = activeCustomer && activeCustomer !== 'Regular Customer' ? activeCustomer : 'Regular Credit Profile'
+      setCustomerSearch(initialCust)
+      setSelectedCustomer(initialCust)
+      setAmountPaid(grandTotal.toFixed(2))
+    }
+  }, [method, grandTotal, activeCustomer])
+
   // Reset state whenever modal opens
   useEffect(() => {
     if (isOpen) {
@@ -107,8 +117,9 @@ export default function CheckoutModal({
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
-      setCustomerSearch(activeCustomer || 'Regular Customer')
-      setSelectedCustomer(activeCustomer || 'Regular Customer')
+      const initialCust = activeCustomer && activeCustomer !== 'Regular Customer' ? activeCustomer : 'Regular Credit Profile'
+      setCustomerSearch(initialCust)
+      setSelectedCustomer(initialCust)
       setDropdownOpen(false)
       setCardStatus('idle')
       setKotToast(false)
@@ -303,6 +314,8 @@ export default function CheckoutModal({
                   }
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
+                  paymentMethod={method}
+                  customerName={selectedCustomer}
                 />
               </div>
             </div>
@@ -355,6 +368,8 @@ export default function CheckoutModal({
                     }
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
+                    paymentMethod={method}
+                    customerName={selectedCustomer}
                   />
                 </div>
               )}
@@ -452,7 +467,7 @@ export default function CheckoutModal({
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
                       <div className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-20">
-                        {['Regular Customer', 'Staff Ledger', 'Suresh (Book #12)', 'Kamal (Book #04)', 'Ajith Perera', 'Nimal Silva']
+                        {['Regular Credit Profile', 'Staff Ledger', 'Suresh (Book #12)', 'Kamal (Book #04)']
                           .filter(c => c.toLowerCase().includes(customerSearch.toLowerCase()))
                           .map((c) => (
                             <button

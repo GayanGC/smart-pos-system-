@@ -4,7 +4,9 @@ export default function KitchenPrint({
   invoiceNumber,
   lineItems,
   cashierName,
-  isLivePreview = false
+  isLivePreview = false,
+  paymentMethod,
+  customerName,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -109,6 +111,18 @@ export default function KitchenPrint({
           <span className="font-semibold text-gray-600">Cashier:</span>
           <span className="uppercase">{cashierName}</span>
         </div>
+        {paymentMethod === 'credit' && (
+          <div className="flex justify-between font-black text-black border-t border-dashed border-black pt-1 mt-1">
+            <span>Payment Mode:</span>
+            <span>CREDIT (ණය)</span>
+          </div>
+        )}
+        {paymentMethod === 'credit' && customerName && (
+          <div className="flex justify-between font-black text-black">
+            <span>Customer:</span>
+            <span className="uppercase">{customerName}</span>
+          </div>
+        )}
       </div>
 
       {/* ── Items Matrix ────────────────────────────────────────── */}

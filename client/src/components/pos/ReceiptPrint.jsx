@@ -180,9 +180,9 @@ export default function ReceiptPrint({
           </span>
         </div>
         {paymentMethod === 'credit' && customerName && (
-          <div className="flex justify-between font-bold text-gray-700">
+          <div className="flex justify-between font-black text-black">
             <span>Customer:</span>
-            <span className="uppercase">{customerName}</span>
+            <span className="uppercase font-black">{customerName}</span>
           </div>
         )}
         {paymentMethod === 'card' && referenceNumber && (
