@@ -258,7 +258,7 @@ export default function PosPage() {
   const handleClear         = useCallback(()          => dispatch({ type: 'CLEAR' }),                                [])
 
   // ── Checkout ───────────────────────────────────────────────────────────
-  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo }) => {
+  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo, splitCashAmount, splitCardAmount }) => {
     setCheckoutLoading(true)
     try {
       const lineItems = cart.items.map((item) => {
@@ -293,6 +293,8 @@ export default function PosPage() {
         promoDiscount: cart.promoDiscount,
         offlineRef: invoiceId || uuidv4(),
         orderNo: orderNo,
+        splitCashAmount: splitCashAmount || undefined,
+        splitCardAmount: splitCardAmount || undefined,
       }
 
       try {

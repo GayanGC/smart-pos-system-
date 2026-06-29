@@ -87,8 +87,14 @@ function getFallbackImage(name = '', category = '') {
 }
 
 const ProductCard = memo(function ProductCard({ product, onAdd }) {
-  const isOutOfStock = (product?.quantityInStock || 0) <= 0
-  const isLowStock   = !isOutOfStock && (product?.quantityInStock || 0) <= (product?.lowStockThreshold || 0)
+  const stockVal = product?.stock !== undefined 
+    ? product.stock 
+    : (product?.quantityInStock !== undefined 
+        ? product.quantityInStock 
+        : (product?.quantity !== undefined ? product.quantity : 0));
+        
+  const isOutOfStock = stockVal <= 0
+  const isLowStock   = stockVal > 0 && stockVal <= 5
   const nameCode = product?.name ? product.name.charCodeAt(0) : 0
   const gradient     = CARD_GRADIENTS[nameCode % CARD_GRADIENTS.length]
   const displayName = getProductName(product?.name || '')
@@ -102,19 +108,28 @@ const ProductCard = memo(function ProductCard({ product, onAdd }) {
         transition-all duration-200 overflow-hidden
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
         ${isOutOfStock
-          ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-900/40'
+          ? 'opacity-60 cursor-not-allowed border-slate-900 bg-slate-950'
           : 'border-slate-700/40 bg-slate-900/60 hover:border-violet-500/40 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 cursor-pointer shadow-sm hover:shadow-violet-900/20 hover:shadow-lg'}
       `}
     >
       {/* Gradient overlay inside button on hover */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-
-      {/* Stock indicators */}
-      {isLowStock && (
-        <span className="absolute top-1.5 right-2.5 badge-amber text-[8px] px-1 py-0 shadow-md">Low</span>
+      {!isOutOfStock && (
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
       )}
+
+      {/* Pulsing Low Stock badge */}
+      {isLowStock && (
+        <span className="absolute top-1 right-1 bg-red-600 text-white font-black text-[7px] px-1 py-0.5 rounded shadow-lg animate-pulse z-20 uppercase tracking-tighter">
+          LOW STOCK: {stockVal} LEFT
+        </span>
+      )}
+
+      {/* Out of Stock overlay */}
       {isOutOfStock && (
-        <span className="absolute top-1.5 right-2.5 badge-red text-[8px] px-1 py-0 shadow-md">Out</span>
+        <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-20 text-center p-1 rounded-2xl">
+          <span className="text-red-500 font-extrabold text-[10px] tracking-wide uppercase">OUT OF STOCK</span>
+          <span className="text-red-400 font-bold text-[8px] mt-0.5">අවසන් වී ඇත</span>
+        </div>
       )}
 
       {/* Product name (supports Sinhala Unicode cleanly) */}

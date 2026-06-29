@@ -83,6 +83,12 @@ export default function KitchenPrint({
             <span>CREDIT (ණය) {customerName && `[${customerName}]`}</span>
           </div>
         )}
+        {paymentMethod === 'split' && (
+          <div className="flex justify-between text-black">
+            <span>MODE:</span>
+            <span>SPLIT (මිශ්‍ර)</span>
+          </div>
+        )}
       </div>
 
       {/* ── Kitchen Items List ── */}

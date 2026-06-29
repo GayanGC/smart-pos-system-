@@ -16,6 +16,8 @@ export default function ReceiptPrint({
   orderNo: propOrderNo,
   customerName,
   referenceNumber,
+  splitCashAmount,
+  splitCardAmount,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -179,7 +181,7 @@ export default function ReceiptPrint({
           <div className="flex justify-between font-bold">
             <span>Payment Mode:</span>
             <span className="uppercase font-black">
-              {paymentMethod === 'mobile_pay' ? 'QR PAY' : (paymentMethod === 'credit' ? 'CREDIT (ණය)' : paymentMethod)}
+              {paymentMethod === 'mobile_pay' ? 'QR PAY' : (paymentMethod === 'credit' ? 'CREDIT (ණය)' : (paymentMethod === 'split' ? 'SPLIT (මිශ්‍ර)' : paymentMethod))}
             </span>
           </div>
           {paymentMethod === 'credit' && customerName && (
@@ -193,6 +195,24 @@ export default function ReceiptPrint({
               <span>Auth Ref:</span>
               <span>{referenceNumber}</span>
             </div>
+          )}
+          {paymentMethod === 'split' && (
+            <>
+              <div className="flex justify-between">
+                <span>Cash Portion (මුදලින්):</span>
+                <span>Rs. {fmt(splitCashAmount)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Card Portion (කාඩ්පතින්):</span>
+                <span>Rs. {fmt(splitCardAmount)}</span>
+              </div>
+              {changeDue > 0 && (
+                <div className="flex justify-between font-bold">
+                  <span>Change Due:</span>
+                  <span>Rs. {fmt(changeDue)}</span>
+                </div>
+              )}
+            </>
           )}
           {paymentMethod === 'cash' && (
             <>

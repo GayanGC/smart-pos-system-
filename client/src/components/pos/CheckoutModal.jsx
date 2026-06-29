@@ -50,6 +50,15 @@ const METHODS = [
       </svg>
     ),
   },
+  {
+    id: 'split',
+    label: 'SPLIT (මිශ්‍ර)',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
+    ),
+  },
 ]
 
 const fmt = (n) =>
@@ -80,13 +89,15 @@ export default function CheckoutModal({
   const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
-  const { addCashSale, addCreditSale, recordBakerySales, activeCustomer, setActiveCustomer } = usePos()
+  const { addCashSale, addCreditSale, addDigitalSale, recordBakerySales, activeCustomer, setActiveCustomer } = usePos()
 
   // Credit Customer states
   const [customerSearch, setCustomerSearch] = useState('Regular Customer')
   const [selectedCustomer, setSelectedCustomer] = useState('Regular Customer')
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [kotToast, setKotToast] = useState(false)
+  const [splitCashAmount, setSplitCashAmount] = useState('')
+  const [splitCardAmount, setSplitCardAmount] = useState('')
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
@@ -117,6 +128,8 @@ export default function CheckoutModal({
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
+      setSplitCashAmount('')
+      setSplitCardAmount('')
       const initialCust = activeCustomer && activeCustomer !== 'Regular Customer' ? activeCustomer : 'Regular Credit Profile'
       setCustomerSearch(initialCust)
       setSelectedCustomer(initialCust)
@@ -173,10 +186,17 @@ export default function CheckoutModal({
   }, [success])
 
   const numericPaid = parseFloat(amountPaid) || 0
-  const changeDue   = method === 'credit' ? 0 : Math.max(0, numericPaid - grandTotal)
+  const numSplitCash = parseFloat(splitCashAmount) || 0
+  const numSplitCard = parseFloat(splitCardAmount) || 0
+  const splitTotal = numSplitCash + numSplitCard
+
+  const changeDue   = method === 'credit' 
+    ? 0 
+    : (method === 'split' ? Math.max(0, splitTotal - grandTotal) : Math.max(0, numericPaid - grandTotal))
+
   const canSubmit   = method === 'cash'
     ? numericPaid >= grandTotal
-    : (method === 'credit' ? !!selectedCustomer.trim() : true)
+    : (method === 'credit' ? !!selectedCustomer.trim() : (method === 'split' ? splitTotal >= grandTotal : true))
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
@@ -184,8 +204,8 @@ export default function CheckoutModal({
     
     let finalRef = cardRef
     
-    // Auto-approve and populate reference context instantly if Card/QR
-    if (method === 'card' || method === 'mobile_pay') {
+    // Auto-approve and populate reference context instantly if Card/QR/Split
+    if (method === 'card' || method === 'mobile_pay' || method === 'split') {
       setCardStatus('processing')
       const today = new Date()
       const datePart = today.getFullYear().toString() + 
@@ -202,16 +222,23 @@ export default function CheckoutModal({
     try {
       await onConfirm({
         paymentMethod: method,
-        amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal),
-        referenceNumber: (method === 'card' || method === 'mobile_pay') ? finalRef : undefined,
+        amountPaid:    method === 'cash' ? numericPaid : (method === 'credit' ? 0 : (method === 'split' ? splitTotal : grandTotal)),
+        referenceNumber: (method === 'card' || method === 'mobile_pay' || method === 'split') ? finalRef : undefined,
         customerName:  method === 'credit' ? selectedCustomer : undefined,
         invoiceId:     invoiceId,
         orderNo:       orderNo,
+        splitCashAmount: method === 'split' ? numSplitCash : undefined,
+        splitCardAmount: method === 'split' ? numSplitCard : undefined,
       })
       if (method === 'cash') {
         addCashSale(grandTotal)
       } else if (method === 'credit') {
         addCreditSale(grandTotal)
+      } else if (method === 'split') {
+        addCashSale(numSplitCash)
+        addDigitalSale(numSplitCard)
+      } else {
+        addDigitalSale(grandTotal)
       }
       recordBakerySales(lineItems)
       setSuccess(true)
@@ -239,6 +266,8 @@ export default function CheckoutModal({
     setSelectedCustomer('Regular Customer')
     setDropdownOpen(false)
     setCardStatus('idle')
+    setSplitCashAmount('')
+    setSplitCardAmount('')
     if (onSuccessReset) {
       onSuccessReset()
     }
@@ -308,13 +337,15 @@ export default function CheckoutModal({
                   subTotal={subTotal}
                   totalDiscount={totalDiscount}
                   paymentMethod={method}
-                  amountPaid={method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal)}
+                  amountPaid={method === 'cash' ? numericPaid : (method === 'split' ? splitTotal : (method === 'credit' ? 0 : grandTotal))}
                   changeDue={changeDue}
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                   invoiceId={invoiceId}
                   orderNo={orderNo}
                   customerName={selectedCustomer}
+                  splitCashAmount={splitCashAmount}
+                  splitCardAmount={splitCardAmount}
                 />
               </div>
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
@@ -351,13 +382,15 @@ export default function CheckoutModal({
                     subTotal={subTotal}
                     totalDiscount={totalDiscount}
                     paymentMethod={method}
-                    amountPaid={method === 'cash' ? numericPaid : (method === 'credit' ? 0 : grandTotal)}
+                    amountPaid={method === 'cash' ? numericPaid : (method === 'split' ? splitTotal : (method === 'credit' ? 0 : grandTotal))}
                     changeDue={changeDue}
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                     invoiceId={invoiceId}
                     orderNo={orderNo}
                     customerName={selectedCustomer}
+                    splitCashAmount={splitCashAmount}
+                    splitCardAmount={splitCardAmount}
                   />
                 </div>
               )}
@@ -445,7 +478,7 @@ export default function CheckoutModal({
           {/* ── Payment method selector ───────────────────────────── */}
           <div>
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Payment Method</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-1.5">
               {METHODS.map((m) => (
                 <button
                   key={m.id}
@@ -508,6 +541,46 @@ export default function CheckoutModal({
                     </>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+          {/* ── Split Payment inputs ────────────────────────────────── */}
+          {method === 'split' && (
+            <div className="space-y-4 animate-fade-up bg-slate-900/60 p-4 border border-slate-800 rounded-2xl">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">SPLIT PAYMENT BREAKDOWN</p>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 block mb-1.5 uppercase">Cash Amount (මුදලින්)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={splitCashAmount}
+                    onChange={(e) => setSplitCashAmount(e.target.value)}
+                    placeholder="LKR 0.00"
+                    className="input-field text-left font-black focus:outline-none focus:border-violet-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 block mb-1.5 uppercase">Card Amount (කාඩ්පතින්)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={splitCardAmount}
+                    onChange={(e) => setSplitCardAmount(e.target.value)}
+                    placeholder="LKR 0.00"
+                    className="input-field text-left font-black focus:outline-none focus:border-violet-500"
+                  />
+                </div>
+              </div>
+              
+              <div className="bg-slate-950/60 p-3 border border-slate-800 rounded-xl flex items-center justify-between text-xs font-bold font-mono">
+                <span className="text-slate-400">Total Entered:</span>
+                <span className={splitTotal >= grandTotal ? "text-emerald-400 text-sm font-black" : "text-amber-400 text-sm font-black animate-pulse"}>
+                  {fmt(splitTotal)} / {fmt(grandTotal)}
+                </span>
               </div>
             </div>
           )}

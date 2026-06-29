@@ -15,6 +15,7 @@ export function PosProvider({ children }) {
   const [openingFloat, setOpeningFloat] = useState(0)
   const [totalCashSalesToday, setTotalCashSalesToday] = useState(0)
   const [totalCreditSalesToday, setTotalCreditSalesToday] = useState(0)
+  const [totalDigitalSalesToday, setTotalDigitalSalesToday] = useState(0)
   const [totalCashInToday, setTotalCashInToday] = useState(0)
   const [totalCashOutToday, setTotalCashOutToday] = useState(0)
   const [showFloatModal, setShowFloatModal] = useState(false)
@@ -186,6 +187,10 @@ export function PosProvider({ children }) {
     setTotalCreditSalesToday(prev => prev + Number(amount || 0))
   }
 
+  const addDigitalSale = (amount) => {
+    setTotalDigitalSalesToday(prev => prev + Number(amount || 0))
+  }
+
   const recordBakerySales = (soldItems) => {
     setBakeryTracking(prev => {
       const itemsArr = Array.isArray(soldItems) ? soldItems : []
@@ -227,6 +232,8 @@ export function PosProvider({ children }) {
       setTotalCashSalesToday,
       totalCreditSalesToday,
       setTotalCreditSalesToday,
+      totalDigitalSalesToday,
+      setTotalDigitalSalesToday,
       totalCashInToday,
       totalCashOutToday,
       showFloatModal,
@@ -235,6 +242,7 @@ export function PosProvider({ children }) {
       fetchCashSummary,
       addCashSale,
       addCreditSale,
+      addDigitalSale,
       bakeryProducts,
       bakeryTracking,
       recordOpeningFloatAndBakery,
