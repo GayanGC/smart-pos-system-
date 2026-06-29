@@ -42,9 +42,20 @@ export default function ReceiptPrint({
       id="print-receipt"
     >
       <style dangerouslySetInnerHTML={{ __html: `
+        * {
+          font-family: 'Noto Sans Sinhala', -apple-system, sans-serif !important;
+          text-rendering: optimizeLegibility !important;
+          -webkit-font-smoothing: antialiased !important;
+          -moz-osx-font-smoothing: grayscale !important;
+          font-variant-ligatures: common-ligatures !important;
+        }
         @media print {
           * {
-            font-family: 'Noto Sans Sinhala', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-family: 'Noto Sans Sinhala', -apple-system, sans-serif !important;
+            text-rendering: optimizeLegibility !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            font-variant-ligatures: common-ligatures !important;
           }
           html, body, div, svg, img, table, tr, td, th {
             -webkit-print-color-adjust: exact !important;

@@ -2,11 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: 'Noto Sans Sinhala', -apple-system, sans-serif !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-variant-ligatures: common-ligatures !important;
+}
+
 /* ── Base ───────────────────────────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  html { font-family: 'Inter', system-ui, sans-serif; }
+  html { font-family: 'Noto Sans Sinhala', 'Inter', system-ui, sans-serif; }
 
   body {
     @apply bg-slate-950 text-slate-100 antialiased;
