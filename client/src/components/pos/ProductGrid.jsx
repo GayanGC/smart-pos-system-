@@ -222,22 +222,8 @@ export default function ProductGrid({ onAddToCart }) {
   const [error,          setError]          = useState(null)
   const searchRef = useRef(null)
 
-  // Smart Sorting: Frequency tracking
-  const [clickFreq, setClickFreq] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem('pos_item_freq')) || {}
-    } catch {
-      return {}
-    }
-  })
-
   const handleProductClick = useCallback((product) => {
     onAddToCart(product)
-    setClickFreq(prev => {
-      const newFreq = { ...prev, [product?._id]: (prev[product?._id] || 0) + 1 }
-      localStorage.setItem('pos_item_freq', JSON.stringify(newFreq))
-      return newFreq
-    })
   }, [onAddToCart])
 
   // Auto-focus search bar on mount (barcode scanner input target)
@@ -507,12 +493,7 @@ export default function ProductGrid({ onAddToCart }) {
                   <span className="text-[10px] font-bold leading-none">Back to Categories</span>
                 </button>
                 
-                {[...products].sort((a, b) => {
-                  const freqA = clickFreq[a?._id] || 0;
-                  const freqB = clickFreq[b?._id] || 0;
-                  if (freqA !== freqB) return freqB - freqA;
-                  return (a?.name || '').localeCompare(b?.name || '');
-                }).map((p) => (
+                {[...products].sort((a, b) => (a?.name || '').localeCompare(b?.name || '')).map((p) => (
                   <ProductCard key={p?._id} product={p} onAdd={handleProductClick} />
                 ))}
               </div>
