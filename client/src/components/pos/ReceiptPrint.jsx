@@ -99,7 +99,8 @@ export default function ReceiptPrint({
             alt="C Cafe Logo"
             width="64px"
             height="64px"
-            className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md"
+            className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md print:contrast-125 print:brightness-95"
+            style={{ imageRendering: 'pixelated' }}
           />
           <h1 className="text-xl font-black tracking-widest mb-0.5">C CAFE</h1>
           <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>

@@ -84,10 +84,14 @@ export function PosProvider({ children }) {
 
         console.info(`[PosContext] Found ${pending.length} offline invoices. Syncing...`)
         for (const invoice of pending) {
-          const { offlineRef, syncStatus, ...payload } = invoice
-          await api.post('/billing/invoices', payload)
-          await deleteFromStore('offline_sales_queue', offlineRef)
-          console.info(`[PosContext] Synced offline invoice: ${offlineRef}`)
+          try {
+            const { offlineRef, syncStatus, ...payload } = invoice
+            await api.post('/billing/invoices', payload)
+            await deleteFromStore('offline_sales_queue', offlineRef)
+            console.info(`[PosContext] Synced offline invoice: ${offlineRef}`)
+          } catch (singleErr) {
+            console.error(`[PosContext] Failed to sync single invoice ${invoice?.offlineRef}:`, singleErr)
+          }
         }
       } catch (err) {
         console.error('[PosContext] Error syncing offline sales queue:', err)

@@ -316,18 +316,22 @@ export default function ProductGrid({ onAddToCart }) {
     if (!query) return
 
     if (!navigator.onLine) {
-      const { readFromStore } = await import('../../utils/localDb')
-      const allItems = await readFromStore('products_cache')
-      let match = allItems.find(p => p.barcode === query)
-      if (match) {
-        handleProductClick(match)
-        setSearch('')
-        return
-      }
-      match = allItems.find(p => p.sku && p.sku.toUpperCase() === query.toUpperCase())
-      if (match) {
-        handleProductClick(match)
-        setSearch('')
+      try {
+        const { readFromStore } = await import('../../utils/localDb')
+        const allItems = await readFromStore('products_cache')
+        let match = allItems.find(p => p.barcode === query)
+        if (match) {
+          handleProductClick(match)
+          setSearch('')
+          return
+        }
+        match = allItems.find(p => p.sku && p.sku.toUpperCase() === query.toUpperCase())
+        if (match) {
+          handleProductClick(match)
+          setSearch('')
+        }
+      } catch (dbErr) {
+        console.error('[ProductGrid] Offline barcode/SKU search failed:', dbErr)
       }
       return
     }

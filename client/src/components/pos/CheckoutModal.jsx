@@ -102,6 +102,8 @@ export default function CheckoutModal({
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
   const printTimer2Ref = useRef(null)
+  const afterPrintReceiptHandlerRef = useRef(null)
+  const afterPrintKotHandlerRef = useRef(null)
 
   // Sync selectedCustomer to activeCustomer in context
   useEffect(() => {
@@ -151,6 +153,12 @@ export default function CheckoutModal({
       if (selectTimerRef.current) clearTimeout(selectTimerRef.current)
       if (printTimer1Ref.current) clearTimeout(printTimer1Ref.current)
       if (printTimer2Ref.current) clearTimeout(printTimer2Ref.current)
+      if (afterPrintReceiptHandlerRef.current) {
+        window.removeEventListener('afterprint', afterPrintReceiptHandlerRef.current)
+      }
+      if (afterPrintKotHandlerRef.current) {
+        window.removeEventListener('afterprint', afterPrintKotHandlerRef.current)
+      }
     }
   }, [isOpen, grandTotal, activeCustomer])
 
@@ -160,19 +168,23 @@ export default function CheckoutModal({
     printTimer1Ref.current = setTimeout(() => {
       const handleAfterReceiptPrint = () => {
         window.removeEventListener('afterprint', handleAfterReceiptPrint)
+        afterPrintReceiptHandlerRef.current = null
         
         setPrintSequence('kot')
         
         printTimer2Ref.current = setTimeout(() => {
           const handleAfterKotPrint = () => {
             window.removeEventListener('afterprint', handleAfterKotPrint)
+            afterPrintKotHandlerRef.current = null
             setPrintSequence('idle')
           }
+          afterPrintKotHandlerRef.current = handleAfterKotPrint
           window.addEventListener('afterprint', handleAfterKotPrint)
           window.print()
         }, 300)
       }
       
+      afterPrintReceiptHandlerRef.current = handleAfterReceiptPrint
       window.addEventListener('afterprint', handleAfterReceiptPrint)
       window.print()
     }, 400)
