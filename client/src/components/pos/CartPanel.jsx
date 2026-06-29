@@ -24,6 +24,11 @@ export default function CartPanel({
   onClear,
   onCheckout,
   isOnline,
+  heldCart,
+  activeCustomer,
+  setActiveCustomer,
+  onHold,
+  onRecall,
 }) {
   const isEmpty = items.length === 0
 
@@ -121,8 +126,21 @@ export default function CartPanel({
         </div>
       )}
 
+      {/* ── Customer reference input for Hold/Recall ── */}
+      {!heldCart && !isEmpty && (
+        <div className="px-4 pb-2 flex-shrink-0">
+          <input
+            type="text"
+            value={activeCustomer || ''}
+            onChange={(e) => setActiveCustomer(e.target.value)}
+            placeholder="Hold Customer Name / Ref..."
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all font-medium"
+          />
+        </div>
+      )}
+
       {/* ── Checkout button ──────────────────────────────────────── */}
-      <div className="px-4 pb-5 flex-shrink-0">
+      <div className="px-4 pb-3 flex-shrink-0">
         <button
           onClick={onCheckout}
           disabled={isEmpty}
@@ -137,6 +155,29 @@ export default function CartPanel({
             <span className="badge-amber text-[9px] ml-1">Offline</span>
           )}
         </button>
+      </div>
+
+      {/* ── Hold / Recall Bill ── */}
+      <div className="px-4 pb-5 flex-shrink-0">
+        {!heldCart && !isEmpty && (
+          <button
+            onClick={onHold}
+            className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-95 shadow-lg shadow-amber-950/20 cursor-pointer"
+          >
+            ⏸ Hold Bill (බිල නවතන්න)
+          </button>
+        )}
+        {heldCart && (
+          <button
+            onClick={onRecall}
+            className="w-full py-2.5 px-3 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-95 shadow-lg shadow-emerald-950/40 animate-pulse cursor-pointer"
+          >
+            ▶ Recall: {heldCart.customer || 'Regular Customer'}
+            <span className="inline-flex items-center justify-center bg-white text-emerald-700 font-black px-1.5 py-0.5 rounded-full text-[9px] shadow-sm ml-1">
+              {heldCart.items.length} item{heldCart.items.length !== 1 ? 's' : ''}
+            </span>
+          </button>
+        )}
       </div>
     </div>
   )

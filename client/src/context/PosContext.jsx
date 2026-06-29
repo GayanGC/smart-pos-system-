@@ -20,6 +20,8 @@ export function PosProvider({ children }) {
   const [showFloatModal, setShowFloatModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [bakeryProducts, setBakeryProducts] = useState([])
+  const [heldCart, setHeldCart] = useState(null)
+  const [activeCustomer, setActiveCustomer] = useState('Regular Customer')
   
   const [bakeryTracking, setBakeryTracking] = useState(() => {
     try {
@@ -145,6 +147,23 @@ export function PosProvider({ children }) {
     })
   }
 
+  const holdCurrentCart = useCallback((cartItems, promoDiscount, customer) => {
+    setHeldCart({
+      items: JSON.parse(JSON.stringify(cartItems || [])),
+      promoDiscount: JSON.parse(JSON.stringify(promoDiscount || { type: 'percentage', value: 0 })),
+      customer: customer || activeCustomer || 'Regular Customer'
+    })
+    setActiveCustomer('Regular Customer')
+  }, [activeCustomer])
+
+  const recallHeldCart = useCallback(() => {
+    if (!heldCart) return null
+    const result = heldCart
+    setActiveCustomer(result.customer || 'Regular Customer')
+    setHeldCart(null)
+    return result
+  }, [heldCart])
+
   return (
     <PosContext.Provider value={{
       openingFloat,
@@ -164,7 +183,12 @@ export function PosProvider({ children }) {
       bakeryProducts,
       bakeryTracking,
       recordOpeningFloatAndBakery,
-      recordBakerySales
+      recordBakerySales,
+      heldCart,
+      activeCustomer,
+      setActiveCustomer,
+      holdCurrentCart,
+      recallHeldCart
     }}>
       {children}
     </PosContext.Provider>

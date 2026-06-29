@@ -170,6 +170,9 @@ function cartReducer(state, action) {
       const promoDiscount = { type: action.promoType, value: action.promoValue }
       return computeTotals(state.items, promoDiscount)
     }
+    case 'RECALL': {
+      return computeTotals(action.payload.items, action.payload.promoDiscount)
+    }
     case 'CLEAR':
       return INITIAL_CART
     default:
@@ -193,7 +196,12 @@ export default function PosPage() {
     recordOpeningFloatAndBakery,
     bakeryProducts,
     bakeryTracking,
-    fetchCashSummary
+    fetchCashSummary,
+    heldCart,
+    activeCustomer,
+    setActiveCustomer,
+    holdCurrentCart,
+    recallHeldCart
   } = usePos()
 
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART)
@@ -489,6 +497,25 @@ export default function PosPage() {
           onClear={handleClear}
           onCheckout={() => setIsCheckoutOpen(true)}
           isOnline={isOnline}
+          heldCart={heldCart}
+          activeCustomer={activeCustomer}
+          setActiveCustomer={setActiveCustomer}
+          onHold={() => {
+            holdCurrentCart(cart.items, cart.promoDiscount, activeCustomer)
+            dispatch({ type: 'CLEAR' })
+          }}
+          onRecall={() => {
+            const recalled = recallHeldCart()
+            if (recalled) {
+              dispatch({
+                type: 'RECALL',
+                payload: {
+                  items: recalled.items,
+                  promoDiscount: recalled.promoDiscount
+                }
+              })
+            }
+          }}
         />
       </div>
 

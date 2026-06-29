@@ -80,16 +80,22 @@ export default function CheckoutModal({
   const [orderNo,     setOrderNo]     = useState('')
   const amountRef = useRef(null)
   const { user } = useAuth()
-  const { addCashSale, addCreditSale, recordBakerySales } = usePos()
+  const { addCashSale, addCreditSale, recordBakerySales, activeCustomer, setActiveCustomer } = usePos()
 
   // Credit Customer states
   const [customerSearch, setCustomerSearch] = useState('Regular Customer')
   const [selectedCustomer, setSelectedCustomer] = useState('Regular Customer')
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [kotToast, setKotToast] = useState(false)
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
   const printTimer2Ref = useRef(null)
+
+  // Sync selectedCustomer to activeCustomer in context
+  useEffect(() => {
+    setActiveCustomer(selectedCustomer)
+  }, [selectedCustomer, setActiveCustomer])
 
   // Reset state whenever modal opens
   useEffect(() => {
@@ -101,10 +107,11 @@ export default function CheckoutModal({
       setPrintView('receipt')
       setPrintSequence('idle')
       setError(null)
-      setCustomerSearch('Regular Customer')
-      setSelectedCustomer('Regular Customer')
+      setCustomerSearch(activeCustomer || 'Regular Customer')
+      setSelectedCustomer(activeCustomer || 'Regular Customer')
       setDropdownOpen(false)
       setCardStatus('idle')
+      setKotToast(false)
       
       const today = new Date();
       const datePart = today.getFullYear().toString() + 
@@ -121,7 +128,7 @@ export default function CheckoutModal({
       if (printTimer1Ref.current) clearTimeout(printTimer1Ref.current)
       if (printTimer2Ref.current) clearTimeout(printTimer2Ref.current)
     }
-  }, [isOpen, grandTotal])
+  }, [isOpen, grandTotal, activeCustomer])
 
   const triggerSequentialPrint = () => {
     setPrintSequence('receipt')
@@ -176,6 +183,10 @@ export default function CheckoutModal({
       }
       recordBakerySales(lineItems)
       setSuccess(true)
+      setKotToast(true)
+      setTimeout(() => {
+        setKotToast(false)
+      }, 5000)
     } catch (err) {
       setError(err.response?.data?.message || 'Payment failed. Please try again.')
     } finally {
@@ -217,6 +228,24 @@ export default function CheckoutModal({
         {/* Success overlay */}
         {success && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/95 p-4 animate-fade-in overflow-y-auto">
+            
+            {/* KOT success banner/toast */}
+            {kotToast && (
+              <div className="absolute top-4 left-4 right-4 z-20 bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-pulse">
+                <span className="text-lg bg-emerald-500/25 w-8 h-8 rounded-full flex items-center justify-center">👍</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-extrabold text-xs">KOT Sent to Kitchen Successfully!</p>
+                  <p className="text-[10px] text-emerald-400/80 font-medium">කුස්සියේ ඕඩර් එක තහවුරුයි</p>
+                </div>
+                <button 
+                  onClick={() => setKotToast(false)}
+                  className="text-emerald-400/60 hover:text-emerald-400 font-bold text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             <h2 className="text-xl font-bold text-emerald-400 mb-2 print:hidden flex items-center gap-2">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               Payment Complete!
