@@ -185,12 +185,6 @@ export default function ReceiptPrint({
               {paymentMethod === 'mobile_pay' ? 'QR PAY' : (paymentMethod === 'credit' ? 'CREDIT (ණය)' : (paymentMethod === 'split' ? 'SPLIT (මිශ්‍ර)' : paymentMethod))}
             </span>
           </div>
-          {paymentMethod === 'credit' && customerName && (
-            <div className="flex justify-between font-black text-black">
-              <span>Customer:</span>
-              <span className="uppercase font-black">{customerName}</span>
-            </div>
-          )}
           {paymentMethod === 'card' && referenceNumber && (
             <div className="flex justify-between font-bold text-gray-750">
               <span>Auth Ref:</span>

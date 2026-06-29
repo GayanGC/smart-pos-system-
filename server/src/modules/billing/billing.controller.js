@@ -142,7 +142,8 @@ const createInvoice = asyncHandler(async (req, res) => {
 
     // ── Create invoice document ───────────────────────────────────────────────
     const [invoice] = await Invoice.create([{
-      customerName, notes, promoDiscount,
+      customerName: req.body.customerName || req.body.selectedCustomer || (paymentMethod === 'credit' ? "Regular Credit Profile" : undefined),
+      notes, promoDiscount,
       invoiceNumber,
       cashierId: req.user._id,
       lineItems: processedItems,
@@ -161,16 +162,18 @@ const createInvoice = asyncHandler(async (req, res) => {
     }], { session });
 
     // ── Create payment record ─────────────────────────────────────────────────
-    const [payment] = await Payment.create([{
-      invoiceId:     invoice._id,
-      amount:        amountPaidNum,
-      paymentMethod,
-      processedBy:   req.user._id,
-    }], { session });
+    if (paymentMethod !== 'credit' && amountPaidNum > 0) {
+      const [payment] = await Payment.create([{
+        invoiceId:     invoice._id,
+        amount:        amountPaidNum,
+        paymentMethod,
+        processedBy:   req.user._id,
+      }], { session });
 
-    // ── Link payment to invoice ───────────────────────────────────────────────
-    invoice.payments.push(payment._id);
-    await invoice.save({ session });
+      // ── Link payment to invoice ───────────────────────────────────────────────
+      invoice.payments.push(payment._id);
+      await invoice.save({ session });
+    }
 
     // ── Deduct inventory stock ────────────────────────────────────────────────
     await deductStock(processedItems, session);
