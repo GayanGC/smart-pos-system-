@@ -80,6 +80,14 @@ export default function KitchenPrint({
       />
       {/* ── KOT Header ────────────────────────────────────────────── */}
       <div className="text-center mb-4 border-b-2 border-black pb-2 flex flex-col items-center">
+        {/* Brand Logo */}
+        <img 
+          src="/logo.png" 
+          alt="C Cafe Logo"
+          width="64px"
+          height="64px"
+          className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md"
+        />
         <h2 className="text-xl font-black uppercase tracking-widest">KOT</h2>
         <p className="text-xs font-bold uppercase tracking-wider mt-0.5">Kitchen Order Ticket</p>
         <div className="text-base font-black tracking-wider uppercase mt-2 px-4 py-1.5 bg-black text-white rounded">

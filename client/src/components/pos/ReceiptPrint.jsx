@@ -88,10 +88,14 @@ export default function ReceiptPrint({
 
       {/* ── Header ── */}
       <div className="flex flex-col items-center text-center mb-4 mt-1">
-        {/* Solid Black Logo */}
-        <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mb-1.5 shadow-md flex-shrink-0">
-          <span className="font-black text-2xl text-white font-sans">C</span>
-        </div>
+        {/* Brand Logo */}
+        <img 
+          src="/logo.png" 
+          alt="C Cafe Logo"
+          width="64px"
+          height="64px"
+          className="mx-auto block mb-2 rounded-full object-cover flex-shrink-0 shadow-md"
+        />
         <h1 className="text-xl font-black tracking-widest mb-0.5">C CAFE</h1>
         <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>
         <p className="text-[10px] font-bold text-gray-700">Tel: 025 70 29 500</p>
