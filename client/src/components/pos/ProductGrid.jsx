@@ -12,6 +12,7 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import { usePos } from '../../context/PosContext'
 
 /* ── Product Card ─────────────────────────────────────────────────────── */
 const CARD_GRADIENTS = [
@@ -210,6 +211,7 @@ const POS_CATEGORIES = [
 
 export default function ProductGrid({ onAddToCart }) {
   const { user } = useAuth()
+  const { setShowFloatModal, setOpeningFloat } = usePos()
   const [viewLevel, setViewLevel] = useState('categories')
   const [products,       setProducts]       = useState([])
   const [categories,     setCategories]     = useState(POS_CATEGORIES)
@@ -538,8 +540,14 @@ export default function ProductGrid({ onAddToCart }) {
                   
                   try {
                     await api.post('/billing/master-reset');
+                    localStorage.removeItem('isSessionInitialized');
+                    localStorage.removeItem('hasSetOpeningCash');
+                    localStorage.removeItem('pos_shift_bakery_tracking');
+                    sessionStorage.clear();
+                    setShowFloatModal(true);
+                    setOpeningFloat(0);
                     alert("Master system reset completed successfully.");
-                    window.location.reload();
+                    window.location.reload(true);
                   } catch (err) {
                     alert(err?.response?.data?.message || err?.message || "An unexpected error occurred during reset.");
                   }

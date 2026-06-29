@@ -18,7 +18,11 @@ export function PosProvider({ children }) {
   const [totalDigitalSalesToday, setTotalDigitalSalesToday] = useState(0)
   const [totalCashInToday, setTotalCashInToday] = useState(0)
   const [totalCashOutToday, setTotalCashOutToday] = useState(0)
-  const [showFloatModal, setShowFloatModal] = useState(false)
+  const [showFloatModal, setShowFloatModal] = useState(() => {
+    const isInit = localStorage.getItem('isSessionInitialized') === 'true';
+    const hasCash = localStorage.getItem('hasSetOpeningCash') === 'true';
+    return !isInit || !hasCash;
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [bakeryProducts, setBakeryProducts] = useState([])
   const [heldCart, setHeldCart] = useState(null)
@@ -138,7 +142,9 @@ export function PosProvider({ children }) {
 
       // Check if starting_drawer transaction exists
       const hasStartingDrawer = data.transactions && data.transactions.some(tx => tx.type === 'starting_drawer')
-      if (!hasStartingDrawer && data.startingCash === 0) {
+      const isSessionInitialized = localStorage.getItem('isSessionInitialized') === 'true';
+      const hasSetOpeningCash = localStorage.getItem('hasSetOpeningCash') === 'true';
+      if (!isSessionInitialized || !hasSetOpeningCash || (!hasStartingDrawer && data.startingCash === 0)) {
         setShowFloatModal(true)
       } else {
         setShowFloatModal(false)
@@ -176,6 +182,8 @@ export function PosProvider({ children }) {
       }))
       setBakeryTracking(tracking)
       
+      localStorage.setItem('isSessionInitialized', 'true')
+      localStorage.setItem('hasSetOpeningCash', 'true')
       setShowFloatModal(false)
     } catch (err) {
       console.error('Failed to initialize shift:', err)
