@@ -99,6 +99,7 @@ export default function CheckoutModal({
   const [kotToast, setKotToast] = useState(false)
   const [splitCashAmount, setSplitCashAmount] = useState('')
   const [splitCardAmount, setSplitCardAmount] = useState('')
+  const [orderChannel, setOrderChannel] = useState('TAKE AWAY')
 
   const selectTimerRef = useRef(null)
   const printTimer1Ref = useRef(null)
@@ -133,6 +134,7 @@ export default function CheckoutModal({
       setError(null)
       setSplitCashAmount('')
       setSplitCardAmount('')
+      setOrderChannel('TAKE AWAY')
       const initialCust = activeCustomer && activeCustomer !== 'Regular Customer' ? activeCustomer : 'Regular Credit Profile'
       setCustomerSearch(initialCust)
       setSelectedCustomer(initialCust)
@@ -243,6 +245,7 @@ export default function CheckoutModal({
         orderNo:       orderNo,
         splitCashAmount: method === 'split' ? numSplitCash : undefined,
         splitCardAmount: method === 'split' ? numSplitCard : undefined,
+        orderChannel:  orderChannel,
       })
       if (method === 'cash') {
         addCashSale(grandTotal)
@@ -283,6 +286,7 @@ export default function CheckoutModal({
     setCardStatus('idle')
     setSplitCashAmount('')
     setSplitCardAmount('')
+    setOrderChannel('TAKE AWAY')
     if (onSuccessReset) {
       onSuccessReset()
     }
@@ -361,6 +365,7 @@ export default function CheckoutModal({
                   customerName={creditCustomerName.trim() || selectedCustomer}
                   splitCashAmount={splitCashAmount}
                   splitCardAmount={splitCardAmount}
+                  orderChannel={orderChannel}
                 />
               </div>
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
@@ -383,6 +388,7 @@ export default function CheckoutModal({
                   isLivePreview={true}
                   paymentMethod={method}
                   customerName={creditCustomerName.trim() || selectedCustomer}
+                  orderChannel={orderChannel}
                 />
               </div>
             </div>
@@ -406,6 +412,7 @@ export default function CheckoutModal({
                     customerName={creditCustomerName.trim() || selectedCustomer}
                     splitCashAmount={splitCashAmount}
                     splitCardAmount={splitCardAmount}
+                    orderChannel={orderChannel}
                   />
                 </div>
               )}
@@ -439,6 +446,7 @@ export default function CheckoutModal({
                     isLivePreview={false}
                     paymentMethod={method}
                     customerName={creditCustomerName.trim() || selectedCustomer}
+                    orderChannel={orderChannel}
                   />
                 </div>
               )}
@@ -509,6 +517,28 @@ export default function CheckoutModal({
                 >
                   {m.icon}
                   {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {/* ── Order Channel selector ───────────────────────────── */}
+          <div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 mt-4">ORDER CHANNEL (ඕඩර් වර්ගය)</p>
+            <div className="grid grid-cols-4 gap-1.5">
+              {['DINING', 'TAKE AWAY', 'UBER', 'PICKME'].map((ch) => (
+                <button
+                  key={ch}
+                  onClick={() => setOrderChannel(ch)}
+                  className={`
+                    flex items-center justify-center py-2.5 rounded-xl border font-bold text-[10px]
+                    transition-all duration-150
+                    ${orderChannel === ch
+                      ? 'bg-blue-600/20 border-blue-500/60 text-blue-400 shadow-md shadow-blue-900/20'
+                      : 'bg-slate-800/50 border-slate-700/50 text-slate-400 hover:border-slate-600 hover:text-slate-300'}
+                  `}
+                >
+                  {ch === 'DINING' ? '🍽️ DINING (කෑමෙන්)' : ch === 'TAKE AWAY' ? '🛍️ TAKE AWAY' : ch}
                 </button>
               ))}
             </div>

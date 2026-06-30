@@ -4,6 +4,7 @@
  * and the Checkout button. Delegates actual checkout flow to CheckoutModal.
  */
 
+import { useState } from 'react'
 import CartItem from './CartItem'
 
 const fmt = (n) =>
@@ -24,12 +25,13 @@ export default function CartPanel({
   onClear,
   onCheckout,
   isOnline,
-  heldCart,
+  heldCartsList = {},
   activeCustomer,
   setActiveCustomer,
   onHold,
   onRecall,
 }) {
+  const [showSlots, setShowSlots] = useState(false)
   const isEmpty = items.length === 0
 
   return (
@@ -127,7 +129,7 @@ export default function CartPanel({
       )}
 
       {/* ── Customer reference input for Hold/Recall ── */}
-      {!heldCart && !isEmpty && (
+      {!isEmpty && (
         <div className="px-4 pb-2 flex-shrink-0">
           <input
             type="text"
@@ -159,24 +161,54 @@ export default function CartPanel({
 
       {/* ── Hold / Recall Bill ── */}
       <div className="px-4 pb-5 flex-shrink-0">
-        {!heldCart && !isEmpty && (
-          <button
-            onClick={onHold}
-            className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-95 shadow-lg shadow-amber-950/20 cursor-pointer"
-          >
-            ⏸ Hold Bill (බිල නවතන්න)
-          </button>
+        {!isEmpty && (
+          <div className="mb-2">
+            <button
+              onClick={() => setShowSlots(!showSlots)}
+              className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-95 shadow-lg shadow-amber-950/20 cursor-pointer"
+            >
+              ⏸ HOLD TO SLOT / ටේබල් එකට දාන්න {showSlots ? '▼' : '▶'}
+            </button>
+            {showSlots && (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Uber/Delivery Slot'].map(slot => (
+                  <button
+                    key={slot}
+                    onClick={() => { onHold(slot); setShowSlots(false); }}
+                    disabled={!!heldCartsList[slot]}
+                    className={`py-2 px-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                      heldCartsList[slot] 
+                        ? 'bg-slate-800 border-slate-700 text-slate-500 opacity-50 cursor-not-allowed' 
+                        : 'bg-slate-800/80 hover:bg-amber-500/20 hover:border-amber-500/50 text-slate-300 border-slate-700'
+                    }`}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
-        {heldCart && (
-          <button
-            onClick={onRecall}
-            className="w-full py-2.5 px-3 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-95 shadow-lg shadow-emerald-950/40 animate-pulse cursor-pointer"
-          >
-            ▶ Recall: {heldCart.customer || 'Regular Customer'}
-            <span className="inline-flex items-center justify-center bg-white text-emerald-700 font-black px-1.5 py-0.5 rounded-full text-[9px] shadow-sm ml-1">
-              {heldCart.items.length} item{heldCart.items.length !== 1 ? 's' : ''}
-            </span>
-          </button>
+        
+        {Object.keys(heldCartsList).length > 0 && (
+          <div className="mt-3">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Recall Bill (පරණ බිල ගන්න)</div>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.entries(heldCartsList).map(([slot, data]) => (
+                <button
+                  key={slot}
+                  onClick={() => onRecall(slot)}
+                  className="py-2 px-2 rounded-lg text-[10px] font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 transition-all duration-150 flex flex-col items-center justify-center gap-1 shadow-lg shadow-emerald-950/40 animate-pulse cursor-pointer relative"
+                  title={data.customer}
+                >
+                  <span className="text-[11px] truncate w-full text-center">{slot}</span>
+                  <span className="inline-flex items-center justify-center bg-white text-emerald-700 font-black px-1.5 py-0.5 rounded-full text-[9px] shadow-sm">
+                    {data.items.length} item{data.items.length !== 1 ? 's' : ''}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -7,6 +7,7 @@ export default function KitchenPrint({
   isLivePreview = false,
   paymentMethod,
   customerName,
+  orderChannel,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -61,6 +62,14 @@ export default function KitchenPrint({
 
       {/* ── KOT Header ── */}
       <div className="text-center mb-2">
+        {/* Channel Banner */}
+        {orderChannel && (
+          <div className="w-full text-center border-b-2 border-black border-dashed pb-1 mb-1.5">
+            <span className="text-sm font-black tracking-widest uppercase bg-black text-white px-2 py-0.5 rounded-sm">
+              [ TYPE: {orderChannel} ]
+            </span>
+          </div>
+        )}
         <h2 className="text-base font-black tracking-widest uppercase">KOT</h2>
         <div className="text-sm font-black tracking-wider uppercase bg-black text-white px-2 py-0.5 rounded inline-block mt-0.5">
           ORDER NO: #{invoiceNumber || 'NEW'}

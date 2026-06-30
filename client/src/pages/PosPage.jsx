@@ -198,7 +198,7 @@ export default function PosPage() {
     bakeryProducts,
     bakeryTracking,
     fetchCashSummary,
-    heldCart,
+    heldCartsList,
     activeCustomer,
     setActiveCustomer,
     holdCurrentCart,
@@ -260,7 +260,7 @@ export default function PosPage() {
   const handleClear         = useCallback(()          => dispatch({ type: 'CLEAR' }),                                [])
 
   // ── Checkout ───────────────────────────────────────────────────────────
-  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo, splitCashAmount, splitCardAmount }) => {
+  const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo, splitCashAmount, splitCardAmount, orderChannel }) => {
     setCheckoutLoading(true)
     try {
       const lineItems = cart.items.map((item) => {
@@ -297,6 +297,7 @@ export default function PosPage() {
         orderNo: orderNo,
         splitCashAmount: splitCashAmount || undefined,
         splitCardAmount: splitCardAmount || undefined,
+        orderChannel: orderChannel || 'TAKE AWAY',
       }
 
       try {
@@ -515,15 +516,15 @@ export default function PosPage() {
           onClear={handleClear}
           onCheckout={() => setIsCheckoutOpen(true)}
           isOnline={isOnline}
-          heldCart={heldCart}
+          heldCartsList={heldCartsList}
           activeCustomer={activeCustomer}
           setActiveCustomer={setActiveCustomer}
-          onHold={() => {
-            holdCurrentCart(cart.items, cart.promoDiscount, activeCustomer)
+          onHold={(slot) => {
+            holdCurrentCart(slot, cart.items, cart.promoDiscount, activeCustomer)
             dispatch({ type: 'CLEAR' })
           }}
-          onRecall={() => {
-            const recalled = recallHeldCart()
+          onRecall={(slot) => {
+            const recalled = recallHeldCart(slot)
             if (recalled) {
               dispatch({
                 type: 'RECALL',

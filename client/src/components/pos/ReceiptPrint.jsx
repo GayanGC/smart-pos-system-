@@ -18,6 +18,7 @@ export default function ReceiptPrint({
   referenceNumber,
   splitCashAmount,
   splitCardAmount,
+  orderChannel,
 }) {
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
@@ -93,6 +94,14 @@ export default function ReceiptPrint({
       <div className="relative z-10 flex flex-col h-full">
         {/* ── Header ── */}
         <div className="flex flex-col items-center text-center mb-1 mt-0.5">
+          {/* Channel Banner */}
+          {orderChannel && (
+            <div className="w-full text-center border-b-2 border-black border-dashed pb-1 mb-1.5">
+              <span className="text-sm font-black tracking-widest uppercase bg-black text-white px-2 py-0.5 rounded-sm">
+                [ TYPE: {orderChannel} ]
+              </span>
+            </div>
+          )}
           {/* Brand Logo */}
           <img 
             src="/logo.png" 

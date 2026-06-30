@@ -25,7 +25,7 @@ export function PosProvider({ children }) {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [bakeryProducts, setBakeryProducts] = useState([])
-  const [heldCart, setHeldCart] = useState(null)
+  const [heldCartsList, setHeldCartsList] = useState({})
   const [activeCustomer, setActiveCustomer] = useState('Regular Customer')
   
   const [bakeryTracking, setBakeryTracking] = useState(() => {
@@ -219,22 +219,30 @@ export function PosProvider({ children }) {
     })
   }
 
-  const holdCurrentCart = useCallback((cartItems, promoDiscount, customer) => {
-    setHeldCart({
-      items: JSON.parse(JSON.stringify(cartItems || [])),
-      promoDiscount: JSON.parse(JSON.stringify(promoDiscount || { type: 'percentage', value: 0 })),
-      customer: customer || activeCustomer || 'Regular Customer'
-    })
+  const holdCurrentCart = useCallback((slot, cartItems, promoDiscount, customer) => {
+    setHeldCartsList(prev => ({
+      ...prev,
+      [slot]: {
+        items: JSON.parse(JSON.stringify(cartItems || [])),
+        promoDiscount: JSON.parse(JSON.stringify(promoDiscount || { type: 'percentage', value: 0 })),
+        customer: customer || activeCustomer || 'Regular Customer',
+        timestamp: Date.now()
+      }
+    }))
     setActiveCustomer('Regular Customer')
   }, [activeCustomer])
 
-  const recallHeldCart = useCallback(() => {
-    if (!heldCart) return null
-    const result = heldCart
+  const recallHeldCart = useCallback((slot) => {
+    if (!heldCartsList[slot]) return null
+    const result = heldCartsList[slot]
     setActiveCustomer(result.customer || 'Regular Customer')
-    setHeldCart(null)
+    setHeldCartsList(prev => {
+      const next = { ...prev }
+      delete next[slot]
+      return next
+    })
     return result
-  }, [heldCart])
+  }, [heldCartsList])
 
   return (
     <PosContext.Provider value={{
@@ -259,7 +267,7 @@ export function PosProvider({ children }) {
       bakeryTracking,
       recordOpeningFloatAndBakery,
       recordBakerySales,
-      heldCart,
+      heldCartsList,
       activeCustomer,
       setActiveCustomer,
       holdCurrentCart,
