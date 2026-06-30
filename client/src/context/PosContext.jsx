@@ -220,6 +220,10 @@ export function PosProvider({ children }) {
   }
 
   const holdCurrentCart = useCallback((slot, cartItems, promoDiscount, customer) => {
+    if (heldCartsList[slot]) {
+      alert("This slot/table is currently occupied! Please clear or recall it first.")
+      return false
+    }
     setHeldCartsList(prev => ({
       ...prev,
       [slot]: {
@@ -230,7 +234,8 @@ export function PosProvider({ children }) {
       }
     }))
     setActiveCustomer('Regular Customer')
-  }, [activeCustomer])
+    return true
+  }, [activeCustomer, heldCartsList])
 
   const recallHeldCart = useCallback((slot) => {
     if (!heldCartsList[slot]) return null

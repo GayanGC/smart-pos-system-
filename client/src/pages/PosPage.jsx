@@ -520,8 +520,10 @@ export default function PosPage() {
           activeCustomer={activeCustomer}
           setActiveCustomer={setActiveCustomer}
           onHold={(slot) => {
-            holdCurrentCart(slot, cart.items, cart.promoDiscount, activeCustomer)
-            dispatch({ type: 'CLEAR' })
+            const success = holdCurrentCart(slot, cart.items, cart.promoDiscount, activeCustomer)
+            if (success !== false) {
+              dispatch({ type: 'CLEAR' })
+            }
           }}
           onRecall={(slot) => {
             const recalled = recallHeldCart(slot)

@@ -212,10 +212,16 @@ export default function CheckoutModal({
 
   const canSubmit = method === 'cash'
     ? numericPaid >= grandTotal
-    : (method === 'credit' ? (!!selectedCustomer.trim() || !!creditCustomerName.trim()) : (method === 'split' ? splitTotal >= grandTotal : true))
+    : (method === 'credit' ? !!creditCustomerName.trim() : (method === 'split' ? splitTotal >= grandTotal : true))
 
   const handleConfirm = async () => {
     if (localSubmitting || loading) return
+    
+    if (method === 'credit' && !creditCustomerName.trim()) {
+      setError("Please type a customer name for this credit record.")
+      return
+    }
+
     setError(null)
     
     let finalRef = cardRef

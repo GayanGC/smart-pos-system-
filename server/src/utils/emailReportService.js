@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const Invoice = require('../modules/billing/invoice.model');
 const Product = require('../modules/inventory/product.model');
+const Payment = require('../modules/billing/payment.model');
 const logger = require('./logger');
 
 const generateDailyReportData = async () => {
@@ -70,6 +71,36 @@ const generateDailyReportData = async () => {
       cardSales += (inv.splitCardAmount || 0);
     }
   });
+
+  // Aggregate outstanding debts collected today
+  const paymentsToday = await Payment.find({
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+    status: 'completed'
+  }).populate('invoiceId');
+
+  let debtCollectedCash = 0;
+  let debtCollectedCard = 0;
+
+  paymentsToday.forEach(payment => {
+    const inv = payment.invoiceId;
+    if (inv && inv.paymentMethod === 'credit') {
+      // If the invoice was created before today, it's a pure past debt collection
+      const isPastInvoice = inv.createdAt < startOfDay;
+      // Alternatively, if it was created today but settled today, 
+      // it shifts from creditSales to cash/card sales.
+      if (isPastInvoice) {
+        if (payment.paymentMethod === 'cash') debtCollectedCash += payment.amount;
+        else if (payment.paymentMethod === 'card' || payment.paymentMethod === 'mobile_pay') debtCollectedCard += payment.amount;
+      } else {
+        // Shift today's credit to actual cash/card
+        creditSales -= payment.amount;
+        if (payment.paymentMethod === 'cash') cashSales += payment.amount;
+        else if (payment.paymentMethod === 'card' || payment.paymentMethod === 'mobile_pay') cardSales += payment.amount;
+      }
+    }
+  });
+
+  totalSales += debtCollectedCash + debtCollectedCard;
 
   // 4. Compute Bakery Waste Items Deducted (all leftover bakery items remaining in stock at EOD)
   const bakeryProducts = await Product.find({
@@ -279,7 +310,7 @@ const startReportScheduler = () => {
     } catch (err) {
       logger.error('[Scheduler] Failed to send daily report due to error/timeout:', err);
     }
-  });
+  }, { scheduled: true, timezone: "Asia/Colombo" });
 };
 
 module.exports = {
