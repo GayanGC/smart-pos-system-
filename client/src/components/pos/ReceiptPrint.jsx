@@ -242,9 +242,7 @@ export default function ReceiptPrint({
           <p className="text-[8px] font-bold text-gray-750 uppercase tracking-tight leading-normal">
             POS System Developed by: kinship27
           </p>
-          <p className="text-[8px] font-bold text-gray-750 tracking-tight leading-normal mt-0.5">
-            Tel: 0760126663
-          </p>
+          <div className="text-xs font-semibold tracking-normal mt-0.5">Contact: 0787327640</div>
 
           {/* Bottom Right AI Manager Logo */}
           <div className="w-full flex justify-end mt-1">
