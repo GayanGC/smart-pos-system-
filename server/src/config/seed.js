@@ -146,7 +146,8 @@ const seedDB = async () => {
     const products = [];
     for (let index = 0; index < productsData.length; index++) {
       const p = productsData[index];
-      const sId = index % 2 === 0 ? 'store_1' : 'store_2';
+      // Seed all products to store_1 for admin visibility
+      const sId = 'store_1';
       const product = await Product.create({
         name: p.name,
         sku: p.sku,
