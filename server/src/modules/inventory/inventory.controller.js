@@ -52,7 +52,7 @@ const getProducts = asyncHandler(async (req, res) => {
   } = req.query;
 
   // ── Build filter ───────────────────────────────────────────────────────
-  const filter = { isActive: true };
+  const filter = { isActive: true, storeId: req.user.storeId };
   if (category) filter.category = category;
   if (search)   filter.$text    = { $search: search };
 
@@ -100,6 +100,7 @@ const createProduct = asyncHandler(async (req, res) => {
     lowStockThreshold: req.body.lowStockThreshold,
     expiryDate: req.body.expiryDate,
     imageUrl: req.body.imageUrl,
+    storeId: req.user.storeId,
   };
 
   // If a supplierId is provided, sync the supplier snapshot
@@ -125,7 +126,7 @@ const createProduct = asyncHandler(async (req, res) => {
  * @desc  Get a single product by MongoDB ID
  */
 const getProductById = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findOne({ _id: req.params.id, storeId: req.user.storeId });
   if (!product || !product.isActive) {
     return sendError(res, { statusCode: 404, message: 'Product not found.' });
   }
@@ -136,7 +137,7 @@ const getProductById = asyncHandler(async (req, res) => {
  * @desc  Get a product by SKU (used by POS system)
  */
 const getProductBySku = asyncHandler(async (req, res) => {
-  const product = await Product.findOne({ sku: req.params.sku.toUpperCase(), isActive: true });
+  const product = await Product.findOne({ sku: req.params.sku.toUpperCase(), isActive: true, storeId: req.user.storeId });
   if (!product) {
     return sendError(res, { statusCode: 404, message: `No product found with SKU '${req.params.sku}'.` });
   }
@@ -147,7 +148,7 @@ const getProductBySku = asyncHandler(async (req, res) => {
  * @desc  Get a product by barcode (fastest path for POS barcode scanner)
  */
 const getProductByBarcode = asyncHandler(async (req, res) => {
-  const product = await Product.findOne({ barcode: req.params.barcode, isActive: true });
+  const product = await Product.findOne({ barcode: req.params.barcode, isActive: true, storeId: req.user.storeId });
   if (!product) {
     return sendError(res, { statusCode: 404, message: `No product found with barcode '${req.params.barcode}'.` });
   }
@@ -158,7 +159,7 @@ const getProductByBarcode = asyncHandler(async (req, res) => {
  * @desc  Update a product
  */
 const updateProduct = asyncHandler(async (req, res) => {
-  const existing = await Product.findById(req.params.id);
+  const existing = await Product.findOne({ _id: req.params.id, storeId: req.user.storeId });
   if (!existing) {
     return sendError(res, { statusCode: 404, message: 'Product not found.' });
   }
@@ -196,7 +197,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     };
   }
 
-  const product = await Product.findByIdAndUpdate(req.params.id, updateOp, {
+  const product = await Product.findOneAndUpdate({ _id: req.params.id, storeId: req.user.storeId }, updateOp, {
     new:            true,
     runValidators:  true,
   });
@@ -208,8 +209,8 @@ const updateProduct = asyncHandler(async (req, res) => {
  * @desc  Soft-delete a product (sets isActive = false)
  */
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findByIdAndUpdate(
-    req.params.id,
+  const product = await Product.findOneAndUpdate(
+    { _id: req.params.id, storeId: req.user.storeId },
     { isActive: false },
     { new: true }
   );
@@ -238,7 +239,7 @@ const adjustProductStock = asyncHandler(async (req, res) => {
   const incValue = type === 'add' ? qty : -qty;
 
   // Use $inc for atomic updates, ensure quantity doesn't drop below 0 if reducing
-  const query = { _id: id };
+  const query = { _id: id, storeId: req.user.storeId };
   if (type === 'reduce') {
     query.quantityInStock = { $gte: qty };
   }
@@ -268,6 +269,7 @@ const adjustProductStock = asyncHandler(async (req, res) => {
 const getLowStockAlerts = asyncHandler(async (req, res) => {
   const lowStockItems = await Product.find({
     isActive: true,
+    storeId: req.user.storeId,
     $expr: { $lte: ['$quantityInStock', '$lowStockThreshold'] },
   }).sort({ quantityInStock: 1 }); // most critical first
 
@@ -289,6 +291,7 @@ const getExpiringProducts = asyncHandler(async (req, res) => {
 
   const expiring = await Product.find({
     isActive:   true,
+    storeId: req.user.storeId,
     expiryDate: { $lte: cutoff, $gte: new Date() }, // between now and cutoff
   }).sort({ expiryDate: 1 }); // soonest expiry first
 

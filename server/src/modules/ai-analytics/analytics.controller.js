@@ -580,8 +580,80 @@ const endChatSession = asyncHandler(async (req, res) => {
   return sendSuccess(res, { data: session, message: 'Session ended successfully.' });
 });
 
+/**
+ * @desc  Super Admin Multi-Store Dashboard Aggregation
+ * @route GET /api/analytics/super-admin/dashboard
+ */
+const getSuperAdminDashboard = asyncHandler(async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  const dateFilter = {};
+  if (startDate) dateFilter.$gte = new Date(startDate);
+  if (endDate)   dateFilter.$lte = new Date(endDate);
+
+  const invoiceMatch = {
+    isVoided: false,
+    ...(Object.keys(dateFilter).length > 0 && { createdAt: dateFilter }),
+  };
+
+  // 1. Sales totals & Performance metrics grouped by storeId
+  const salesSummary = await Invoice.aggregate([
+    { $match: invoiceMatch },
+    {
+      $group: {
+        _id:                '$storeId',
+        totalRevenue:       { $sum: '$grandTotal' },
+        totalInvoices:      { $sum: 1 },
+        avgOrderValue:      { $avg: '$grandTotal' },
+        totalTaxCollected:  { $sum: '$totalTax' },
+        totalDiscountGiven: { $sum: '$totalDiscount' },
+      },
+    },
+    { $sort: { totalRevenue: -1 } }
+  ]);
+
+  // 2. Inventory alerts (low stock items) grouped by storeId
+  const inventorySummary = await Product.aggregate([
+    { 
+      $match: { 
+        isActive: true, 
+        $expr: { $lte: ['$quantityInStock', '$lowStockThreshold'] } 
+      } 
+    },
+    {
+      $group: {
+        _id:           '$storeId',
+        lowStockCount: { $sum: 1 },
+      },
+    },
+  ]);
+
+  // 3. Sales by payment method grouped by storeId
+  const paymentMethodSummary = await Invoice.aggregate([
+    { $match: invoiceMatch },
+    {
+      $group: {
+        _id:   { storeId: '$storeId', paymentMethod: '$paymentMethod' },
+        total: { $sum: '$grandTotal' },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { '_id.storeId': 1, total: -1 } },
+  ]);
+
+  return sendSuccess(res, {
+    data: {
+      salesSummary,
+      inventorySummary,
+      paymentMethodSummary,
+    },
+    message: 'Super Admin Dashboard metrics retrieved successfully.',
+  });
+});
+
 module.exports = {
   getPredictions, createPrediction, getPredictionById,
   getAnalyticsSummary,
   startChatSession, appendMessage, processChat, getChatSessions, getChatSessionById, endChatSession,
+  getSuperAdminDashboard,
 };

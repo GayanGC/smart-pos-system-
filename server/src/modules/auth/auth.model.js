@@ -72,6 +72,12 @@ const UserSchema = new mongoose.Schema(
     // ── Password reset ───────────────────────────────────────────────────────
     passwordResetToken:   { type: String, select: false },
     passwordResetExpires: { type: Date,   select: false },
+
+    // ── Multi-tenant ──────────────────────────────────────────────────────────
+    storeId: {
+      type:     String,
+      required: [true, 'Store ID is required.'],
+    },
   },
   {
     timestamps: true, // adds createdAt and updatedAt automatically
@@ -79,8 +85,9 @@ const UserSchema = new mongoose.Schema(
 );
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-UserSchema.index({ email: 1 });
-UserSchema.index({ role:  1 });
+UserSchema.index({ email:   1 });
+UserSchema.index({ role:    1 });
+UserSchema.index({ storeId: 1 });
 
 // ─── Pre-save hook: hash password ─────────────────────────────────────────
 UserSchema.pre('save', async function (next) {

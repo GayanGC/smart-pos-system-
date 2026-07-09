@@ -152,6 +152,12 @@ const ProductSchema = new mongoose.Schema(
 
     // ── Media ─────────────────────────────────────────────────────────────────
     imageUrl: { type: String, trim: true },
+
+    // ── Multi-tenant ──────────────────────────────────────────────────────────
+    storeId: {
+      type:     String,
+      required: [true, 'Store ID is required.'],
+    },
   },
   {
     timestamps: true,
@@ -174,8 +180,9 @@ ProductSchema.virtual('isExpired').get(function () {
 });
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-ProductSchema.index({ sku: 1 });
+ProductSchema.index({ sku:     1 });
 ProductSchema.index({ barcode: 1 });
+ProductSchema.index({ storeId: 1 });
 ProductSchema.index({ category: 1, isActive: 1 });
 ProductSchema.index({ name: 'text', description: 'text', brand: 'text' }); // full-text
 ProductSchema.index({ 'supplier.supplierId': 1 });

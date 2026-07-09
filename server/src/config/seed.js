@@ -10,6 +10,7 @@ const Product = require('../modules/inventory/product.model');
 const Supplier = require('../modules/inventory/supplier.model');
 const Invoice = require('../modules/billing/invoice.model');
 const Attendance = require('../modules/employees/attendance.model');
+const StoreConfig = require('../modules/billing/storeConfig.model');
 
 const { USER_ROLES, PAYMENT_METHODS, INVOICE_STATUS, ATTENDANCE_STATUS } = require('./constants');
 
@@ -26,8 +27,28 @@ const seedDB = async () => {
       Supplier.deleteMany({}),
       Invoice.deleteMany({}),
       Attendance.deleteMany({}),
+      StoreConfig.deleteMany({}),
     ]);
     console.log('✅ Collections dropped');
+
+    // ─── 0. Store Configs ──────────────────────────────────────────────────
+    console.log('🌱 Seeding StoreConfigs...');
+    await StoreConfig.create([
+      {
+        storeId: 'store_1',
+        storeName: 'C Café Main',
+        address: 'No 650, Airport Road, Anuradhapura',
+        phone: '025 70 29 500',
+        receiptFooter: 'Thank You for Dining with Us!'
+      },
+      {
+        storeId: 'store_2',
+        storeName: 'C Café Airport',
+        address: 'Airport Terminal, Colombo',
+        phone: '011 22 33 444',
+        receiptFooter: 'Please Come Again!'
+      }
+    ]);
 
     // ─── 1. Users & Employees ──────────────────────────────────────────────
     console.log('🌱 Seeding Users and Employees...');
@@ -37,6 +58,7 @@ const seedDB = async () => {
       email: 'admin@example.com',
       password: 'admin1234',
       role: USER_ROLES.SUPER_ADMIN,
+      storeId: 'store_1',
     });
 
     const cashier1 = await User.create({
@@ -44,6 +66,7 @@ const seedDB = async () => {
       email: 'alice@example.com',
       password: 'password123',
       role: USER_ROLES.CASHIER,
+      storeId: 'store_1',
     });
 
     const cashier2 = await User.create({
@@ -51,6 +74,7 @@ const seedDB = async () => {
       email: 'bob@example.com',
       password: 'password123',
       role: USER_ROLES.CASHIER,
+      storeId: 'store_2',
     });
 
     const emp1 = await Employee.create({
@@ -120,7 +144,9 @@ const seedDB = async () => {
     ];
 
     const products = [];
-    for (const p of productsData) {
+    for (let index = 0; index < productsData.length; index++) {
+      const p = productsData[index];
+      const sId = index % 2 === 0 ? 'store_1' : 'store_2';
       const product = await Product.create({
         name: p.name,
         sku: p.sku,
@@ -137,6 +163,7 @@ const seedDB = async () => {
           phone: p.supp.phone,
           email: p.supp.email,
         },
+        storeId: sId,
       });
       products.push(product);
     }
@@ -184,6 +211,7 @@ const seedDB = async () => {
       const grandTotal = subTotal + totalTax;
       const isVoided = i % 12 === 0; // approximately 2 voided invoices
       const pMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+      const sId = (i % 2 === 0) ? 'store_1' : 'store_2';
       
       await Invoice.create({
         invoiceNumber: `INV-${1000 + i}`,
@@ -193,6 +221,7 @@ const seedDB = async () => {
         totalDiscount: 0,
         totalTax,
         grandTotal,
+        finalTotal: grandTotal,
         amountPaid: grandTotal,
         changeDue: 0,
         paymentMethod: pMethod,
@@ -202,6 +231,7 @@ const seedDB = async () => {
         voidedBy: isVoided ? adminUser._id : undefined,
         voidedAt: isVoided ? new Date() : undefined,
         createdAt: invoiceDate,
+        storeId: sId,
       });
     }
 

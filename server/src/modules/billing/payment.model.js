@@ -54,6 +54,12 @@ const PaymentSchema = new mongoose.Schema(
     },
 
     notes: { type: String, maxlength: 300 },
+
+    // ── Multi-tenant ──────────────────────────────────────────────────────────
+    storeId: {
+      type:     String,
+      required: [true, 'Store ID is required.'],
+    },
   },
   {
     timestamps: true,
@@ -62,6 +68,7 @@ const PaymentSchema = new mongoose.Schema(
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
 PaymentSchema.index({ invoiceId: 1 });
+PaymentSchema.index({ storeId:   1 });
 PaymentSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Payment', PaymentSchema);

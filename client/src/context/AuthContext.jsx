@@ -19,6 +19,7 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
+  const [storeConfig, setStoreConfig] = useState(null)
   const [token,   setToken]   = useState(() => localStorage.getItem('erp_token'))
   const [loading, setLoading] = useState(true)
 
@@ -44,6 +45,7 @@ export function AuthProvider({ children }) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
         const { data } = await api.get('/auth/me')
         setUser(sanitizeUser(data.data.user))
+        setStoreConfig(data.data.storeConfig)
         initOfflineSync(token)          // boot offline sync after auth confirmed
       } catch {
         // Token is invalid or expired — clear it
@@ -51,6 +53,7 @@ export function AuthProvider({ children }) {
         delete api.defaults.headers.common['Authorization']
         setToken(null)
         setUser(null)
+        setStoreConfig(null)
       } finally {
         setLoading(false)
       }
@@ -62,12 +65,13 @@ export function AuthProvider({ children }) {
   // ── Login with email + password ───────────────────────────────────────────
   const login = useCallback(async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password })
-    const { token: newToken, user: newUser } = data.data
+    const { token: newToken, user: newUser, storeConfig: newStoreConfig } = data.data
     localStorage.setItem('erp_token', newToken)
     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
     setToken(newToken)
     const sanitized = sanitizeUser(newUser)
     setUser(sanitized)
+    setStoreConfig(newStoreConfig)
     initOfflineSync(newToken)
     return sanitized
   }, [sanitizeUser])
@@ -79,6 +83,7 @@ export function AuthProvider({ children }) {
     delete api.defaults.headers.common['Authorization']
     setToken(null)
     setUser(null)
+    setStoreConfig(null)
   }, [])
 
   // ── Update token (e.g. after refresh) ────────────────────────────────────
@@ -101,7 +106,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, token, loading,
+      user, storeConfig, token, loading,
       login, logout, refreshToken,
       isAdmin, isCashier, isSuperAdmin, hasRole,
     }}>

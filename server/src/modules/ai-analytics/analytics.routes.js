@@ -23,11 +23,19 @@ const {
   getPredictions, createPrediction, getPredictionById,
   getAnalyticsSummary,
   startChatSession, appendMessage, processChat, getChatSessions, getChatSessionById, endChatSession,
+  getSuperAdminDashboard,
 } = require('./analytics.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
 
 // All analytics routes require authentication
 router.use(protect);
+
+// ── Super Admin Dashboard ──────────────────────────────────────────────────
+router.get(
+  '/super-admin/dashboard',
+  authorize('super_admin'),
+  getSuperAdminDashboard
+);
 
 // ── Summary dashboard ──────────────────────────────────────────────────────
 router.get(

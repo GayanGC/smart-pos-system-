@@ -161,6 +161,12 @@ const InvoiceSchema = new mongoose.Schema(
     // ── Metadata ──────────────────────────────────────────────────────────────
     notes:  { type: String, maxlength: [500] },
     branch: { type: String, trim: true, default: 'Main Branch' },
+
+    // ── Multi-tenant ──────────────────────────────────────────────────────────
+    storeId: {
+      type:     String,
+      required: [true, 'Store ID is required.'],
+    },
   },
   {
     timestamps: true,
@@ -178,6 +184,7 @@ InvoiceSchema.virtual('balanceDue').get(function () {
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
 InvoiceSchema.index({ invoiceNumber:    1 });
+InvoiceSchema.index({ storeId:          1 });
 InvoiceSchema.index({ cashierId: 1, createdAt: -1 });
 InvoiceSchema.index({ status:          1 });
 InvoiceSchema.index({ isOfflineCreated: 1 });

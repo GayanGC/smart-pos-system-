@@ -25,7 +25,7 @@ const signToken = (id) =>
   });
 
 // ─── Helper: build + send token response ──────────────────────────────────
-const sendTokenResponse = (res, user, statusCode = 200, message = 'Success') => {
+const sendTokenResponse = async (res, user, statusCode = 200, message = 'Success') => {
   const token = signToken(user._id);
 
   // Strip sensitive fields before sending user object
@@ -36,7 +36,10 @@ const sendTokenResponse = (res, user, statusCode = 200, message = 'Success') => 
   delete userObj.passwordResetToken;
   delete userObj.passwordResetExpires;
 
-  return sendSuccess(res, { statusCode, message, data: { token, user: userObj } });
+  const StoreConfig = require('../billing/storeConfig.model');
+  const storeConfig = await StoreConfig.findOne({ storeId: user.storeId });
+
+  return sendSuccess(res, { statusCode, message, data: { token, user: userObj, storeConfig } });
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -45,7 +48,7 @@ const sendTokenResponse = (res, user, statusCode = 200, message = 'Success') => 
 //  @access  Public (or Super Admin only — adjust authorize() in routes)
 // ═══════════════════════════════════════════════════════════════════════════
 const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, storeId } = req.body;
 
   // Check for existing email
   const existing = await User.findOne({ email });
@@ -54,14 +57,14 @@ const register = asyncHandler(async (req, res) => {
   }
 
   // Create the user (password is hashed by the pre-save hook)
-  const user = await User.create({ name, email, password, role });
+  const user = await User.create({ name, email, password, role, storeId });
 
   // If the new user is a cashier, automatically create a Cashier profile
   if (user.role === 'cashier') {
     await Cashier.create({ userId: user._id });
   }
 
-  return sendTokenResponse(res, user, 201, 'Account created successfully.');
+  return await sendTokenResponse(res, user, 201, 'Account created successfully.');
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -97,7 +100,7 @@ const login = asyncHandler(async (req, res) => {
   user.lastLogin = new Date();
   await user.save({ validateBeforeSave: false });
 
-  return sendTokenResponse(res, user, 200, 'Login successful.');
+  return await sendTokenResponse(res, user, 200, 'Login successful.');
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -172,7 +175,7 @@ const loginWithQr = asyncHandler(async (req, res) => {
   user.lastLogin      = new Date();
   await user.save({ validateBeforeSave: false });
 
-  return sendTokenResponse(res, user, 200, 'QR login successful.');
+  return await sendTokenResponse(res, user, 200, 'QR login successful.');
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -190,8 +193,11 @@ const getMe = asyncHandler(async (req, res) => {
     cashierProfile = await Cashier.findOne({ userId: user._id });
   }
 
+  const StoreConfig = require('../billing/storeConfig.model');
+  const storeConfig = await StoreConfig.findOne({ storeId: user.storeId });
+
   return sendSuccess(res, {
-    data: { user, cashierProfile },
+    data: { user, cashierProfile, storeConfig },
     message: 'Profile fetched successfully.',
   });
 });

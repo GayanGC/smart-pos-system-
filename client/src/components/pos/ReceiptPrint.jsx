@@ -1,4 +1,5 @@
 import React from 'react'
+import { useAuth } from '../../context/AuthContext'
 
 const fmt = (n) => (n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -20,6 +21,7 @@ export default function ReceiptPrint({
   splitCardAmount,
   orderChannel,
 }) {
+  const { storeConfig } = useAuth()
   const dateStr = new Date().toLocaleDateString()
   const timeStr = new Date().toLocaleTimeString()
 
@@ -104,16 +106,16 @@ export default function ReceiptPrint({
           )}
           {/* Brand Logo */}
           <img 
-            src="/logo.png" 
-            alt="C Cafe Logo"
+            src={storeConfig?.logoUrl || "/logo.png"} 
+            alt={`${storeConfig?.storeName || 'C Cafe'} Logo`}
             width="64px"
             height="64px"
             className="mx-auto block mb-1 rounded-full object-cover flex-shrink-0 shadow-md print:contrast-125 print:brightness-95"
             style={{ imageRendering: 'pixelated' }}
           />
-          <h1 className="text-lg font-black tracking-widest mb-0.5">C CAFE</h1>
-          <p className="text-[10px] font-bold text-gray-700">No 650, Airport Road, Anuradhapura</p>
-          <p className="text-[10px] font-bold text-gray-700">Tel: 025 70 29 500</p>
+          <h1 className="text-lg font-black tracking-widest mb-0.5">{(storeConfig?.storeName || 'C CAFE').toUpperCase()}</h1>
+          <p className="text-[10px] font-bold text-gray-700">{storeConfig?.address || 'No 650, Airport Road, Anuradhapura'}</p>
+          <p className="text-[10px] font-bold text-gray-700">Tel: {storeConfig?.phone || '025 70 29 500'}</p>
           
           {/* Bold Order ID at top header */}
           <div className="text-xs font-black tracking-wider uppercase mt-1 px-2 py-0.5 bg-black text-white rounded">
@@ -234,7 +236,7 @@ export default function ReceiptPrint({
 
         {/* ── Footer ── */}
         <div className="text-center mt-2 flex flex-col items-center">
-          <p className="font-bold text-[10px]">Thank You for Dining with Us!</p>
+          <p className="font-bold text-[10px]">{storeConfig?.receiptFooter || 'Thank You for Dining with Us!'}</p>
           <p className="italic text-[9px] mt-0.5">Please Come Again</p>
           
           <div className="border-b border-dashed border-gray-300 w-full my-1"></div>
