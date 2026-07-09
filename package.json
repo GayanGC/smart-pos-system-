@@ -8,8 +8,7 @@
     "start": "cd server && npm start",
     "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
     "build": "cd client && npm install && npm run build && cd ../server && npm install && npm run build",
-    "seed": "cd server && npm run seed",
-    "install": "npm install --workspaces"
+    "seed": "cd server && npm run seed"
   },
   "workspaces": [
     "server",
