@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid'
 import ProductGrid    from '../components/pos/ProductGrid'
 import CartPanel      from '../components/pos/CartPanel'
 import CheckoutModal  from '../components/pos/CheckoutModal'
+import KitchenPrint   from '../components/pos/KitchenPrint'
 import api            from '../api/axios'
 import { saveInvoiceOffline } from '../utils/offlineSync'
 import { useAuth } from '../context/AuthContext'
@@ -108,7 +109,7 @@ const INITIAL_CART = {
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD': {
-      const existing = state.items.find((i) => i.productId === action.payload.productId)
+      const existing = state.items.find((i) => i.productId === action.payload.productId && i.isKotPrinted === false)
       let items
       if (existing) {
         const nextQty = existing.quantity + 1
@@ -117,7 +118,7 @@ function cartReducer(state, action) {
           return state
         }
         items = state.items.map((i) =>
-          i.productId === action.payload.productId
+          (i.productId === action.payload.productId && i.isKotPrinted === false)
             ? { ...i, quantity: nextQty }
             : i
         )
@@ -126,16 +127,16 @@ function cartReducer(state, action) {
           alert(`"${action.payload.name}" is out of stock.`)
           return state
         }
-        items = [...state.items, { ...action.payload, quantity: 1, discount: 0 }]
+        items = [...state.items, { ...action.payload, quantity: 1, discount: 0, isKotPrinted: false }]
       }
       return computeTotals(items, state.promoDiscount)
     }
     case 'REMOVE': {
-      const items = state.items.filter((i) => i.productId !== action.productId)
+      const items = state.items.filter((i) => !(i.productId === action.productId && i.isKotPrinted === action.isKotPrinted))
       return computeTotals(items, state.promoDiscount)
     }
     case 'SET_QTY': {
-      const existing = state.items.find((i) => i.productId === action.productId)
+      const existing = state.items.find((i) => i.productId === action.productId && i.isKotPrinted === action.isKotPrinted)
       const maxQty = existing ? existing.quantityInStock : 9999
       const qty = Math.max(1, Math.min(maxQty, action.qty))
       
@@ -144,20 +145,20 @@ function cartReducer(state, action) {
       }
 
       const items = state.items.map((i) =>
-        i.productId === action.productId ? { ...i, quantity: qty } : i
+        (i.productId === action.productId && i.isKotPrinted === action.isKotPrinted) ? { ...i, quantity: qty } : i
       )
       return computeTotals(items, state.promoDiscount)
     }
     case 'SET_DISCOUNT': {
       const discount = Math.min(100, Math.max(0, action.discount))
       const items = state.items.map((i) =>
-        i.productId === action.productId ? { ...i, discount } : i
+        (i.productId === action.productId && i.isKotPrinted === action.isKotPrinted) ? { ...i, discount } : i
       )
       return computeTotals(items, state.promoDiscount)
     }
     case 'SET_ITEM_OVERRIDE': {
       const items = state.items.map((i) =>
-        i.productId === action.productId
+        (i.productId === action.productId && i.isKotPrinted === action.isKotPrinted)
           ? { 
               ...i, 
               customPrice: action.customPrice !== '' ? Number(action.customPrice) : undefined, 
@@ -218,6 +219,9 @@ export default function PosPage() {
   const [floatSubmitLoading, setFloatSubmitLoading] = useState(false)
   const [floatSubmitError, setFloatSubmitError] = useState(null)
   const [initBakeryQtys, setInitBakeryQtys] = useState({})
+  
+  const [kotPrintItems, setKotPrintItems] = useState([])
+  const [kotSlotName, setKotSlotName] = useState('')
 
 
   // Micro flow ledger states
@@ -254,10 +258,53 @@ export default function PosPage() {
     })
   }, [])
 
-  const handleQtyChange     = useCallback((pid, qty) => dispatch({ type: 'SET_QTY',     productId: pid, qty }),     [])
-  const handleDiscountChange = useCallback((pid, d)  => dispatch({ type: 'SET_DISCOUNT', productId: pid, discount: d }), [])
-  const handleRemove        = useCallback((pid)       => dispatch({ type: 'REMOVE',      productId: pid }),          [])
+  const handleQtyChange     = useCallback((pid, qty, isKotPrinted) => dispatch({ type: 'SET_QTY',     productId: pid, qty, isKotPrinted }),     [])
+  const handleDiscountChange = useCallback((pid, d, isKotPrinted)  => dispatch({ type: 'SET_DISCOUNT', productId: pid, discount: d, isKotPrinted }), [])
+  const handleRemove        = useCallback((pid, isKotPrinted)       => dispatch({ type: 'REMOVE',      productId: pid, isKotPrinted }),          [])
   const handleClear         = useCallback(()          => dispatch({ type: 'CLEAR' }),                                [])
+
+  const handleHold = useCallback((slot) => {
+    // 1. Identify newly added items that require KOT printing
+    const unprintedItems = cart.items.filter(item => {
+      if (item.isKotPrinted) return false;
+      const cat = (item.category || '').toLowerCase();
+      return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat;
+    }).map(item => ({
+      ...item,
+      name: (item.name || '')
+        .replace(/\(L\)/g, '[FULL]')
+        .replace(/\(M\)/g, '[MEDIUM]')
+        .replace(/\(S\)/g, '[NORMAL]')
+    }));
+
+    // 2. Flip all items in the cart to isKotPrinted: true for saving in Table Slot
+    const updatedItems = cart.items.map(item => ({ ...item, isKotPrinted: true }));
+
+    // 3. Save to table slot
+    const success = holdCurrentCart(slot, updatedItems, cart.promoDiscount, activeCustomer);
+    
+    if (success !== false) {
+      if (unprintedItems.length > 0) {
+        // Set state to render the KitchenPrint component
+        setKotPrintItems(unprintedItems);
+        setKotSlotName(slot);
+        
+        // Wait for React to render it in the DOM, then print
+        setTimeout(() => {
+          const handleAfterPrint = () => {
+            window.removeEventListener('afterprint', handleAfterPrint);
+            setKotPrintItems([]);
+            setKotSlotName('');
+          };
+          window.addEventListener('afterprint', handleAfterPrint);
+          window.print();
+        }, 150);
+      }
+      
+      // Clear the active cart
+      dispatch({ type: 'CLEAR' });
+    }
+  }, [cart, activeCustomer, holdCurrentCart]);
 
   // ── Checkout ───────────────────────────────────────────────────────────
   const handleCheckout = async ({ paymentMethod, amountPaid, referenceNumber, customerName, invoiceId, orderNo, splitCashAmount, splitCardAmount, orderChannel }) => {
@@ -510,7 +557,7 @@ export default function PosPage() {
           promoDiscount={cart.promoDiscount}
           onQtyChange={handleQtyChange}
           onDiscountChange={handleDiscountChange}
-          onItemOverrideChange={(pid, customPrice, flatDiscount) => dispatch({ type: 'SET_ITEM_OVERRIDE', productId: pid, customPrice, flatDiscount })}
+          onItemOverrideChange={(pid, customPrice, flatDiscount, isKotPrinted) => dispatch({ type: 'SET_ITEM_OVERRIDE', productId: pid, customPrice, flatDiscount, isKotPrinted })}
           onPromoDiscountChange={(promoType, promoValue) => dispatch({ type: 'SET_PROMO_DISCOUNT', promoType, promoValue })}
           onRemove={handleRemove}
           onClear={handleClear}
@@ -519,12 +566,7 @@ export default function PosPage() {
           heldCartsList={heldCartsList}
           activeCustomer={activeCustomer}
           setActiveCustomer={setActiveCustomer}
-          onHold={(slot) => {
-            const success = holdCurrentCart(slot, cart.items, cart.promoDiscount, activeCustomer)
-            if (success !== false) {
-              dispatch({ type: 'CLEAR' })
-            }
-          }}
+          onHold={handleHold}
           onRecall={(slot) => {
             const recalled = recallHeldCart(slot)
             if (recalled) {
@@ -736,6 +778,19 @@ export default function PosPage() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Hidden KOT Print Container for Table Holds */}
+      {kotPrintItems.length > 0 && (
+        <div className="hidden print:block w-full max-w-sm mx-auto" id="print-kot">
+          <KitchenPrint 
+            invoiceNumber={kotSlotName}
+            lineItems={kotPrintItems}
+            cashierName={user?.name || user?.username || 'kinship27'}
+            isLivePreview={false}
+            orderChannel="DINE IN"
+          />
         </div>
       )}
     </div>

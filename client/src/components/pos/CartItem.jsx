@@ -4,7 +4,7 @@ const fmt = (n) =>
   'Rs. ' + (n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOverrideChange, onRemove }) {
-  const { productId, name, sku, unitPrice, quantity, discount, lineTotal } = item
+  const { productId, isKotPrinted, name, sku, unitPrice, quantity, discount, lineTotal } = item
   const [showOverrides, setShowOverrides] = useState(false)
 
   return (
@@ -13,7 +13,14 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
       {/* ── Top row: name + remove ──────────────────────────────────── */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-slate-100 leading-snug line-clamp-1">{name}</p>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm font-semibold text-slate-100 leading-snug line-clamp-1">{name}</span>
+            {isKotPrinted && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                🍳 SENT TO KITCHEN
+              </span>
+            )}
+          </div>
           <p className="text-[10px] text-slate-500 font-mono mt-0.5">
             {sku} · {item.customPrice ? `${fmt(item.customPrice)} (orig: ${fmt(unitPrice)})` : fmt(unitPrice)} ea.
           </p>
@@ -31,7 +38,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
             </svg>
           </button>
           <button
-            onClick={() => onRemove(productId)}
+            onClick={() => onRemove(productId, isKotPrinted)}
             className="flex-shrink-0 w-6 h-6 rounded-md text-slate-600 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all duration-150"
             title="Remove item"
           >
@@ -47,7 +54,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
         {/* Quantity stepper */}
         <div className="flex items-center bg-slate-800/80 rounded-lg border border-slate-700/50 overflow-hidden">
           <button
-            onClick={() => onQtyChange(productId, quantity - 1)}
+            onClick={() => onQtyChange(productId, quantity - 1, isKotPrinted)}
             className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/60 transition-colors"
             aria-label="Decrease quantity"
           >
@@ -59,7 +66,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
             {quantity}
           </span>
           <button
-            onClick={() => onQtyChange(productId, quantity + 1)}
+            onClick={() => onQtyChange(productId, quantity + 1, isKotPrinted)}
             className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/60 transition-colors"
             aria-label="Increase quantity"
           >
@@ -79,7 +86,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
               max={100}
               step={1}
               value={discount}
-              onChange={(e) => onDiscountChange(productId, Number(e.target.value))}
+              onChange={(e) => onDiscountChange(productId, Number(e.target.value), isKotPrinted)}
               className="w-12 bg-transparent text-center text-xs font-semibold text-amber-400 py-1.5 px-1 focus:outline-none"
               aria-label="Discount percentage"
             />
@@ -110,7 +117,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
               type="number"
               placeholder={unitPrice.toFixed(2)}
               value={item.customPrice ?? ''}
-              onChange={(e) => onItemOverrideChange(productId, e.target.value, item.flatDiscount ?? '')}
+              onChange={(e) => onItemOverrideChange(productId, e.target.value, item.flatDiscount ?? '', isKotPrinted)}
               className="w-full bg-slate-800/60 border border-slate-700/40 focus:border-violet-500/50 rounded-lg px-2.5 py-1 text-xs text-slate-100 font-semibold font-mono outline-none transition-colors"
             />
           </div>
@@ -120,7 +127,7 @@ export default function CartItem({ item, onQtyChange, onDiscountChange, onItemOv
               type="number"
               placeholder="0.00"
               value={item.flatDiscount ?? ''}
-              onChange={(e) => onItemOverrideChange(productId, item.customPrice ?? '', e.target.value)}
+              onChange={(e) => onItemOverrideChange(productId, item.customPrice ?? '', e.target.value, isKotPrinted)}
               className="w-full bg-slate-800/60 border border-slate-700/40 focus:border-violet-500/50 rounded-lg px-2.5 py-1 text-xs text-amber-400 font-semibold font-mono outline-none transition-colors"
             />
           </div>

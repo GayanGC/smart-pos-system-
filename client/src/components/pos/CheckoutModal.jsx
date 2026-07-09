@@ -173,19 +173,7 @@ export default function CheckoutModal({
       const handleAfterReceiptPrint = () => {
         window.removeEventListener('afterprint', handleAfterReceiptPrint)
         afterPrintReceiptHandlerRef.current = null
-        
-        setPrintSequence('kot')
-        
-        printTimer2Ref.current = setTimeout(() => {
-          const handleAfterKotPrint = () => {
-            window.removeEventListener('afterprint', handleAfterKotPrint)
-            afterPrintKotHandlerRef.current = null
-            setPrintSequence('idle')
-          }
-          afterPrintKotHandlerRef.current = handleAfterKotPrint
-          window.addEventListener('afterprint', handleAfterKotPrint)
-          window.print()
-        }, 300)
+        setPrintSequence('idle')
       }
       
       afterPrintReceiptHandlerRef.current = handleAfterReceiptPrint
@@ -465,7 +453,7 @@ export default function CheckoutModal({
                   onClick={triggerSequentialPrint} 
                   className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl font-bold transition-colors"
                 >
-                  Print Receipt & KOT
+                  Print Receipt
                 </button>
                 <button 
                   onClick={handleSuccessReset} 
