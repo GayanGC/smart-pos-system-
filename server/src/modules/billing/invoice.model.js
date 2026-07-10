@@ -118,7 +118,7 @@ const InvoiceSchema = new mongoose.Schema(
     isOfflineCreated: {
       type:    Boolean,
       default: false,
-      index:   true, // queried in the sync endpoint
+      // Note: indexed via InvoiceSchema.index() below — no need for index:true here
     },
     offlineCreatedAt: {
       type: Date, // the timestamp when the invoice was created offline
@@ -133,6 +133,7 @@ const InvoiceSchema = new mongoose.Schema(
     offlineRef: {
       type:   String,
       trim:   true,
+      unique: true,
       sparse: true, // unique only among documents that have this field
     },
 
@@ -144,7 +145,7 @@ const InvoiceSchema = new mongoose.Schema(
     isVoided: {
       type:    Boolean,
       default: false,
-      index:   true,
+      // Note: indexed via InvoiceSchema.index() below — no need for index:true here
     },
     voidReason: {
       type:      String,
@@ -183,14 +184,13 @@ InvoiceSchema.virtual('balanceDue').get(function () {
 });
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-InvoiceSchema.index({ invoiceNumber:    1 });
+// Note: invoiceNumber has unique:true in field definition — schema.index not needed
 InvoiceSchema.index({ storeId:          1 });
 InvoiceSchema.index({ cashierId: 1, createdAt: -1 });
-InvoiceSchema.index({ status:          1 });
+InvoiceSchema.index({ status:           1 });
 InvoiceSchema.index({ isOfflineCreated: 1 });
 InvoiceSchema.index({ isVoided:         1 });
 InvoiceSchema.index({ isVoided: 1, createdAt: -1 }); // optimized for analytics dashboard
-InvoiceSchema.index({ createdAt:        -1 }); // for date-range reports
-InvoiceSchema.index({ offlineRef:       1 }, { unique: true, sparse: true }); // idempotency
+InvoiceSchema.index({ createdAt:        -1 });         // for date-range reports
 
 module.exports = mongoose.model('Invoice', InvoiceSchema);

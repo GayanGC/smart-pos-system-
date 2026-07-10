@@ -17,7 +17,6 @@ const PaymentSchema = new mongoose.Schema(
       type:     mongoose.Schema.Types.ObjectId,
       ref:      'Invoice',
       required: [true, 'Payment must be linked to an Invoice.'],
-      index:    true,
     },
 
     // ── Amount ───────────────────────────────────────────────────────────────

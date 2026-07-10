@@ -4104,3 +4104,12 @@ Require stack:
 2026-07-09 20:06:38 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
 2026-07-09 20:06:39 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
 2026-07-09 20:06:39 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 12:35:13 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-07-10 12:35:15 [info]: 🌱 [AUTO-SEED] Created primary admin: admin@smartpos.com
+2026-07-10 12:35:16 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 12:37:41 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-07-10 12:37:42 [info]: ✅ [AUTO-SEED] Primary admin exists: admin@smartpos.com
+2026-07-10 12:37:43 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 12:38:15 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-07-10 12:38:16 [info]: ✅ [AUTO-SEED] Primary admin exists: admin@smartpos.com
+2026-07-10 12:38:17 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)

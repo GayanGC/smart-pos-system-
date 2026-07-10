@@ -31,22 +31,45 @@ const connectDB = async () => {
     try {
       const User = require('../modules/auth/auth.model');
       const { USER_ROLES } = require('./constants');
-      const adminEmail = 'admin@example.com';
       
-      let admin = await User.findOne({ email: adminEmail });
-      if (!admin) {
+      // Primary admin: admin@smartpos.com / admin123
+      const primaryEmail = 'admin@smartpos.com';
+      let primaryAdmin = await User.findOne({ email: primaryEmail });
+      if (!primaryAdmin) {
         await User.create({
           name: 'Admin Owner',
-          email: adminEmail,
+          email: primaryEmail,
+          password: 'admin123',
+          role: USER_ROLES.SUPER_ADMIN || 'super_admin',
+          storeId: 'store_1',
+        });
+        logger.info(`🌱 [AUTO-SEED] Created primary admin: ${primaryEmail}`);
+      } else {
+        // Ensure storeId is set
+        if (!primaryAdmin.storeId) {
+          primaryAdmin.storeId = 'store_1';
+          await primaryAdmin.save({ validateBeforeSave: false });
+        }
+        logger.info(`✅ [AUTO-SEED] Primary admin exists: ${primaryEmail}`);
+      }
+
+      // Legacy admin: admin@example.com / admin1234 (backward compat)
+      const legacyEmail = 'admin@example.com';
+      let legacyAdmin = await User.findOne({ email: legacyEmail });
+      if (!legacyAdmin) {
+        await User.create({
+          name: 'Admin Legacy',
+          email: legacyEmail,
           password: 'admin1234',
           role: USER_ROLES.SUPER_ADMIN || 'super_admin',
+          storeId: 'store_1',
         });
-        logger.info(`🌱 [AUTO-SEED] Created default admin user: ${adminEmail}`);
+        logger.info(`🌱 [AUTO-SEED] Created legacy admin: ${legacyEmail}`);
       } else {
-        // Force update to admin1234 to ensure sync
-        admin.password = 'admin1234';
-        await admin.save();
-        logger.info(`🌱 [AUTO-SEED] Synchronized admin user password: ${adminEmail}`);
+        if (!legacyAdmin.storeId) {
+          legacyAdmin.storeId = 'store_1';
+          await legacyAdmin.save({ validateBeforeSave: false });
+        }
       }
     } catch (seedErr) {
       logger.error(`🔴 [AUTO-SEED] Programmatic seed error: ${seedErr.message}`);

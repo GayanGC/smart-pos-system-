@@ -180,8 +180,7 @@ ProductSchema.virtual('isExpired').get(function () {
 });
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-ProductSchema.index({ sku:     1 });
-ProductSchema.index({ barcode: 1 });
+// Note: sku has unique:true and barcode has unique+sparse in field defs — no extra .index() needed
 ProductSchema.index({ storeId: 1 });
 ProductSchema.index({ category: 1, isActive: 1 });
 ProductSchema.index({ name: 'text', description: 'text', brand: 'text' }); // full-text

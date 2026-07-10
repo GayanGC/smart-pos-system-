@@ -55,6 +55,15 @@ const seedDB = async () => {
 
     const adminUser = await User.create({
       name: 'Admin Owner',
+      email: 'admin@smartpos.com',
+      password: 'admin123',
+      role: USER_ROLES.SUPER_ADMIN,
+      storeId: 'store_1',
+    });
+
+    // Also create legacy email for backward compat (admin@example.com / admin1234)
+    await User.create({
+      name: 'Admin Legacy',
       email: 'admin@example.com',
       password: 'admin1234',
       role: USER_ROLES.SUPER_ADMIN,
@@ -146,8 +155,7 @@ const seedDB = async () => {
     const products = [];
     for (let index = 0; index < productsData.length; index++) {
       const p = productsData[index];
-      // Seed all products to store_1 for admin visibility
-      const sId = 'store_1';
+      // ✅ All 18 products explicitly seeded to store_1
       const product = await Product.create({
         name: p.name,
         sku: p.sku,
@@ -164,7 +172,7 @@ const seedDB = async () => {
           phone: p.supp.phone,
           email: p.supp.email,
         },
-        storeId: sId,
+        storeId: 'store_1', // ← always store_1 for all seeded products
       });
       products.push(product);
     }

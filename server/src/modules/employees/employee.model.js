@@ -113,7 +113,7 @@ EmployeeSchema.virtual('fullName').get(function () {
 });
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-EmployeeSchema.index({ employeeId: 1 });
+// Note: employeeId has unique:true in the field definition — no extra index() call needed
 EmployeeSchema.index({ department: 1, isActive: 1 });
 EmployeeSchema.index({ firstName: 'text', lastName: 'text' }); // full-text search
 

@@ -85,7 +85,7 @@ const UserSchema = new mongoose.Schema(
 );
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-UserSchema.index({ email:   1 });
+// Note: email has unique:true in the field definition — no need for a separate index() call
 UserSchema.index({ role:    1 });
 UserSchema.index({ storeId: 1 });
 
