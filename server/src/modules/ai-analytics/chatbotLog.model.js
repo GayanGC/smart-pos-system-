@@ -39,14 +39,12 @@ const ChatbotLogSchema = new mongoose.Schema(
     sessionId: {
       type:     String,
       required: [true, 'Session ID is required.'],
-      index:    true,
     },
 
     // ── Who initiated the chat ────────────────────────────────────────────────
     userId: {
       type:  mongoose.Schema.Types.ObjectId,
       ref:   'User',
-      index: true,
     },
     userRole: { type: String, trim: true },
 

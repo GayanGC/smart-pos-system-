@@ -71,7 +71,6 @@ const CashierSchema = new mongoose.Schema(
 );
 
 // ─── Indexes ───────────────────────────────────────────────────────────────
-CashierSchema.index({ userId: 1 });
-CashierSchema.index({ employeeCode: 1 });
+// Note: userId and employeeCode have unique:true in field definitions — no extra index() call needed
 
 module.exports = mongoose.model('Cashier', CashierSchema);

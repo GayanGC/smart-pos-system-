@@ -22,7 +22,7 @@ const connectDB = async () => {
     const conn = await mongoose.connect(mongoString, {
       // These options are the defaults in Mongoose 7+ but are listed
       // explicitly for clarity and forward compatibility.
-      autoIndex: process.env.NODE_ENV !== 'production', // disable in prod for perf
+      autoIndex: false, // prevent auto-index building on boot in prod
     });
 
     logger.info(`✅  MongoDB connected: ${conn.connection.host}`);
