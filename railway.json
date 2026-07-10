@@ -5,7 +5,7 @@
     "watchPatterns": ["server/**"]
   },
   "deploy": {
-    "startCommand": "cd server && node src/server.js",
+    "startCommand": "[ -d server ] && cd server; node src/server.js",
     "restartPolicyType": "ON_FAILURE"
   }
 }
