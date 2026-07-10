@@ -55,7 +55,9 @@ const getProducts = asyncHandler(async (req, res) => {
   // Safely default to 'store_1' if storeId is missing (for local testing)
   const userStoreId = req.user.storeId || 'store_1';
   const filter = { isActive: true, storeId: userStoreId };
-  if (category) filter.category = category;
+  if (category) {
+    filter.category = { $regex: new RegExp(`^${category}$`, 'i') };
+  }
   if (search)   filter.$text    = { $search: search };
 
   // Aggregate low-stock filter using MongoDB's $expr

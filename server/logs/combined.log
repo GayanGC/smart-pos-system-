@@ -4113,3 +4113,18 @@ Require stack:
 2026-07-10 12:38:15 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
 2026-07-10 12:38:16 [info]: ✅ [AUTO-SEED] Primary admin exists: admin@smartpos.com
 2026-07-10 12:38:17 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 13:18:13 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-07-10 13:18:14 [info]: ✅ [AUTO-SEED] Primary admin exists: admin@smartpos.com
+2026-07-10 13:18:14 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 13:18:14 [info]: 🚀  Server running in [development] mode on port 5000
+2026-07-10 13:18:14 [info]: 📡  API base URL : http://localhost:5000/api
+2026-07-10 13:18:14 [info]: ❤️   Health check : http://localhost:5000/health
+2026-07-10 13:18:14 [info]: ⏰  EOD Email Report Scheduler started.
+2026-07-10 13:24:18 [info]: 🚀  Server running in [development] mode on port 5000
+2026-07-10 13:24:18 [info]: 📡  API base URL : http://localhost:5000/api
+2026-07-10 13:24:18 [info]: ❤️   Health check : http://localhost:5000/health
+2026-07-10 13:24:18 [info]: ⏰  EOD Email Report Scheduler started.
+2026-07-10 13:24:20 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-07-10 13:24:21 [info]: ✅ [AUTO-SEED] Primary admin exists: admin@smartpos.com
+2026-07-10 13:24:21 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-10 13:24:21 [info]: 🔌  Mongoose connection established successfully.

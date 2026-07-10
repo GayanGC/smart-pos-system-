@@ -239,7 +239,7 @@ export default function ProductGrid({ onAddToCart }) {
         const { readFromStore } = await import('../../utils/localDb')
         let allItems = await readFromStore('products_cache')
         if (category && category !== 'All') {
-          allItems = allItems.filter(p => p.category === category)
+          allItems = allItems.filter(p => p.category?.toLowerCase() === category.toLowerCase())
         }
         if (q) {
           const lowerQ = q.toLowerCase()
@@ -262,7 +262,7 @@ export default function ProductGrid({ onAddToCart }) {
           const { readFromStore } = await import('../../utils/localDb')
           let allItems = await readFromStore('products_cache')
           if (category && category !== 'All') {
-            allItems = allItems.filter(p => p.category === category)
+            allItems = allItems.filter(p => p.category?.toLowerCase() === category.toLowerCase())
           }
           if (q) {
             const lowerQ = q.toLowerCase()
