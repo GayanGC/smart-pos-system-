@@ -100,3 +100,5 @@ if (process.env.VERCEL || process.env.VERCEL_ENV) {
   // Standard local/PM2 execution
   startServer();
 }
+
+console.log("Forcing Railway deployment...");
