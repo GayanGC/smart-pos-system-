@@ -36,8 +36,10 @@ const sendTokenResponse = async (res, user, statusCode = 200, message = 'Success
   delete userObj.passwordResetToken;
   delete userObj.passwordResetExpires;
 
+  // Ensure storeId has a value (backward compat for old accounts)
+  const effectiveStoreId = user.storeId || 'store_1';
   const StoreConfig = require('../billing/storeConfig.model');
-  const storeConfig = await StoreConfig.findOne({ storeId: user.storeId });
+  const storeConfig = await StoreConfig.findOne({ storeId: effectiveStoreId });
 
   return sendSuccess(res, { statusCode, message, data: { token, user: userObj, storeConfig } });
 };
@@ -194,7 +196,8 @@ const getMe = asyncHandler(async (req, res) => {
   }
 
   const StoreConfig = require('../billing/storeConfig.model');
-  const storeConfig = await StoreConfig.findOne({ storeId: user.storeId });
+  const effectiveStoreId = user.storeId || 'store_1';
+  const storeConfig = await StoreConfig.findOne({ storeId: effectiveStoreId });
 
   return sendSuccess(res, {
     data: { user, cashierProfile, storeConfig },

@@ -91,3 +91,4 @@ Require stack:
     at async FindCursor.fetchBatch (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:666:13)
     at async FindCursor.next (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\cursor\abstract_cursor.js:342:17)
     at async Collection.findOne (D:\projects\pos system 0.1\server\node_modules\mongodb\lib\collection.js:313:24)
+2026-07-09 18:22:47 [error]: 🔴 [AUTO-SEED] Programmatic seed error: User validation failed: storeId: Store ID is required.

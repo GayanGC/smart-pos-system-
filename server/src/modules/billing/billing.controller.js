@@ -208,7 +208,8 @@ const getInvoices = asyncHandler(async (req, res) => {
     isVoided,
   } = req.query;
 
-  const filter = { storeId: req.user.storeId };
+  const storeId = req.user.storeId || 'store_1';
+  const filter = { storeId };
   if (status)              filter.status       = status;
   if (cashierId)           filter.cashierId    = cashierId;
   if (isVoided !== undefined) filter.isVoided  = isVoided === 'true';
@@ -242,7 +243,8 @@ const getInvoices = asyncHandler(async (req, res) => {
 //  @access  Private
 // ═══════════════════════════════════════════════════════════════════════════
 const getInvoiceById = asyncHandler(async (req, res) => {
-  const invoice = await Invoice.findOne({ _id: req.params.id, storeId: req.user.storeId })
+  const storeId = req.user.storeId || 'store_1';
+  const invoice = await Invoice.findOne({ _id: req.params.id, storeId })
     .populate('cashierId', 'name email')
     .populate('payments');
 
@@ -269,7 +271,8 @@ const voidInvoice = asyncHandler(async (req, res) => {
     return sendError(res, { statusCode: 400, message: 'A void reason is required to void an invoice.' });
   }
 
-  const invoice = await Invoice.findOne({ _id: req.params.id, storeId: req.user.storeId });
+  const storeId = req.user.storeId || 'store_1';
+  const invoice = await Invoice.findOne({ _id: req.params.id, storeId });
   if (!invoice) {
     return sendError(res, { statusCode: 404, message: 'Invoice not found.' });
   }
@@ -564,7 +567,7 @@ const getDashboard = asyncHandler(async (req, res) => {
     // ── Stage 1: Filter to non-voided invoices within the date window ──────
     {
       $match: {
-        storeId:   req.user.storeId,
+        storeId:   req.user.storeId || 'store_1',
         isVoided:  false,
         createdAt: { $gte: windowStart, $lte: windowEnd },
       },
@@ -763,8 +766,9 @@ const getCashSummary = asyncHandler(async (req, res) => {
   const startOfDay = new Date(filterDate.setHours(0, 0, 0, 0));
   const endOfDay = new Date(filterDate.setHours(23, 59, 59, 999));
 
+  const storeId = req.user.storeId || 'store_1';
   const User = require('../auth/auth.model');
-  const userIds = await User.find({ storeId: req.user.storeId }).distinct('_id');
+  const userIds = await User.find({ storeId }).distinct('_id');
 
   const filter = { 
     createdAt: { $gte: startOfDay, $lte: endOfDay }, 
@@ -784,7 +788,7 @@ const getCashSummary = asyncHandler(async (req, res) => {
     createdAt: { $gte: startOfDay, $lte: endOfDay },
     paymentMethod: 'cash',
     isVoided: false,
-    storeId: req.user.storeId
+    storeId
   };
   if (cashierId) {
     const mongoose = require('mongoose');
@@ -803,7 +807,7 @@ const getCashSummary = asyncHandler(async (req, res) => {
     createdAt: { $gte: startOfDay, $lte: endOfDay },
     paymentMethod: 'credit',
     isVoided: false,
-    storeId: req.user.storeId
+    storeId
   };
   if (cashierId) {
     const mongoose = require('mongoose');
@@ -872,7 +876,8 @@ const masterReset = asyncHandler(async (req, res) => {
  */
 const settleInvoice = asyncHandler(async (req, res) => {
   const { paymentMethod, amountPaid } = req.body;
-  const invoice = await Invoice.findOne({ _id: req.params.id, storeId: req.user.storeId });
+  const storeId = req.user.storeId || 'store_1';
+  const invoice = await Invoice.findOne({ _id: req.params.id, storeId });
 
   if (!invoice) {
     return sendError(res, { statusCode: 404, message: 'Invoice not found.' });

@@ -4072,3 +4072,35 @@ Require stack:
 2026-06-20 17:53:10 [info]: 📡  API base URL : http://localhost:5000/api
 2026-06-20 17:53:10 [info]: ❤️   Health check : http://localhost:5000/health
 2026-06-20 17:53:10 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-29 03:41:24 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-06-29 03:41:24 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-29 13:27:47 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-29 14:03:05 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-06-29 14:03:07 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-06-29 14:03:07 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-29 14:03:07 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-29 14:03:07 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-29 14:03:07 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-29 14:03:07 [info]: ⏰  EOD Email Report Scheduler started.
+2026-06-29 14:26:08 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-06-29 14:26:10 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-06-29 14:26:10 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-06-29 14:26:10 [info]: 🚀  Server running in [development] mode on port 5000
+2026-06-29 14:26:10 [info]: 📡  API base URL : http://localhost:5000/api
+2026-06-29 14:26:10 [info]: ❤️   Health check : http://localhost:5000/health
+2026-06-29 14:26:10 [info]: ⏰  EOD Email Report Scheduler started.
+2026-07-09 18:22:47 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-01.e13efst.mongodb.net
+2026-07-09 18:22:47 [error]: 🔴 [AUTO-SEED] Programmatic seed error: User validation failed: storeId: Store ID is required.
+2026-07-09 18:22:47 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-09 18:23:06 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-07-09 18:23:08 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-07-09 18:23:08 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-09 19:29:05 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-07-09 19:29:06 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-07-09 19:29:06 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-09 19:32:41 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-02.e13efst.mongodb.net
+2026-07-09 19:32:43 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-07-09 19:32:43 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)
+2026-07-09 20:06:38 [info]: ✅  MongoDB connected: ac-7sry5ry-shard-00-00.e13efst.mongodb.net
+2026-07-09 20:06:39 [info]: 🌱 [AUTO-SEED] Synchronized admin user password: admin@example.com
+2026-07-09 20:06:39 [info]: 🟢 [DATABASE] Successfully connected to MongoDB ATLAS (Cloud Cloud Layer)

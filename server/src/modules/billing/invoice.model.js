@@ -164,8 +164,8 @@ const InvoiceSchema = new mongoose.Schema(
 
     // ── Multi-tenant ──────────────────────────────────────────────────────────
     storeId: {
-      type:     String,
-      required: [true, 'Store ID is required.'],
+      type:    String,
+      default: 'store_1',
     },
   },
   {
