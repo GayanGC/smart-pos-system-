@@ -101,4 +101,4 @@ if (process.env.VERCEL || process.env.VERCEL_ENV) {
   startServer();
 }
 
-console.log("Forcing Railway deployment...");
+console.log("Forcing Railway deployment - verified active boot sequence");
