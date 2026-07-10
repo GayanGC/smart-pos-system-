@@ -29,10 +29,7 @@ const logger    = require('./utils/logger');
 // ─── Boot sequence ─────────────────────────────────────────────────────────
 const startServer = async () => {
   try {
-    // 1. Connect to MongoDB
-    await connectDB();
-
-    // 2. Start the HTTP server
+    // 1. Start the HTTP server FIRST so it binds instantly to the port and passes Railway checks
     const PORT   = process.env.PORT || 5000;
     const server = app.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀  Server running in [${process.env.NODE_ENV || 'development'}] mode on port ${PORT}`);
@@ -48,6 +45,13 @@ const startServer = async () => {
         logger.error('🔴  Failed to start EOD Email Report Scheduler:', err);
       }
     });
+
+    // 2. Connect to MongoDB in the background so slow connection or Atlas timeouts don't block the boot phase
+    connectDB()
+      .then(() => logger.info('🔌  Mongoose connection established successfully.'))
+      .catch((err) => {
+        logger.error('❌  Mongoose connection error during background connect:', err);
+      });
 
     // ── Graceful HTTP server shutdown ────────────────────────────────────────
     const shutdown = (signal) => {
