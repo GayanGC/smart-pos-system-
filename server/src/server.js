@@ -1,3 +1,6 @@
+process.on('uncaughtException', (err) => { console.error('CRITICAL UNCAUGHT EXCEPTION:', err); process.exit(1); });
+process.on('unhandledRejection', (reason, promise) => { console.error('CRITICAL UNHANDLED REJECTION:', reason); process.exit(1); });
+
 /**
  * @file server.js
  * @description Application entry point.
@@ -31,7 +34,7 @@ const startServer = async () => {
 
     // 2. Start the HTTP server
     const PORT   = process.env.PORT || 5000;
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀  Server running in [${process.env.NODE_ENV || 'development'}] mode on port ${PORT}`);
       logger.info(`📡  API base URL : http://localhost:${PORT}/api`);
       logger.info(`❤️   Health check : http://localhost:${PORT}/health`);
