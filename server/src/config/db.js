@@ -18,11 +18,13 @@ const logger   = require('../utils/logger');
  */
 const connectDB = async () => {
   try {
+    // Disable buffering of commands/queries globally so they fail fast with an error when database is disconnected
+    mongoose.set('bufferCommands', false);
+
     const mongoString = process.env.MONGODB_URI || process.env.MONGO_URI;
     const conn = await mongoose.connect(mongoString, {
-      // These options are the defaults in Mongoose 7+ but are listed
-      // explicitly for clarity and forward compatibility.
       autoIndex: false, // prevent auto-index building on boot in prod
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of hanging
     });
 
     logger.info(`✅  MongoDB connected: ${conn.connection.host}`);
@@ -133,8 +135,8 @@ const connectDB = async () => {
     }
   } catch (error) {
     logger.error(`❌  MongoDB connection error: ${error.message}`);
-    // Exit the process so the orchestrator (PM2 / Docker) can restart it.
-    process.exit(1);
+    // Do not crash the container on boot, throw so the background loader catches it and remains responsive
+    throw error;
   }
 };
 
