@@ -132,6 +132,7 @@ async function seed() {
       costPrice: item.price * 0.7, // Calculates an approximate 30% profit margin
       quantityInStock: item.category === 'CIGARETTES' ? 500 : 9999, // 500 stock for cigarettes
       isActive: true,
+      storeId: 'store_1', // explicitly set storeId
       supplier: {
         name: 'Internal Kitchen'
       }
