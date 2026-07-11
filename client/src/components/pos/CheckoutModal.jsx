@@ -107,6 +107,14 @@ export default function CheckoutModal({
   const afterPrintReceiptHandlerRef = useRef(null)
   const afterPrintKotHandlerRef = useRef(null)
 
+  // Filter KOT items to print/preview only kitchen items that haven't been printed yet
+  const unprintedKotItems = (lineItems || []).filter(item => {
+    const cat = (item?.category || '').toLowerCase()
+    const isKitchenCategory = ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
+    return isKitchenCategory && !item.isKotPrinted
+  })
+  const hasKot = unprintedKotItems.length > 0
+
   // Sync selectedCustomer to activeCustomer in context
   useEffect(() => {
     setActiveCustomer(selectedCustomer)
@@ -169,11 +177,33 @@ export default function CheckoutModal({
   const triggerSequentialPrint = () => {
     setPrintSequence('receipt')
     
+    if (afterPrintReceiptHandlerRef.current) {
+      window.removeEventListener('afterprint', afterPrintReceiptHandlerRef.current)
+    }
+    if (afterPrintKotHandlerRef.current) {
+      window.removeEventListener('afterprint', afterPrintKotHandlerRef.current)
+    }
+
     printTimer1Ref.current = setTimeout(() => {
       const handleAfterReceiptPrint = () => {
         window.removeEventListener('afterprint', handleAfterReceiptPrint)
         afterPrintReceiptHandlerRef.current = null
-        setPrintSequence('idle')
+        
+        if (hasKot) {
+          setPrintSequence('kot')
+          printTimer2Ref.current = setTimeout(() => {
+            const handleAfterKotPrint = () => {
+              window.removeEventListener('afterprint', handleAfterKotPrint)
+              afterPrintKotHandlerRef.current = null
+              setPrintSequence('idle')
+            }
+            afterPrintKotHandlerRef.current = handleAfterKotPrint
+            window.addEventListener('afterprint', handleAfterKotPrint)
+            window.print()
+          }, 400)
+        } else {
+          setPrintSequence('idle')
+        }
       }
       
       afterPrintReceiptHandlerRef.current = handleAfterReceiptPrint
@@ -333,12 +363,14 @@ export default function CheckoutModal({
               >
                 Customer Receipt
               </button>
-              <button 
-                onClick={() => setPrintView('kot')} 
-                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${printView === 'kot' ? 'bg-orange-500 text-white shadow-md shadow-orange-900/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-              >
-                Kitchen Ticket (KOT)
-              </button>
+              {hasKot && (
+                <button 
+                  onClick={() => setPrintView('kot')} 
+                  className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${printView === 'kot' ? 'bg-orange-500 text-white shadow-md shadow-orange-900/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+                >
+                  Kitchen Ticket (KOT)
+                </button>
+              )}
             </div>
 
             {/* Screen UI - Tab View */}
@@ -365,19 +397,13 @@ export default function CheckoutModal({
               <div className={`w-full max-w-sm flex justify-center ${printView === 'kot' ? 'block' : 'hidden'}`}>
                 <KitchenPrint 
                   invoiceNumber={orderNo}
-                  lineItems={(lineItems || [])
-                    .filter(item => {
-                      const cat = (item?.category || '').toLowerCase()
-                      return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
-                    })
-                    .map(item => ({
-                      ...item,
-                      name: (item?.name || '')
-                        .replace(/\(L\)/g, '[FULL]')
-                        .replace(/\(M\)/g, '[MEDIUM]')
-                        .replace(/\(S\)/g, '[NORMAL]')
-                    }))
-                  }
+                  lineItems={unprintedKotItems.map(item => ({
+                    ...item,
+                    name: (item?.name || '')
+                      .replace(/\(L\)/g, '[FULL]')
+                      .replace(/\(M\)/g, '[MEDIUM]')
+                      .replace(/\(S\)/g, '[NORMAL]')
+                  }))}
                   cashierName={user?.name || user?.username || 'kinship27'}
                   isLivePreview={true}
                   paymentMethod={method}
@@ -423,19 +449,13 @@ export default function CheckoutModal({
                 >
                   <KitchenPrint 
                     invoiceNumber={orderNo}
-                    lineItems={(lineItems || [])
-                      .filter(item => {
-                        const cat = (item?.category || '').toLowerCase()
-                        return ['food', 'rice', 'kottu', 'noodles', 'bakery', 'meals', 'hot drinks', 'hot_drinks'].includes(cat) || !cat
-                      })
-                      .map(item => ({
-                        ...item,
-                        name: (item?.name || '')
-                          .replace(/\(L\)/g, '[FULL]')
-                          .replace(/\(M\)/g, '[MEDIUM]')
-                          .replace(/\(S\)/g, '[NORMAL]')
-                      }))
-                    }
+                    lineItems={unprintedKotItems.map(item => ({
+                      ...item,
+                      name: (item?.name || '')
+                        .replace(/\(L\)/g, '[FULL]')
+                        .replace(/\(M\)/g, '[MEDIUM]')
+                        .replace(/\(S\)/g, '[NORMAL]')
+                    }))}
                     cashierName={user?.name || user?.username || 'kinship27'}
                     isLivePreview={false}
                     paymentMethod={method}

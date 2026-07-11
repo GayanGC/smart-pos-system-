@@ -66,7 +66,7 @@ export default function CartPanel({
         ) : (
           items.map((item) => (
             <CartItem
-              key={item.productId}
+              key={`${item.productId}-${item.isKotPrinted}`}
               item={item}
               onQtyChange={onQtyChange}
               onDiscountChange={onDiscountChange}
